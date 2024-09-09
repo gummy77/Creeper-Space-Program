@@ -12,7 +12,7 @@ import org.gum.csp.CspMain;
 
 public class ItemRegistry {
 
-    public static final Item DEFAULT_ITEM;
+    public static final Item ADRIAN;
 
     public static final ItemGroup MODGROUP = FabricItemGroupBuilder.create(
                     new Identifier(CspMain.MODID, "cspmodgroup"))
@@ -31,6 +31,6 @@ public class ItemRegistry {
     }
 
     static {
-        DEFAULT_ITEM = register("default_item", new Item(getSettings()));
+        ADRIAN = register("adrian", new Item(getSettings()));
     }
 }
