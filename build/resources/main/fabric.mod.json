@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "csp",
+  "version": "0.1",
+  "name": "Creeper Space Program",
+  "description": "Minecraft Rocketry Mod",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/csp/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "org.gum.csp.client.CspMainClient"
+    ],
+    "main": [
+      "org.gum.csp.CspMain"
+    ]
+  },
+  "mixins": [
+    "csp.mixins.json",
+    {
+      "config": "csp.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.16.5",
+    "fabric": "*",
+    "minecraft": "1.19.2"
+  }
+}
