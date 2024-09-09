@@ -4,9 +4,9 @@
   "version": "${version}",
   "name": "Creeper Space Program",
   "description": "Minecraft Rocketry Mod",
-  "authors": [],
+  "authors": ["gummydummy7", "maddmaam"],
   "contact": {},
-  "license": "All-Rights-Reserved",
+  "license": "GPL-3.0 license",
   "icon": "assets/csp/icon.png",
   "environment": "*",
   "entrypoints": {
