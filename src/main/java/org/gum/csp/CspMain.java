@@ -9,5 +9,9 @@ public class CspMain implements ModInitializer {
     @Override
     public void onInitialize() {
         ItemRegistry.registerItems();
+        EntityRegistry.registerEntities();
+        EntityRegistry.registerEntityAttributes();
+
+        BlockRegistry.registerBlocks();
     }
 }
