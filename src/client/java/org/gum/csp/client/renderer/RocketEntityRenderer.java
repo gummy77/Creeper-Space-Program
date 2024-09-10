@@ -21,7 +21,6 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
         super(context);
         modelLoader = context.getModelLoader();
 
-        this.shadowRadius = 1.0f;
     }
 
     @Override

@@ -1,4 +1,6 @@
 {
   "itemGroup.csp.cspmodgroup": "Creeper Space Program",
-  "item.csp.adrian": "Adrian Clark"
+
+  "item.csp.launchkit": "Launch Kit",
+  "item.csp.fuse":"Fuse"
 }

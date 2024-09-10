@@ -23,13 +23,9 @@ public class RocketEntityModel extends EntityModel<RocketEntity> {
         ModelData modelData = new ModelData();
         ModelPartData modelPartData = modelData.getRoot();
 
-
-
         modelPartData.addChild(EntityModelPartNames.BODY, ModelPartBuilder.create()
-                        .uv(0, 0).cuboid(-4f, -8f, -3f, 8f, 8f, 6f)
-                        .uv(0, 20).cuboid(1f, -10f, 0f, 3f, 2f, 1f)
-                        .uv(8, 20).cuboid(-4f, -10f, 0f, 3f, 2f, 1f),
-                ModelTransform.pivot(0f, 18f, 0f));
+                        .uv(0, 0).cuboid(-4f, -16f, -4f, 8f, 32f, 8f),
+                ModelTransform.pivot(0f, 16f, 0f));
 
 
         return TexturedModelData.of(modelData, 32, 32);
