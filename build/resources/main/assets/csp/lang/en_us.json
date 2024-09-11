@@ -2,5 +2,7 @@
   "itemGroup.csp.cspmodgroup": "Creeper Space Program",
 
   "item.csp.launchkit": "Launch Kit",
-  "item.csp.fuse":"Fuse"
+  "item.csp.fuse":"Fuse",
+  "item.csp.rocket": "Rocket",
+  "item.csp.adrian": "Unobtaidrian"
 }

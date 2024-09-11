@@ -7,10 +7,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
 import org.gum.csp.item.LaunchKit;
+import org.gum.csp.item.Rocket;
 
 public class ItemRegistry {
 
     public static final Item ADRIAN;
+    public static final Rocket ROCKET;
 
     public static final LaunchKit LAUNCH_KIT;
     public static final Item FUSE;
@@ -38,8 +40,8 @@ public class ItemRegistry {
         LAUNCH_KIT = (LaunchKit) register("launchkit", new LaunchKit(getSettings().maxDamage(10)));
         FUSE = register("fuse", new Item(getSettings()));
 
+        ROCKET = (Rocket) register("rocket", new Rocket(getSettings()));
         TEST_ITEM = register("testblock", new BlockItem(BlockRegistry.TEST, getSettings()));
         ADRIAN = register("adrian", new Item(getSettings().food(new FoodComponent.Builder().hunger(10).build())));
-
     }
 }
