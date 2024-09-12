@@ -6,6 +6,7 @@ import net.minecraft.item.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
+import org.gum.csp.item.Assembler;
 import org.gum.csp.item.LaunchKit;
 import org.gum.csp.item.Rocket;
 
@@ -16,6 +17,7 @@ public class ItemRegistry {
 
     public static final LaunchKit LAUNCH_KIT;
     public static final Item FUSE;
+    public static final Assembler ASSEMBLER;
 
     public static Item WOODEN_NOSE_CONE;
     public static Item WOODEN_BODY_SEGMENT;
@@ -40,6 +42,7 @@ public class ItemRegistry {
     static {
         LAUNCH_KIT = (LaunchKit) register("launchkit", new LaunchKit(getSettings().maxDamage(10)));
         FUSE = register("fuse", new Item(getSettings()));
+        ASSEMBLER = (Assembler) register("assembler", new Assembler(getSettings()));
 
         WOODEN_NOSE_CONE = register("wooden_nose_cone", new BlockItem(BlockRegistry.WOODEN_NOSE_CONE, getSettings()));
         WOODEN_BODY_SEGMENT = register("wooden_body_segment", new BlockItem(BlockRegistry.WOODEN_BODY_SEGMENT, getSettings()));
