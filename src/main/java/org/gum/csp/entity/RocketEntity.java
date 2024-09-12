@@ -1,12 +1,10 @@
 package org.gum.csp.entity;
 
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.decoration.AbstractDecorationEntity;
 import net.minecraft.entity.decoration.LeashKnotEntity;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -16,20 +14,19 @@ import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.EntityAttachS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
+import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.registries.ItemRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
-
 
 public class RocketEntity extends Entity {
 
@@ -38,6 +35,9 @@ public class RocketEntity extends Entity {
     private int linkedEntityId;
     @Nullable
     private NbtCompound fuseNbt;
+
+    //ROCKET SETTINGS
+    public RocketSettings rocketSettings = RocketSettings.SIMPLE_ROCKET;
 
     private boolean isLaunching = false;
 
@@ -58,8 +58,15 @@ public class RocketEntity extends Entity {
 
     public void Launch(){
         getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, Explosion.DestructionType.BREAK);
-        launchDirection = Random.create().nextFloat() * Math.PI;
+        launchDirection = Random.create().nextFloat() * Math.PI * 4;
         isLaunching = true;
+
+        //Takeoff Particles
+        float smokeForce = rocketSettings.Power / 10;
+        for(int i = 0; i < 360; i += (int)(60/rocketSettings.Power)) {
+            float randomForce = 1f;//Random.create().nextFloat();
+            world.addParticle(ParticleTypes.CLOUD, this.getX(), this.getY(), this.getZ(), Math.sin(i) * smokeForce * randomForce, 0, Math.cos(i) * smokeForce * randomForce);
+        }
     }
 
     @Override
@@ -67,8 +74,15 @@ public class RocketEntity extends Entity {
         super.tick();
         if(isLaunching){
             previousRenderPosition = renderPosition;
-            renderPosition = renderPosition.add(arcRotation.getX(), arcRotation.getY(), arcRotation.getZ()).multiply(0.5);
-            arcRotation = arcRotation.add(Math.sin(launchDirection) * 0.01, 0.0, Math.cos(launchDirection) * 0.01);
+            renderPosition = renderPosition.add(arcRotation.getX(), arcRotation.getY(), arcRotation.getZ());
+            float force = rocketSettings.Acceleration/20;
+            arcRotation = arcRotation.add((float) Math.sin(launchDirection) * force/3, force, (float) Math.cos(launchDirection) * force/3);
+
+            Vec3d particlePosition = getPos().add(renderPosition);
+            world.addParticle(ParticleTypes.FLAME, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
+            for(int i = 0; i < rocketSettings.Power; i++) {
+                world.addParticle(ParticleTypes.CLOUD, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
+            }
 
             if(renderPosition.y > 250){
                 kill();

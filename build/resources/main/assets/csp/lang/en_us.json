@@ -4,5 +4,8 @@
   "item.csp.launchkit": "Launch Kit",
   "item.csp.fuse":"Fuse",
   "item.csp.rocket": "Rocket",
-  "item.csp.adrian": "Unobtaidrian"
+  "item.csp.adrian": "Unobtaidrian",
+  "block.csp.wooden_nose_cone": "Wooden Nose Cone",
+  "block.csp.wooden_body_segment": "Wooden Body Segment",
+  "block.csp.wooden_exhaust": "Wooden Exhaust"
 }

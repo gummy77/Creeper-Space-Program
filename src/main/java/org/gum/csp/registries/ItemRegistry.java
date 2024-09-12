@@ -17,7 +17,9 @@ public class ItemRegistry {
     public static final LaunchKit LAUNCH_KIT;
     public static final Item FUSE;
 
-    public static final Item TEST_ITEM;
+    public static Item WOODEN_NOSE_CONE;
+    public static Item WOODEN_BODY_SEGMENT;
+    public static Item WOODEN_EXHAUST;
 
     public static final ItemGroup MODGROUP = FabricItemGroupBuilder.create(
                     new Identifier(CspMain.MODID, "cspmodgroup"))
@@ -25,7 +27,6 @@ public class ItemRegistry {
             .build();
 
     public static void registerItems() {
-
     }
 
     public static Item register (String path, Item item) {
@@ -40,8 +41,11 @@ public class ItemRegistry {
         LAUNCH_KIT = (LaunchKit) register("launchkit", new LaunchKit(getSettings().maxDamage(10)));
         FUSE = register("fuse", new Item(getSettings()));
 
+        WOODEN_NOSE_CONE = register("wooden_nose_cone", new BlockItem(BlockRegistry.WOODEN_NOSE_CONE, getSettings()));
+        WOODEN_BODY_SEGMENT = register("wooden_body_segment", new BlockItem(BlockRegistry.WOODEN_BODY_SEGMENT, getSettings()));
+        WOODEN_EXHAUST = register("wooden_exhaust", new BlockItem(BlockRegistry.WOODEN_EXHAUST, getSettings()));
+
         ROCKET = (Rocket) register("rocket", new Rocket(getSettings()));
-        TEST_ITEM = register("testblock", new BlockItem(BlockRegistry.TEST, getSettings()));
         ADRIAN = register("adrian", new Item(getSettings().food(new FoodComponent.Builder().hunger(10).build())));
     }
 }

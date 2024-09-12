@@ -38,21 +38,19 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
         Vec3d renderPosition = entity.previousRenderPosition.lerp(entity.renderPosition, tickDelta);
 
-        float renderPitch = (float) (Math.PI/2 + (Math.atan (entity.arcRotation.y / entity.arcRotation.x))); //TODO fix this math?? idek man
-        float renderRoll =  (float) (Math.PI/2 + (Math.atan (entity.arcRotation.y / entity.arcRotation.z)));
+        Vec3d UP = new Vec3d(0,1,0);
+        Vec3d xAxis = UP.crossProduct(entity.arcRotation);
+        float w = (float) (Math.sqrt(entity.arcRotation.length() * entity.arcRotation.length()) + UP.dotProduct(entity.arcRotation));
 
-        Vec3d rotation = new Vec3d(renderPitch, 0, renderRoll);
-
+        Quaternion rotation = new Quaternion((float) xAxis.x, (float) xAxis.y, (float) xAxis.z, w);
+        rotation.normalize();
 
         matrices.translate(renderPosition.getX(), renderPosition.getY(), renderPosition.getZ());
-
-        matrices.multiply(Quaternion.fromEulerXyz((float) rotation.x, (float) rotation.y, (float) rotation.z));
+        matrices.multiply(rotation);
 
         modelLoader.getModelPart(CspMainClient.ROCKET_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(getTexture(entity))), light, 0);
 
         matrices.pop();
-
-
 
         Entity linkedEntity = entity.getLinkedEntity();
         if (linkedEntity != null) {
