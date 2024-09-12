@@ -64,7 +64,7 @@ public class RocketEntity extends Entity {
         //Takeoff Particles
         float smokeForce = rocketSettings.Power / 10;
         for(int i = 0; i < 360; i += (int)(60/rocketSettings.Power)) {
-            float randomForce = 1f;//Random.create().nextFloat();
+            float randomForce = Random.create().nextFloat();
             world.addParticle(ParticleTypes.CLOUD, this.getX(), this.getY(), this.getZ(), Math.sin(i) * smokeForce * randomForce, 0, Math.cos(i) * smokeForce * randomForce);
         }
     }
