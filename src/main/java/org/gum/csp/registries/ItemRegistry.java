@@ -42,7 +42,7 @@ public class ItemRegistry {
     static {
         LAUNCH_KIT = (LaunchKit) register("launchkit", new LaunchKit(getSettings().maxDamage(10)));
         FUSE = register("fuse", new Item(getSettings()));
-        ASSEMBLER = (Assembler) register("assembler", new Assembler(getSettings()));
+        ASSEMBLER = (Assembler) register("assembler", new Assembler(getSettings().maxDamage(10)));
 
         WOODEN_NOSE_CONE = register("wooden_nose_cone", new BlockItem(BlockRegistry.WOODEN_NOSE_CONE, getSettings()));
         WOODEN_BODY_SEGMENT = register("wooden_body_segment", new BlockItem(BlockRegistry.WOODEN_BODY_SEGMENT, getSettings()));
