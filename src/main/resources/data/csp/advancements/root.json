@@ -1,0 +1,23 @@
+{
+  "display": {
+    "icon": {
+      "item": "csp:adrian"
+    },
+    "title": {
+      "translate": "advancements.csp.root.title"
+    },
+    "description": {
+      "translate": "advancements.csp.root.description"
+    },
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "requirement": {
+      "trigger": "minecraft:inventory_changed",
+      "items": ["minecraft:gunpowder"]
+    }
+  }
+}

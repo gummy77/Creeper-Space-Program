@@ -1,0 +1,24 @@
+{
+  "parent": "csp:root",
+  "display": {
+    "icon": {
+      "item": "csp:launchkit"
+    },
+    "title": {
+      "translate": "advancements.csp.rocket_launched"
+    },
+    "description": {
+      "translate": "advancements.csp.rocket_launched"
+    },
+    "frame": "challenge",
+    "hidden": false
+  },
+  "criteria": {
+    "launch_rocket": {
+      "trigger": "csp:launched_rocket"
+    }
+  },
+  "rewards": {
+    "experience": 50
+  }
+}
