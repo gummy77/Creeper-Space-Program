@@ -1,5 +1,9 @@
 {
   "itemGroup.csp.cspmodgroup": "Creeper Space Program",
+
+  "book.csp.patchouli_book_name": "Aerospace Guide",
+  "book.csp.patchouli_book_landing_text": "Welcome to Rocketry",
+
   "item.csp.adrian": "Unobtaidrian",
 
   "item.csp.launchkit": "Launch Kit",
