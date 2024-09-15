@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 
 public class RocketPartBlock extends BlockWithEntity {
-    private final RocketPart rocketPart; //TODO move to NBTData
+    private final RocketPart rocketPart;
 
     public RocketPartBlock(Settings settings, RocketPart rocketPart) {
         super(settings);

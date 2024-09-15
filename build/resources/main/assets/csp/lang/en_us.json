@@ -1,19 +1,34 @@
 {
+  "_comment": "--- Misc ---",
   "itemGroup.csp.cspmodgroup": "Creeper Space Program",
 
+
+  "_comment": "--- Guide Book ---",
   "book.csp.patchouli_book_name": "Aerospace Guide",
-  "book.csp.patchouli_book_landing_text": "Welcome to Rocketry",
+  "book.csp.patchouli_book_landing_text": "Welcome to the Creeper Space Program!",
 
+  "_comment": "--- Debug Stuff ---",
   "item.csp.adrian": "Unobtaidrian",
+  "item.csp.rocket": "Rocket Spawner (DEV)",
 
+
+  "_comment": "--- Items ---",
   "item.csp.launchkit": "Launch Kit",
   "item.csp.assembler": "Assembler",
   "item.csp.fuse":"Fuse",
-  "item.csp.rocket": "Rocket",
 
+
+  "_comment": "--- Crafting Items ---",
   "item.csp.wooden_fin": "Wooden Fin",
 
+
+  "_comment": "--- Rocket Parts ---",
   "block.csp.wooden_nose_cone": "Wooden Nose Cone",
   "block.csp.wooden_body_segment": "Wooden Body Segment",
-  "block.csp.wooden_exhaust": "Wooden Exhaust"
+  "block.csp.wooden_exhaust": "Wooden Exhaust",
+
+
+  "_comment": "--- Advancement Stuff ---",
+  "advancements.csp.root.title": "This stuff explodes!?",
+  "advancements.csp.root.description": "Technically it Deflagrates..."
 }
