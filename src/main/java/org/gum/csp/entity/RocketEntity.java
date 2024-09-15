@@ -1,17 +1,18 @@
 package org.gum.csp.entity;
 
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.*;
 import net.minecraft.entity.decoration.AbstractDecorationEntity;
 import net.minecraft.entity.decoration.LeashKnotEntity;
-import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.Packet;
-import net.minecraft.network.packet.s2c.play.EntityAttachS2CPacket;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -21,11 +22,10 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
 import net.minecraft.world.explosion.Explosion;
 import org.gum.csp.datastructs.RocketSettings;
-import org.gum.csp.packet.EntityLinkS2CPacket;
 import org.gum.csp.registries.ItemRegistry;
+import org.gum.csp.registries.NetworkingConstants;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -68,7 +68,6 @@ public class RocketEntity extends Entity {
         isLaunching = true;
 
         this.rocketState.putBoolean("isLaunching", true);
-
 
 
         //Takeoff Particles
@@ -123,7 +122,7 @@ public class RocketEntity extends Entity {
         if (itemStack.isOf(ItemRegistry.LAUNCH_KIT)) {
             if(player.getInventory().contains(ItemRegistry.FUSE.getDefaultStack()) || player.isCreative()){
                 if(!player.isCreative())
-                    player.getInventory().removeStack(player.getInventory().getSlotWithStack(itemStack), 1);
+                    player.getInventory().removeStack(player.getInventory().getSlotWithStack(ItemRegistry.FUSE.getDefaultStack()), 1);
 
                 this.attachFuse(player, true);
 
@@ -154,7 +153,7 @@ public class RocketEntity extends Entity {
             }
 
             if (!this.world.isClient && sendPacket && this.world instanceof ServerWorld) {
-                ((ServerWorld)this.world).getChunkManager().sendToOtherNearbyPlayers(this, new EntityLinkS2CPacket(this, (Entity)null));
+                networkAttachFuse(null);
             }
         }
     }
@@ -172,13 +171,25 @@ public class RocketEntity extends Entity {
         this.linkedEntity = entity;
         this.fuseNbt = null;
         if (!this.world.isClient && sendPacket && this.world instanceof ServerWorld) {
-            ((ServerWorld)this.world).getChunkManager().sendToOtherNearbyPlayers(this, new EntityLinkS2CPacket(this, this.linkedEntity));
+            networkAttachFuse(this.linkedEntity);
         }
     }
 
     public void setLinkedEntityId(int id) {
         this.linkedEntityId = id;
-        this.detachFuse(false, false);
+        if(id == 0){
+            this.detachFuse(false, false);
+        }
+    }
+
+    public void networkAttachFuse(Entity linkedEntity) {
+        PacketByteBuf buf = PacketByteBufs.create();
+        buf.writeInt(this.getId());
+        buf.writeInt(linkedEntity != null ? linkedEntity.getId() : 0);
+
+        for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
+            ServerPlayNetworking.send(player, NetworkingConstants.ATTACH_FUSE_PACKET_ID, buf);
+        }
     }
 
     private void readFuseNbt() {
@@ -190,15 +201,6 @@ public class RocketEntity extends Entity {
                     this.attachFuse(entity, true);
                     return;
                 }
-            } else if (this.fuseNbt.contains("X", 99) && this.fuseNbt.contains("Y", 99) && this.fuseNbt.contains("Z", 99)) {
-                BlockPos blockPos = NbtHelper.toBlockPos(this.fuseNbt);
-                this.attachFuse(LeashKnotEntity.getOrCreate(this.world, blockPos), true);
-                return;
-            }
-
-            if (this.age > 100) {
-                this.dropItem(Items.LEAD);
-                this.fuseNbt = null;
             }
         }
     }
@@ -237,11 +239,6 @@ public class RocketEntity extends Entity {
             if (this.linkedEntity instanceof LivingEntity) {
                 UUID uUID = this.linkedEntity.getUuid();
                 nbtCompound.putUuid("UUID", uUID);
-            } else if (this.linkedEntity instanceof AbstractDecorationEntity) {
-                BlockPos blockPos = ((AbstractDecorationEntity)this.linkedEntity).getDecorationBlockPos();
-                nbtCompound.putInt("X", blockPos.getX());
-                nbtCompound.putInt("Y", blockPos.getY());
-                nbtCompound.putInt("Z", blockPos.getZ());
             }
 
             nbt.put("Fuse", nbtCompound);

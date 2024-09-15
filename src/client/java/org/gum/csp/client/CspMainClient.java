@@ -27,7 +27,7 @@ public class CspMainClient implements ClientModInitializer {
 
         registerParticle(ParticleRegistry.EXHAUST);
 
-        //ClientNetworkHandler.registerPacketHandlers();
+        ClientNetworkHandler.registerPacketHandlers();
     }
 
     private void registerParticle (ParticleType particle) {
