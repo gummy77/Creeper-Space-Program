@@ -1,0 +1,8 @@
+{
+  "wooden_rocket_launch": {
+    "subtitle": "sound.csp.wooden_rocket_launch",
+    "sounds": [
+      "csp:wooden_rocket_launch"
+    ]
+  }
+}

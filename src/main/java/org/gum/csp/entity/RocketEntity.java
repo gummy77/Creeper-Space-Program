@@ -1,8 +1,10 @@
 package org.gum.csp.entity;
 
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.decoration.AbstractDecorationEntity;
 import net.minecraft.entity.decoration.LeashKnotEntity;
@@ -19,18 +21,23 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.TimeSupplier;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.world.CollisionView;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.registries.ItemRegistry;
 import org.gum.csp.registries.NetworkingConstants;
+import org.gum.csp.registries.SoundRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
 public class RocketEntity extends Entity {
+
+    public static final double GRAVITY = 0.02;
 
     @Nullable
     private Entity linkedEntity;
@@ -40,66 +47,108 @@ public class RocketEntity extends Entity {
 
     //ROCKET SETTINGS
     public RocketSettings rocketSettings = RocketSettings.SIMPLE_ROCKET;
-    @Nullable
-    private NbtCompound rocketState;
 
+    public Vec3d rocketRotation = new Vec3d(0, 1f, 0);
+    public Vec3d physicsPosition = new Vec3d(0, 0, 0);
 
     private boolean isLaunching = false;
-
-    public Vec3d arcRotation = new Vec3d(0, 0.1f, 0);
-    public Vec3d previousRenderPosition = new Vec3d(0, 0, 0); //TODO make this serverside :/
-    public Vec3d renderPosition = new Vec3d(0, 0, 0);
+    private float launchTime;
     private double launchDirection;
+
 
     public static final EntitySettings settings = new EntitySettings(
             "rocketentity",
             SpawnGroup.MISC,
-            0.6f, 2f
+            0.6f, 2f,
+            true
     );
 
     public RocketEntity(EntityType<? extends Entity> entityType, World world) {
         super(entityType, world);
-        rocketState = new NbtCompound();
     }
 
-    public void Launch(){
-        getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, Explosion.DestructionType.BREAK);
-        launchDirection = Random.create().nextFloat() * Math.PI * 4;
-        isLaunching = true;
+    public void Launch(double launchDirection){
+        if(!isLaunching) {
+            getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, Explosion.DestructionType.BREAK);
 
-        this.rocketState.putBoolean("isLaunching", true);
+            isLaunching = true;
+            launchTime = 0;
+            this.launchDirection = launchDirection;
 
 
-        //Takeoff Particles
-        float smokeForce = rocketSettings.Power / 10;
-        for(int i = 0; i < 360; i += (int)(60/rocketSettings.Power)) {
-            float randomForce = Random.create().nextFloat();
-            world.addParticle(ParticleTypes.CLOUD, this.getX(), this.getY(), this.getZ(), Math.sin(i) * smokeForce * randomForce, 0, Math.cos(i) * smokeForce * randomForce);
+            //Takeoff Particles
+            float smokeForce = rocketSettings.Power / 10;
+            for (int i = 0; i < 360; i += (int) (60 / rocketSettings.Power)) {
+                float randomForce = Random.create().nextFloat();
+                world.addParticle(ParticleTypes.CLOUD, this.getX(), this.getY(), this.getZ(), Math.sin(i) * smokeForce * randomForce, 0, Math.cos(i) * smokeForce * randomForce);
+            }
         }
     }
+
+    public void networkLaunch() {
+        double launchDirection = Random.create().nextFloat() * Math.PI * 4;
+
+        PacketByteBuf buf = PacketByteBufs.create();
+        buf.writeIntList(IntList.of(
+                this.getId()
+        ));
+        buf.writeDouble(launchDirection);
+
+        Launch(launchDirection);
+        //playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 0.5f, 1f);
+
+        for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
+            ServerPlayNetworking.send(player, NetworkingConstants.LAUNCH_ROCKET_PACKET_ID, buf);
+        }
+    }
+
+
 
     @Override
     public void tick() {
         super.tick();
+
         if (!this.world.isClient) {
             this.updateFuse();
-        }
-        if(rocketState.getBoolean("isLaunching")){
-            //previousRenderPosition = renderPosition;
-            //renderPosition = renderPosition.add(arcRotation.getX(), arcRotation.getY(), arcRotation.getZ());
-            //float force = rocketSettings.Acceleration/20;
-            //arcRotation = arcRotation.add((float) Math.sin(launchDirection) * force/3, force, (float) Math.cos(launchDirection) * force/3);
 
-            Vec3d particlePosition = getPos().add(renderPosition);
-            world.addParticle(ParticleTypes.FLAME, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
-            for(int i = 0; i < rocketSettings.Power; i++) {
-                world.addParticle(ParticleTypes.CLOUD, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
+        }
+
+        if (this.isLaunching) {
+            launchTime += 1;
+
+            if(launchTime < 20) {
+                float force = 0.025f;
+                this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
+                rocketRotation = rocketRotation.rotateX(0.001f);
+
+
+                Vec3d particlePosition = getPos();
+                world.addParticle(ParticleTypes.FLAME, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
+                for (int i = 0; i < rocketSettings.Power; i++) {
+                    world.addParticle(ParticleTypes.CLOUD, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
+                }
             }
 
-//            if(renderPosition.y > 250){
-//                kill();
-//            }
+            if(verticalCollision) {
+                setVelocity(getVelocity().x, -getVelocity().y, getVelocity().z);
+            }
+
+            //rocketRotation = rocketRotation.add((float) Math.sin(this.launchDirection) * force/3, force, (float) Math.cos(this.launchDirection) * force/3);
+
+            //this.move(MovementType.SELF, new Vec3d(0, 0, 0));
+
+//            addVelocity(0, -GRAVITY, 0);
+//            updatePosition(getX() + getVelocity().x, getY() + getVelocity().y, getZ() + getVelocity().z);
+//            updateTrackedPosition(getX(), getY(), getZ());
         }
+
+    }
+
+
+
+    @Override
+    public boolean hasNoGravity() {
+        return false;
     }
 
     @Override
@@ -182,10 +231,13 @@ public class RocketEntity extends Entity {
         }
     }
 
-    public void networkAttachFuse(Entity linkedEntity) {
+    public void networkAttachFuse(@Nullable Entity linkedEntity) {
         PacketByteBuf buf = PacketByteBufs.create();
-        buf.writeInt(this.getId());
-        buf.writeInt(linkedEntity != null ? linkedEntity.getId() : 0);
+        buf.writeIntList(IntList.of(
+                this.getId(),
+                (linkedEntity != null ? linkedEntity.getId() : 0)
+        ));
+
 
         for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
             ServerPlayNetworking.send(player, NetworkingConstants.ATTACH_FUSE_PACKET_ID, buf);
@@ -207,12 +259,12 @@ public class RocketEntity extends Entity {
 
     @Override
     public boolean canHit() {
-        return !isLaunching;
+        return true;
     }
 
     @Override
     public boolean isCollidable() {
-        return !isLaunching;
+        return true;
     }
 
     @Override
@@ -224,15 +276,10 @@ public class RocketEntity extends Entity {
         if (nbt.contains("Fuse", 10)) {
             this.fuseNbt = nbt.getCompound("Fuse");
         }
-        if(nbt.contains("RocketState")){
-            this.rocketState = nbt.getCompound("RocketState");
-        }
     }
 
     @Override
     protected void writeCustomDataToNbt(NbtCompound nbt) {
-        nbt.put("RocketState", this.rocketState);
-
         NbtCompound nbtCompound;
         if (this.linkedEntity != null) {
             nbtCompound = new NbtCompound();
@@ -249,6 +296,7 @@ public class RocketEntity extends Entity {
 
     @Override
     public Packet<?> createSpawnPacket() {
+
         return new EntitySpawnS2CPacket(this);
     }
 }

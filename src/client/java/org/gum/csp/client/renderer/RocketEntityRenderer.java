@@ -18,6 +18,7 @@ import org.gum.csp.entity.RocketEntity;
 public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
     private final EntityModelLoader modelLoader;
+    public Vec3d previousRenderPosition = new Vec3d(0, 0, 0);
 
     public RocketEntityRenderer(EntityRendererFactory.Context context){
         super(context);
@@ -32,20 +33,20 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 //        return frustum.isVisible(box);
     }
 
+
+
     @Override
     public void render(RocketEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
         matrices.push();
 
-        Vec3d renderPosition = entity.previousRenderPosition.lerp(entity.renderPosition, tickDelta);
 
         Vec3d UP = new Vec3d(0,1,0);
-        Vec3d xAxis = UP.crossProduct(entity.arcRotation);
-        float w = (float) (Math.sqrt(entity.arcRotation.length() * entity.arcRotation.length()) + UP.dotProduct(entity.arcRotation));
+        Vec3d xAxis = UP.crossProduct(entity.rocketRotation);
+        float w = (float) (Math.sqrt(entity.rocketRotation.length() * entity.rocketRotation.length()) + UP.dotProduct(entity.rocketRotation));
 
         Quaternion rotation = new Quaternion((float) xAxis.x, (float) xAxis.y, (float) xAxis.z, w);
         rotation.normalize();
 
-        matrices.translate(renderPosition.getX(), renderPosition.getY(), renderPosition.getZ());
         matrices.multiply(rotation);
 
         modelLoader.getModelPart(CspMainClient.ROCKET_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(getTexture(entity))), light, 0);

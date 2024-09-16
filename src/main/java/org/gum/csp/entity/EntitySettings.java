@@ -14,6 +14,7 @@ public class EntitySettings {
     public int minGroupSize;
     public int maxGroupSize;
     public boolean spawnsNaturally = false;
+    public boolean tracksVelocity;
 
     public EntitySettings(String path, SpawnGroup spawnGroup, TagKey<Biome> selectorTag, float x, float y, int spawnWeight, int minGroupSize, int maxGroupSize) {
         this.path = path;
@@ -35,10 +36,11 @@ public class EntitySettings {
         this.y = y;
     }
 
-    public EntitySettings(String path, SpawnGroup spawnGroup, float x, float y) {
+    public EntitySettings(String path, SpawnGroup spawnGroup, float x, float y, boolean tracksVelocity) {
         this.path = path;
         this.spawnGroup = spawnGroup;
         this.x = x;
         this.y = y;
+        this.tracksVelocity = tracksVelocity;
     }
 }
