@@ -1,2 +1,5 @@
 /.gradle/loom-cache/remapped_mods/
 /run/
+/.idea/modules/PROD222MCMod.client.iml
+/.idea/modules/PROD222MCMod.main.iml
+/.idea/modules/PROD222MCMod.test.iml
