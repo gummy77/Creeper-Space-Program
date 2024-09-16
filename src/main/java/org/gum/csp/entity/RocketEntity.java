@@ -49,7 +49,6 @@ public class RocketEntity extends Entity {
     public RocketSettings rocketSettings = RocketSettings.SIMPLE_ROCKET;
 
     public Vec3d rocketRotation = new Vec3d(0, 1f, 0);
-    public Vec3d physicsPosition = new Vec3d(0, 0, 0);
 
     private boolean isLaunching = false;
     private float launchTime;
@@ -95,6 +94,7 @@ public class RocketEntity extends Entity {
         buf.writeDouble(launchDirection);
 
         Launch(launchDirection);
+
         //playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 0.5f, 1f);
 
         for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
@@ -102,24 +102,22 @@ public class RocketEntity extends Entity {
         }
     }
 
-
-
     @Override
     public void tick() {
         super.tick();
 
         if (!this.world.isClient) {
             this.updateFuse();
-
         }
 
         if (this.isLaunching) {
             launchTime += 1;
 
-            if(launchTime < 20) {
-                float force = 0.025f;
+            if(launchTime < 75) {
+                float force = 0.05f;
                 this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
-                rocketRotation = rocketRotation.rotateX(0.001f);
+                rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * 0.01f);
+                rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * 0.01f);
 
 
                 Vec3d particlePosition = getPos();
@@ -127,28 +125,22 @@ public class RocketEntity extends Entity {
                 for (int i = 0; i < rocketSettings.Power; i++) {
                     world.addParticle(ParticleTypes.CLOUD, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
                 }
+
+            } else {
+                if(Math.abs(getVelocity().y) < 1) {
+                    System.out.println("Peaked!");
+                    kill();
+                }
             }
 
             if(verticalCollision) {
-                setVelocity(getVelocity().x, -getVelocity().y, getVelocity().z);
+                getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 2, Explosion.DestructionType.BREAK);
+                kill();
             }
 
-            //rocketRotation = rocketRotation.add((float) Math.sin(this.launchDirection) * force/3, force, (float) Math.cos(this.launchDirection) * force/3);
-
-            //this.move(MovementType.SELF, new Vec3d(0, 0, 0));
-
-//            addVelocity(0, -GRAVITY, 0);
-//            updatePosition(getX() + getVelocity().x, getY() + getVelocity().y, getZ() + getVelocity().z);
-//            updateTrackedPosition(getX(), getY(), getZ());
+            this.move(MovementType.SELF, getVelocity());
+            addVelocity(0, -GRAVITY, 0);
         }
-
-    }
-
-
-
-    @Override
-    public boolean hasNoGravity() {
-        return false;
     }
 
     @Override

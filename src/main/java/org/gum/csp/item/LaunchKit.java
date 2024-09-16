@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.Box;
@@ -35,6 +36,8 @@ public class LaunchKit extends Item {
 
         List<RocketEntity> list = world.getNonSpectatingEntities(RocketEntity.class, new Box((double) i - 25.0, (double) j - 25.0, (double) k - 25.0, (double) i + 25.0, (double) j + 25.0, (double) k + 25.0));
 
+        TypedActionResult actionResult = TypedActionResult.fail(player.getStackInHand(hand));
+
         for (RocketEntity rocketEntity : list) {
             if (rocketEntity.getLinkedEntity() == player) {
 
@@ -47,11 +50,10 @@ public class LaunchKit extends Item {
 
                     rocketEntity.networkLaunch();
                 }
-
-                return TypedActionResult.success(player.getStackInHand(hand));
+                actionResult = TypedActionResult.success(player.getStackInHand(hand));
             }
         }
 
-        return TypedActionResult.fail(player.getStackInHand(hand));
+        return actionResult;
     }
 }
