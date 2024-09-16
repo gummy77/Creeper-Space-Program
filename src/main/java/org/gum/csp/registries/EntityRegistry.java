@@ -20,7 +20,7 @@ public class EntityRegistry {
     public static EntityType<RocketEntity> ROCKETENTITY;
 
     public static void registerEntityAttributes() {
-        //FabricDefaultAttributeRegistry.register(ROCKETENTITY, RocketEntity.createAttributes());
+
     }
 
     public static void registerEntities() {

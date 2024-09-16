@@ -40,9 +40,10 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
         matrices.push();
 
 
+        Vec3d rotationVector = entity.getVelocity();
         Vec3d UP = new Vec3d(0,1,0);
-        Vec3d xAxis = UP.crossProduct(entity.rocketRotation);
-        float w = (float) (Math.sqrt(entity.rocketRotation.length() * entity.rocketRotation.length()) + UP.dotProduct(entity.rocketRotation));
+        Vec3d xAxis = UP.crossProduct(rotationVector);
+        float w = (float) (Math.sqrt(rotationVector.length() * rotationVector.length()) + UP.dotProduct(rotationVector));
 
         Quaternion rotation = new Quaternion((float) xAxis.x, (float) xAxis.y, (float) xAxis.z, w);
         rotation.normalize();
