@@ -7,7 +7,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.particle.FlameParticle;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.util.Identifier;
 import org.gum.csp.CspMain;
@@ -18,23 +20,23 @@ import org.gum.csp.registries.ParticleRegistry;
 
 public class CspMainClient implements ClientModInitializer {
 
-    public static final EntityModelLayer ROCKET_MODEL_LAYER = registerModel("rocketmodel", EntityRegistry.ROCKETENTITY, RocketEntityRenderer::new);
+    public static final EntityModelLayer ROCKET_MODEL_LAYER = registerModel("rocket_model", EntityRegistry.ROCKET_ENTITY, RocketEntityRenderer::new);
 
 
     @Override
     public void onInitializeClient() {
         EntityModelLayerRegistry.registerModelLayer(ROCKET_MODEL_LAYER, RocketEntityModel::getTexturedModelData);
 
-        registerParticle(ParticleRegistry.EXHAUST);
+        registerParticle(ParticleRegistry.EXHAUST, FlameParticle.Factory::new);
 
         ClientNetworkHandler.registerPacketHandlers();
     }
 
-    private void registerParticle (ParticleType particle) {
-        ParticleFactoryRegistry.getInstance().register(particle, FlameParticle.Factory::new);
+    private <T extends ParticleEffect> void registerParticle (ParticleType<T> particle, ParticleFactoryRegistry.PendingParticleFactory<T> factory) {
+        ParticleFactoryRegistry.getInstance().register(particle, factory);
     }
 
-    private static EntityModelLayer registerModel(String path, EntityType entityType, EntityRendererFactory rendererFactory) {
+    private static <E extends Entity> EntityModelLayer registerModel(String path, EntityType<E> entityType, EntityRendererFactory<E> rendererFactory) {
         EntityModelLayer modelLayer = new EntityModelLayer(new Identifier(CspMain.MODID, path), "main");
         EntityRendererRegistry.register(entityType, rendererFactory);
         return modelLayer;

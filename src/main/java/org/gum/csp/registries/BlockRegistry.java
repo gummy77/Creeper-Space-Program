@@ -9,7 +9,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
 import org.gum.csp.block.RocketPartBlock;
-import org.gum.csp.datastructs.FuelComponent;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.entity.RocketPartBlockEntity;
 

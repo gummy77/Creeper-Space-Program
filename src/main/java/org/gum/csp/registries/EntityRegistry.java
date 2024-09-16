@@ -1,14 +1,10 @@
 package org.gum.csp.registries;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
@@ -17,14 +13,14 @@ import org.gum.csp.entity.RocketEntity;
 
 public class EntityRegistry {
 
-    public static EntityType<RocketEntity> ROCKETENTITY;
+    public static EntityType<RocketEntity> ROCKET_ENTITY;
 
     public static void registerEntityAttributes() {
 
     }
 
     public static void registerEntities() {
-        ROCKETENTITY = registerEntity("rocketentity", RocketEntity::new, RocketEntity.settings);
+        ROCKET_ENTITY = registerEntity("rocket_entity", RocketEntity::new, RocketEntity.settings);
     }
 
     protected static <T extends Entity> EntityType<T> registerEntity(String path, EntityType.EntityFactory<T> type, EntitySettings settings) {

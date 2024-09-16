@@ -1,24 +1,20 @@
 package org.gum.csp.client.renderer;
 
-import com.sun.jna.platform.win32.WinBase;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.LightType;
 import org.gum.csp.client.CspMainClient;
-import org.gum.csp.client.model.RocketEntityModel;
 import org.gum.csp.entity.RocketEntity;
 
 public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
     private final EntityModelLoader modelLoader;
-    public Vec3d previousRenderPosition = new Vec3d(0, 0, 0);
 
     public RocketEntityRenderer(EntityRendererFactory.Context context){
         super(context);
@@ -27,7 +23,7 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
     @Override
     public boolean shouldRender(RocketEntity entity, Frustum frustum, double x, double y, double z) {
-        return true;
+        return true; //TODO make this work
 //        Box box = new Box(x, y, z, x + entity.getWidth(), y + entity.getHeight(), z + entity.getWidth());
 //        box.offset(entity.renderPosition.getX(), entity.renderPosition.getY(), entity.renderPosition.getZ());
 //        return frustum.isVisible(box);
@@ -63,13 +59,12 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
     private <E extends Entity> void renderFuse(RocketEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider provider, E holdingEntity, int light) {
         matrices.push();
         Vec3d vec3d = holdingEntity.getLeashPos(tickDelta);
-        double g = MathHelper.lerp((double)tickDelta, entity.prevX, entity.getX());
-        double h = MathHelper.lerp((double)tickDelta, entity.prevY, entity.getY());
-        double i = MathHelper.lerp((double)tickDelta, entity.prevZ, entity.getZ());
+        double g = MathHelper.lerp(tickDelta, entity.prevX, entity.getX());
+        double h = MathHelper.lerp(tickDelta, entity.prevY, entity.getY());
+        double i = MathHelper.lerp(tickDelta, entity.prevZ, entity.getZ());
         float j = (float)(vec3d.x - g);
         float k = (float)(vec3d.y - h);
         float l = (float)(vec3d.z - i);
-        float m = 0.025F;
         VertexConsumer vertexConsumer = provider.getBuffer(RenderLayer.getLeash());
         Matrix4f matrix4f = matrices.peek().getPositionMatrix();
         float n = MathHelper.fastInverseSqrt(j * j + l * l) * 0.025F / 2.0F;
@@ -84,17 +79,17 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
         int u;
         for(u = 0; u <= 24; ++u) {
-            renderFusePiece(vertexConsumer, matrix4f, j, k, l, q, light, s, t, 0.025F, 0.025F, o, p, u, false);
+            renderFusePiece(vertexConsumer, matrix4f, j, k, l, q, light, s, t, 0.025F, o, p, u);
         }
 
         for(u = 24; u >= 0; --u) {
-            renderFusePiece(vertexConsumer, matrix4f, j, k, l, q, light, s, t, 0.025F, 0.0F, o, p, u, true);
+            renderFusePiece(vertexConsumer, matrix4f, j, k, l, q, light, s, t, 0.0F, o, p, u);
         }
 
         matrices.pop();
     }
 
-    private static void renderFusePiece(VertexConsumer vertexConsumer, Matrix4f positionMatrix, float f, float g, float h, int EntityBlockLight, int linkedEntityBlockLight, int EntitySkyLight, int linkedEntitySkyLight, float i, float j, float k, float l, int pieceIndex, boolean isLeashKnot) {
+    private static void renderFusePiece(VertexConsumer vertexConsumer, Matrix4f positionMatrix, float f, float g, float h, int EntityBlockLight, int linkedEntityBlockLight, int EntitySkyLight, int linkedEntitySkyLight, float j, float k, float l, int pieceIndex) {
         float m = (float)pieceIndex / 24.0F;
         int n = (int)MathHelper.lerp(m, (float)EntityBlockLight, (float)linkedEntityBlockLight);
         int o = (int)MathHelper.lerp(m, (float)EntitySkyLight, (float)linkedEntitySkyLight);
@@ -103,7 +98,7 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
         float v = g > 0.0F ? g * m * m : g - g * (1.0F - m) * (1.0F - m);
         float w = h * m;
         vertexConsumer.vertex(positionMatrix, u - k, v + j, w + l).color(0, 0, 0, 1.0F).light(p).next();
-        vertexConsumer.vertex(positionMatrix, u + k, v + i - j, w - l).color(0, 0, 0, 1.0F).light(p).next();
+        vertexConsumer.vertex(positionMatrix, u + k, v + (float) 0.025 - j, w - l).color(0, 0, 0, 1.0F).light(p).next();
     }
 
     @Override

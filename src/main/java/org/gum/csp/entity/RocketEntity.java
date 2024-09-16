@@ -4,15 +4,10 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
-import net.minecraft.entity.decoration.AbstractDecorationEntity;
-import net.minecraft.entity.decoration.LeashKnotEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtHelper;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
@@ -21,16 +16,13 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TimeSupplier;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.world.CollisionView;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.registries.ItemRegistry;
 import org.gum.csp.registries.NetworkingConstants;
-import org.gum.csp.registries.SoundRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -56,7 +48,7 @@ public class RocketEntity extends Entity {
 
 
     public static final EntitySettings settings = new EntitySettings(
-            "rocketentity",
+            "rocket_entity",
             SpawnGroup.MISC,
             0.6f, 2f,
             true
@@ -68,19 +60,12 @@ public class RocketEntity extends Entity {
 
     public void Launch(double launchDirection){
         if(!isLaunching) {
-            getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, Explosion.DestructionType.BREAK);
 
-            isLaunching = true;
-            launchTime = 0;
+            this.isLaunching = true;
+            this.launchTime = 0;
             this.launchDirection = launchDirection;
 
-
-            //Takeoff Particles
-            float smokeForce = rocketSettings.Power / 10;
-            for (int i = 0; i < 360; i += (int) (60 / rocketSettings.Power)) {
-                float randomForce = Random.create().nextFloat();
-                world.addParticle(ParticleTypes.CLOUD, this.getX(), this.getY(), this.getZ(), Math.sin(i) * smokeForce * randomForce, 0, Math.cos(i) * smokeForce * randomForce);
-            }
+            this.launchParticles();
         }
     }
 
@@ -95,10 +80,19 @@ public class RocketEntity extends Entity {
 
         Launch(launchDirection);
 
+        getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, Explosion.DestructionType.BREAK);
         //playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 0.5f, 1f);
 
         for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
             ServerPlayNetworking.send(player, NetworkingConstants.LAUNCH_ROCKET_PACKET_ID, buf);
+        }
+    }
+
+    private void launchParticles() {
+        float smokeForce = rocketSettings.Power / 10;
+        for (int i = 0; i < 360; i += (int) (60 / rocketSettings.Power)) {
+            float randomForce = Random.create().nextFloat();
+            world.addParticle(ParticleTypes.CLOUD, this.getX(), this.getY(), this.getZ(), Math.sin(i) * smokeForce * randomForce, 0, Math.cos(i) * smokeForce * randomForce);
         }
     }
 
@@ -114,18 +108,7 @@ public class RocketEntity extends Entity {
             launchTime += 1;
 
             if(launchTime < 75) {
-                float force = 0.05f;
-                this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
-                rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * 0.01f);
-                rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * 0.01f);
-
-
-                Vec3d particlePosition = getPos();
-                world.addParticle(ParticleTypes.FLAME, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
-                for (int i = 0; i < rocketSettings.Power; i++) {
-                    world.addParticle(ParticleTypes.CLOUD, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
-                }
-
+                enginesActive();
             } else {
                 if(Math.abs(getVelocity().y) < 1) {
                     System.out.println("Peaked!");
@@ -140,6 +123,20 @@ public class RocketEntity extends Entity {
 
             this.move(MovementType.SELF, getVelocity());
             addVelocity(0, -GRAVITY, 0);
+        }
+    }
+
+    private void enginesActive(){
+        float force = 0.05f;
+        this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
+        rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * 0.01f);
+        rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * 0.01f);
+
+
+        Vec3d particlePosition = getPos();
+        world.addParticle(ParticleTypes.FLAME, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
+        for (int i = 0; i < rocketSettings.Power; i++) {
+            world.addParticle(ParticleTypes.CLOUD, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
         }
     }
 
@@ -243,7 +240,6 @@ public class RocketEntity extends Entity {
                 Entity entity = ((ServerWorld)this.world).getEntity(uUID);
                 if (entity != null) {
                     this.attachFuse(entity, true);
-                    return;
                 }
             }
         }

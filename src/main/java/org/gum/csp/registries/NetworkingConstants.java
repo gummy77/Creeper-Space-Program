@@ -1,7 +1,6 @@
 package org.gum.csp.registries;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
 
 public class NetworkingConstants {
