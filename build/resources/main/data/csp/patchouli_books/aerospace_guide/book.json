@@ -1,6 +1,6 @@
 {
-  "name": "book.csp.patchouli_book_name",
-  "landing_text": "book.csp.patchouli_book_landing_text",
+  "name": "Aerospace Guide",
+  "landing_text": "Test Landing Text",
   "version": 1,
   "creative_tab": "csp.cspmodgroup",
   "use_resource_pack": true
