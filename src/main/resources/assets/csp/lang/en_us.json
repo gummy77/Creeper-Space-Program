@@ -5,10 +5,6 @@
   "_comment": "--- Sounds ---",
   "sound.csp.wooden_rocket_launch": "Wooden Rocket Launches",
 
-  "_comment": "--- Guide Book ---",
-  "book.csp.patchouli_book_name": "Aerospace Guide",
-  "book.csp.patchouli_book_landing_text": "Welcome to the Creeper Space Program!",
-
   "_comment": "--- Debug Stuff ---",
   "item.csp.adrian": "Unobtaidrian",
   "item.csp.rocket": "Rocket Spawner (DEV)",

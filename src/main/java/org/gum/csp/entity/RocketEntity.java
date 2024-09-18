@@ -23,6 +23,8 @@ import net.minecraft.world.explosion.Explosion;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.registries.ItemRegistry;
 import org.gum.csp.registries.NetworkingConstants;
+import org.gum.csp.registries.ParticleRegistry;
+import org.gum.csp.registries.SoundRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -79,9 +81,9 @@ public class RocketEntity extends Entity {
         buf.writeDouble(launchDirection);
 
         Launch(launchDirection);
+        playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 3f, 1f);
 
         getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, Explosion.DestructionType.BREAK);
-        //playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 0.5f, 1f);
 
         for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
             ServerPlayNetworking.send(player, NetworkingConstants.LAUNCH_ROCKET_PACKET_ID, buf);
@@ -90,9 +92,11 @@ public class RocketEntity extends Entity {
 
     private void launchParticles() {
         float smokeForce = rocketSettings.Power / 10;
-        for (int i = 0; i < 360; i += (int) (60 / rocketSettings.Power)) {
+
+        //TODO foreach engine present
+        for (int i = 0; i < 360; i += (int) (40 / rocketSettings.Power)) {
             float randomForce = Random.create().nextFloat();
-            world.addParticle(ParticleTypes.CLOUD, this.getX(), this.getY(), this.getZ(), Math.sin(i) * smokeForce * randomForce, 0, Math.cos(i) * smokeForce * randomForce);
+            world.addParticle(ParticleRegistry.EXHAUST, this.getX(), this.getY(), this.getZ(), Math.sin(i) * smokeForce * randomForce, 0, Math.cos(i) * smokeForce * randomForce);
         }
     }
 
@@ -107,14 +111,18 @@ public class RocketEntity extends Entity {
         if (this.isLaunching) {
             launchTime += 1;
 
-            if(launchTime < 75) {
+            if(launchTime < 150) {
                 enginesActive();
+                if(launchTime % 10 == 0) {
+                    playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 3f, 1f);
+                }
             } else {
                 if(Math.abs(getVelocity().y) < 1) {
                     System.out.println("Peaked!");
                     kill();
                 }
             }
+
 
             if(verticalCollision) {
                 getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 2, Explosion.DestructionType.BREAK);
@@ -129,16 +137,16 @@ public class RocketEntity extends Entity {
     private void enginesActive(){
         float force = 0.05f;
         this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
-        rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * 0.01f);
-        rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * 0.01f);
+        rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * 0.004f);
+        rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * 0.004f);
 
-
+        //TODO foreach engine present
         Vec3d particlePosition = getPos();
-        world.addParticle(ParticleTypes.FLAME, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
-        for (int i = 0; i < rocketSettings.Power; i++) {
-            world.addParticle(ParticleTypes.CLOUD, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
+        world.addParticle(ParticleTypes.FLAME, true, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
+        for (int i = 0; i < 2; i++) {
+            world.addImportantParticle(ParticleRegistry.EXHAUST, true, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
         }
-    }
+   }
 
     @Override
     public ActionResult interact(PlayerEntity player, Hand hand) {
