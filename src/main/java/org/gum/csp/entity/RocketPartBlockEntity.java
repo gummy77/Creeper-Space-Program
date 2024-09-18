@@ -1,17 +1,25 @@
 package org.gum.csp.entity;
 
+import it.unimi.dsi.fastutil.ints.IntList;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.registries.BlockRegistry;
 import org.gum.csp.registries.EntityRegistry;
+import org.gum.csp.registries.NetworkingConstants;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -33,19 +41,18 @@ public class RocketPartBlockEntity extends BlockEntity {
     public void AssembleRocket(BlockPos pos){
         RocketEntity entity = EntityRegistry.ROCKET_ENTITY.create(world);
 
-        List<RocketPart> parts = new ArrayList<RocketPart>();
-        parts.add(this.rocketPart);
 
-
-        System.out.println("Created with: " + parts.size());
         entity.setPosition(pos.getX()+0.5f, pos.getY(), pos.getZ()+0.5f);
-        entity.rocketSettings = new RocketSettings(parts.toArray(new RocketPart[parts.size()]));
-
-        System.out.println("Ended with: " + entity.rocketSettings.blocks.length);
-
-        world.breakBlock(pos, false);
         world.spawnEntity(entity);
 
+
+        PacketByteBuf buf = PacketByteBufs.create();
+        buf.writeIntList(IntList.of(entity.getId()));
+        buf.writeBlockPos(pos);
+
+        for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, pos)) {
+            ServerPlayNetworking.send(player, NetworkingConstants.ASSEMBLE_ROCKET_PACKET_ID, buf);
+        }
     }
 
     @Override

@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -20,6 +21,7 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
+import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.registries.ItemRegistry;
 import org.gum.csp.registries.NetworkingConstants;
@@ -48,7 +50,6 @@ public class RocketEntity extends Entity {
     private float launchTime;
     private double launchDirection;
 
-
     public static final EntitySettings settings = new EntitySettings(
             "rocket_entity",
             SpawnGroup.MISC,
@@ -58,6 +59,17 @@ public class RocketEntity extends Entity {
 
     public RocketEntity(EntityType<? extends Entity> entityType, World world) {
         super(entityType, world);
+
+    }
+
+    public void getBlocks(BlockPos pos){
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if(blockEntity instanceof RocketPartBlockEntity) {
+            RocketPart[] parts = {((RocketPartBlockEntity) blockEntity).getRocketPart()};
+            this.rocketSettings = new RocketSettings(parts);
+        }
+        world.breakBlock(pos, false);
+        System.out.println(rocketSettings.blocks.length);
     }
 
     public void Launch(double launchDirection){
@@ -68,6 +80,8 @@ public class RocketEntity extends Entity {
             this.launchDirection = launchDirection;
 
             this.launchParticles();
+
+            System.out.println("Launched " + rocketSettings.blocks.length);
         }
     }
 
