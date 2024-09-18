@@ -18,7 +18,7 @@ public class Assembler extends Item {
 
         if(blockEntity instanceof RocketPartBlockEntity rocketPartBlockEntity) {
 
-            //rocketPartBlockEntity.AssembleRocket();
+            rocketPartBlockEntity.AssembleRocket(blockEntity.getPos());
 
             context.getPlayer().getStackInHand(context.getHand()).damage(1, context.getPlayer(), (e) -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
 

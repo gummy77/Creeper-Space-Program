@@ -1,10 +1,11 @@
 package org.gum.csp.datastructs;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 
 public class RocketSettings {
     public float Mass;
-    RocketPart[] blocks;
+    public RocketPart[] blocks;
 
     //Calculated
     public float Volatility;
@@ -26,8 +27,9 @@ public class RocketSettings {
         this.Acceleration = this.Power/this.Mass;
     }
 
-    public RocketSettings (RocketPart[] blocks) { //setting these manually for now, will be based off of fuel later.
-        this.blocks = blocks;
+    public RocketSettings (RocketPart[] parts) { //setting these manually for now, will be based off of fuel later.
+        blocks = parts;
+
         for (RocketPart block : this.blocks) {
             this.Mass += block.Mass;
             this.Volatility += block.Volatility;
@@ -35,8 +37,6 @@ public class RocketSettings {
         }
         this.Acceleration = this.Power/this.Mass;
     }
-
-
 
     public NbtCompound toNbt() {
         NbtCompound nbt = new NbtCompound();
