@@ -1,0 +1,12 @@
+{
+  "name": "Getting Started",
+  "icon": "minecraft:oak_planks",
+  "advancement": "csp:root",
+  "category": "csp:basic_rocketry",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Before we create our first rocket, we need to gather some items."
+    }
+  ]
+}
