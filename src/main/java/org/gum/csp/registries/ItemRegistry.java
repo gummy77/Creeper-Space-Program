@@ -14,6 +14,7 @@ public class ItemRegistry {
 
     public static final Item ADRIAN;
     public static final Rocket ROCKET;
+    public static final Item DEV_WAND;
 
     public static final LaunchKit LAUNCH_KIT;
     public static final Item FUSE;
@@ -50,5 +51,6 @@ public class ItemRegistry {
 
         ROCKET = (Rocket) register("rocket", new Rocket(getSettings()));
         ADRIAN = register("adrian", new Item(getSettings().food(new FoodComponent.Builder().hunger(10).build())));
+        DEV_WAND = register("dev_wand", new Item(getSettings()));
     }
 }

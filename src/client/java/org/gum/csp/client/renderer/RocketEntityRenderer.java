@@ -56,8 +56,8 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
 
 
-        if(entity.rocketSettings.blocks != null && entity.rocketSettings.blocks.length > 0) {
-            for (RocketPart block : entity.rocketSettings.blocks) {
+        if(entity.getRocketSettings().blocks != null && entity.getRocketSettings().blocks.length > 0) {
+            for (RocketPart block : entity.getRocketSettings().blocks) {
                 blockRenderManager.renderBlockAsEntity(block.Block, matrices, vertexConsumers, light, 0);
             }
         } else {

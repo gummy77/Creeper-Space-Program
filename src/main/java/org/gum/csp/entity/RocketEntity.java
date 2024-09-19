@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -21,7 +20,6 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
-import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.registries.ItemRegistry;
 import org.gum.csp.registries.NetworkingConstants;
@@ -42,7 +40,8 @@ public class RocketEntity extends Entity {
     private NbtCompound fuseNbt;
 
     //ROCKET SETTINGS
-    public RocketSettings rocketSettings = RocketSettings.SIMPLE_ROCKET;
+    private RocketSettings rocketSettings;
+    private boolean hasInitialized = false;
 
     public Vec3d rocketRotation = new Vec3d(0, 1f, 0);
 
@@ -59,17 +58,7 @@ public class RocketEntity extends Entity {
 
     public RocketEntity(EntityType<? extends Entity> entityType, World world) {
         super(entityType, world);
-
-    }
-
-    public void getBlocks(BlockPos pos){
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        if(blockEntity instanceof RocketPartBlockEntity) {
-            RocketPart[] parts = {((RocketPartBlockEntity) blockEntity).getRocketPart()};
-            this.rocketSettings = new RocketSettings(parts);
-        }
-        world.breakBlock(pos, false);
-        System.out.println(rocketSettings.blocks.length);
+        System.out.println("Init called on " + (world.isClient ? "Client" : "Server"));
     }
 
     public void Launch(double launchDirection){
@@ -118,6 +107,15 @@ public class RocketEntity extends Entity {
 
         if (!this.world.isClient) {
             this.updateFuse();
+            if(!hasInitialized) {
+                PacketByteBuf buf = PacketByteBufs.create(); //TODO move to its own function and update to work with saving
+                buf.writeInt(this.getId());
+                buf.writeNbt(this.getRocketSettings().toNbt());
+                for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
+                    ServerPlayNetworking.send(player, NetworkingConstants.ASSEMBLE_ROCKET_PACKET_ID, buf);
+                }
+                hasInitialized = true;
+            }
         }
 
         if (this.isLaunching) {
@@ -134,7 +132,6 @@ public class RocketEntity extends Entity {
                     kill();
                 }
             }
-
 
             if(verticalCollision) {
                 getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 2, Explosion.DestructionType.BREAK);
@@ -158,7 +155,17 @@ public class RocketEntity extends Entity {
         for (int i = 0; i < 2; i++) {
             world.addImportantParticle(ParticleRegistry.EXHAUST, true, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
         }
-   }
+    }
+
+    @Override
+    public boolean handleAttack(Entity attacker) {
+        if(attacker instanceof PlayerEntity) {
+            if(((PlayerEntity) attacker).getStackInHand(((PlayerEntity) attacker).getActiveHand()).isOf(ItemRegistry.DEV_WAND)){
+                kill();
+            }
+        }
+        return super.handleAttack(attacker);
+    }
 
     @Override
     public ActionResult interact(PlayerEntity player, Hand hand) {
@@ -186,8 +193,27 @@ public class RocketEntity extends Entity {
 
                 return ActionResult.success(this.world.isClient);
             }
+        } else if (itemStack.isOf(ItemRegistry.DEV_WAND)) {
+
+            String out;
+
+            if(this.world.isClient) {
+                out = "client: ";
+            } else{
+                out = "server: ";
+            }
+            System.out.println(out + "wand: " + this.getRocketSettings().blocks.length);
         }
         return ActionResult.PASS;
+    }
+
+    public RocketSettings getRocketSettings() {
+        if(rocketSettings == null)
+            return RocketSettings.SIMPLE_ROCKET;
+        return rocketSettings;
+    }
+    public void setRocketSettings(RocketSettings rocketSettings) {
+        this.rocketSettings = rocketSettings;
     }
 
     protected void updateFuse() {
@@ -280,15 +306,31 @@ public class RocketEntity extends Entity {
     }
 
     @Override
-    protected void readCustomDataFromNbt(NbtCompound nbt) {
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        System.out.println("Read Nbt");
         if (nbt.contains("Fuse", 10)) {
             this.fuseNbt = nbt.getCompound("Fuse");
+        }
+        if(nbt.contains("RocketSettings")) {
+            System.out.println("nbt should of worked?");
+            this.setRocketSettings(RocketSettings.fromNbt(nbt.getCompound("RocketSettings")));
         }
     }
 
     @Override
     protected void writeCustomDataToNbt(NbtCompound nbt) {
+        System.out.println("Wrote Nbt");
         NbtCompound nbtCompound;
+
+        if(getRocketSettings() != RocketSettings.SIMPLE_ROCKET) {
+            nbt.put("RocketSettings", this.rocketSettings.toNbt());
+            if(world.isClient()){
+                System.out.println("Rocket NBT Client: ");
+            } else{
+                System.out.println("Rocket NBT Server: ");
+            }
+        }
+
         if (this.linkedEntity != null) {
             nbtCompound = new NbtCompound();
             if (this.linkedEntity instanceof LivingEntity) {
@@ -304,7 +346,6 @@ public class RocketEntity extends Entity {
 
     @Override
     public Packet<?> createSpawnPacket() {
-
         return new EntitySpawnS2CPacket(this);
     }
 }

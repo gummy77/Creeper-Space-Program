@@ -38,20 +38,25 @@ public class RocketPartBlockEntity extends BlockEntity {
         this.rocketPart.Block = state;
     }
 
-    public void AssembleRocket(BlockPos pos){
-        RocketEntity entity = EntityRegistry.ROCKET_ENTITY.create(world);
+    public void AssembleRocket(){
+        RocketPart[] parts = {this.rocketPart.setBlock(this.getCachedState())};
+        RocketSettings settings = new RocketSettings(parts);
+
+        NbtCompound nbtCompound = new NbtCompound();
+        nbtCompound.put("RocketSettings", settings.toNbt());
 
 
+        RocketEntity entity = new RocketEntity(EntityRegistry.ROCKET_ENTITY, world);
         entity.setPosition(pos.getX()+0.5f, pos.getY(), pos.getZ()+0.5f);
+
+        entity.readCustomDataFromNbt(nbtCompound);
+
         world.spawnEntity(entity);
 
-
-        PacketByteBuf buf = PacketByteBufs.create();
-        buf.writeIntList(IntList.of(entity.getId()));
-        buf.writeBlockPos(pos);
-
-        for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, pos)) {
-            ServerPlayNetworking.send(player, NetworkingConstants.ASSEMBLE_ROCKET_PACKET_ID, buf);
+        if(world.isClient()){
+            System.out.println("Rocket assembled Client: " + entity.getRocketSettings().blocks.length);
+        } else{
+            System.out.println("Rocket assembled Server: " + entity.getRocketSettings().blocks.length);
         }
     }
 
