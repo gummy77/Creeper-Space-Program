@@ -80,8 +80,6 @@ public class RocketEntity extends Entity {
             this.launchDirection = launchDirection;
 
             this.launchParticles();
-
-            System.out.println("Launched " + rocketSettings.blocks.length);
         }
     }
 
@@ -105,10 +103,10 @@ public class RocketEntity extends Entity {
     }
 
     private void launchParticles() {
-        float smokeForce = rocketSettings.Power / 10;
+        float smokeForce = 0.2f; //rocketSettings.Power / 10;
 
         //TODO foreach engine present
-        for (int i = 0; i < 360; i += (int) (40 / rocketSettings.Power)) {
+        for (int i = 0; i < 360; i += 20) {
             float randomForce = Random.create().nextFloat();
             world.addParticle(ParticleRegistry.EXHAUST, this.getX(), this.getY(), this.getZ(), Math.sin(i) * smokeForce * randomForce, 0, Math.cos(i) * smokeForce * randomForce);
         }
