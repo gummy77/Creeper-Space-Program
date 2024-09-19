@@ -28,5 +28,11 @@
 
   "_comment": "--- Advancement Stuff ---",
   "advancements.csp.root.title": "This stuff explodes!?",
-  "advancements.csp.root.description": "Technically it Deflagrates..."
+  "advancements.csp.root.description": "Technically it Deflagrates...",
+  "advancements.csp.testadv.title": "This is a test Advancement",
+  "advancements.csp.testadv.description": "You aren't supposed to see this!",
+  "advancements.csp.wood_rocket_adv.title": "Woodn't you know it!",
+  "advancements.csp.wood_rocket_adv.description": "Launch your first wooden rocket!",
+  "advancements.csp.create_first_rocket.title": "To infinity, and beyond!",
+  "advancements.csp.create_first_rocket.description": "Craft your first rocket part."
 }
