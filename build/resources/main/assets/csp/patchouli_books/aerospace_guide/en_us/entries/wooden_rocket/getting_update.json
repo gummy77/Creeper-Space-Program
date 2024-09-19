@@ -1,0 +1,12 @@
+{
+  "name": "Getting an Upgrade",
+  "icon": "minecraft:oak_slab",
+  "advancement": "csp:wood_rocket_adv",
+  "category": "csp:basic_rocketry",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Congratulations on your first rocket, now lets give it an upgrade!"
+    }
+  ]
+}
