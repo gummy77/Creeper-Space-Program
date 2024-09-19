@@ -20,6 +20,10 @@ public class ItemRegistry {
     public static final Item FUSE;
     public static final Assembler ASSEMBLER;
 
+    public static Item BASE_NOSE_CONE;
+    public static Item BASE_BODY_SEGMENT;
+    public static Item BASE_EXHAUST;
+
     public static Item WOODEN_NOSE_CONE;
     public static Item WOODEN_BODY_SEGMENT;
     public static Item WOODEN_EXHAUST;
@@ -44,6 +48,10 @@ public class ItemRegistry {
         LAUNCH_KIT = (LaunchKit) register("launchkit", new LaunchKit(getSettings().maxDamage(10)));
         FUSE = register("fuse", new Item(getSettings()));
         ASSEMBLER = (Assembler) register("assembler", new Assembler(getSettings().maxDamage(10)));
+
+        BASE_NOSE_CONE = register("base_nose_cone", new BlockItem(BlockRegistry.BASE_NOSE_CONE, getSettings()));
+        BASE_BODY_SEGMENT = register("base_body_segment", new BlockItem(BlockRegistry.BASE_BODY_SEGMENT, getSettings()));
+        BASE_EXHAUST = register("base_exhaust", new BlockItem(BlockRegistry.BASE_EXHAUST, getSettings()));
 
         WOODEN_NOSE_CONE = register("wooden_nose_cone", new BlockItem(BlockRegistry.WOODEN_NOSE_CONE, getSettings()));
         WOODEN_BODY_SEGMENT = register("wooden_body_segment", new BlockItem(BlockRegistry.WOODEN_BODY_SEGMENT, getSettings()));

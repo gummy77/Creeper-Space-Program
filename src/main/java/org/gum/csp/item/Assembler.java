@@ -29,8 +29,6 @@ public class Assembler extends Item {
                 rocketPartBlockEntity.AssembleRocket();
             }
 
-            System.out.println("test");
-
             context.getPlayer().getStackInHand(context.getHand()).damage(1, context.getPlayer(), (e) -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
 
             return ActionResult.SUCCESS;

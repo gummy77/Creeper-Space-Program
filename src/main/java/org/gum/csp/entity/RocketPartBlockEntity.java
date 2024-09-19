@@ -45,19 +45,15 @@ public class RocketPartBlockEntity extends BlockEntity {
         NbtCompound nbtCompound = new NbtCompound();
         nbtCompound.put("RocketSettings", settings.toNbt());
 
-
         RocketEntity entity = new RocketEntity(EntityRegistry.ROCKET_ENTITY, world);
         entity.setPosition(pos.getX()+0.5f, pos.getY(), pos.getZ()+0.5f);
-
         entity.readCustomDataFromNbt(nbtCompound);
+        entity.readSettingsNbt();
 
         world.spawnEntity(entity);
 
-        if(world.isClient()){
-            System.out.println("Rocket assembled Client: " + entity.getRocketSettings().blocks.length);
-        } else{
-            System.out.println("Rocket assembled Server: " + entity.getRocketSettings().blocks.length);
-        }
+        System.out.println("Rocket entity: " + settings.blocks.length);
+        System.out.println("Rocket assembled: " + entity.getRocketSettings().blocks.length);
     }
 
     @Override

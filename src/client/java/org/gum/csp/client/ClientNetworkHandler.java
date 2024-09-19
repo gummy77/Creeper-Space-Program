@@ -5,18 +5,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.math.BlockPos;
-import org.gum.csp.datastructs.RocketPart;
-import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.entity.RocketEntity;
-import org.gum.csp.entity.RocketPartBlockEntity;
-import org.gum.csp.registries.EntityRegistry;
 import org.gum.csp.registries.NetworkingConstants;
 
 @Environment(EnvType.CLIENT)
@@ -38,7 +32,6 @@ public class ClientNetworkHandler {
             if(rocket instanceof RocketEntity){
                 ((RocketEntity) rocket).setLinkedEntityId(otherId);
             }
-
         });
     }
 
@@ -59,11 +52,13 @@ public class ClientNetworkHandler {
         NbtCompound nbtCompound = new NbtCompound();
         nbtCompound.put("RocketSettings", buf.readNbt());
 
-        RocketEntity entity = (RocketEntity) client.world.getEntityById(rocketId);
-
         client.execute(() -> {
-            entity.readCustomDataFromNbt(nbtCompound);
-            System.out.println("client sent");
+            Entity entity = client.world.getEntityById(rocketId);
+            if(entity instanceof RocketEntity){
+                System.out.println("ClientSent: " + nbtCompound);
+                ((RocketEntity) entity).readCustomDataFromNbt(nbtCompound);
+                ((RocketEntity) entity).readSettingsNbt();
+            }
         });
     }
 

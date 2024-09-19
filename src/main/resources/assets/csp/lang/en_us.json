@@ -22,6 +22,10 @@
 
 
   "_comment": "--- Rocket Parts ---",
+  "block.csp.base_nose_cone": "Basic Nose Cone",
+  "block.csp.base_body_segment": "Basic Body Segment",
+  "block.csp.base_exhaust": "Basic Exhaust",
+
   "block.csp.wooden_nose_cone": "Wooden Nose Cone",
   "block.csp.wooden_body_segment": "Wooden Body Segment",
   "block.csp.wooden_exhaust": "Wooden Exhaust",

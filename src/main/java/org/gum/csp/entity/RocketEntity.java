@@ -41,6 +41,7 @@ public class RocketEntity extends Entity {
 
     //ROCKET SETTINGS
     private RocketSettings rocketSettings;
+    private NbtCompound rocketSettingsNbt;
     private boolean hasInitialized = false;
 
     public Vec3d rocketRotation = new Vec3d(0, 1f, 0);
@@ -59,6 +60,10 @@ public class RocketEntity extends Entity {
     public RocketEntity(EntityType<? extends Entity> entityType, World world) {
         super(entityType, world);
         System.out.println("Init called on " + (world.isClient ? "Client" : "Server"));
+
+        NbtCompound nbtCompound = new NbtCompound();
+        this.readCustomDataFromNbt(nbtCompound);
+        System.out.println(nbtCompound);
     }
 
     public void Launch(double launchDirection){
@@ -107,13 +112,9 @@ public class RocketEntity extends Entity {
 
         if (!this.world.isClient) {
             this.updateFuse();
+            this.updateSettingsTick();
             if(!hasInitialized) {
-                PacketByteBuf buf = PacketByteBufs.create(); //TODO move to its own function and update to work with saving
-                buf.writeInt(this.getId());
-                buf.writeNbt(this.getRocketSettings().toNbt());
-                for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
-                    ServerPlayNetworking.send(player, NetworkingConstants.ASSEMBLE_ROCKET_PACKET_ID, buf);
-                }
+                this.networkUpdateSettings();
                 hasInitialized = true;
             }
         }
@@ -216,6 +217,12 @@ public class RocketEntity extends Entity {
         this.rocketSettings = rocketSettings;
     }
 
+    protected void updateSettingsTick() {
+        if (this.rocketSettingsNbt != null) {
+            this.readSettingsNbt();
+        }
+    }
+
     protected void updateFuse() {
         if (this.fuseNbt != null) {
             this.readFuseNbt();
@@ -251,6 +258,15 @@ public class RocketEntity extends Entity {
         return this.linkedEntity;
     }
 
+    public void networkUpdateSettings() {
+        PacketByteBuf buf = PacketByteBufs.create(); //TODO move to its own function and update to work with saving
+        buf.writeInt(this.getId());
+        buf.writeNbt(rocketSettings.toNbt());
+        for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
+            ServerPlayNetworking.send(player, NetworkingConstants.ASSEMBLE_ROCKET_PACKET_ID, buf);
+        }
+    }
+
     public void attachFuse(Entity entity, boolean sendPacket) {
         this.linkedEntity = entity;
         this.fuseNbt = null;
@@ -271,7 +287,6 @@ public class RocketEntity extends Entity {
                 (linkedEntity != null ? linkedEntity.getId() : 0)
         ));
 
-
         for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
             ServerPlayNetworking.send(player, NetworkingConstants.ATTACH_FUSE_PACKET_ID, buf);
         }
@@ -289,6 +304,15 @@ public class RocketEntity extends Entity {
         }
     }
 
+    public void readSettingsNbt() {
+        if(this.rocketSettingsNbt == null){
+            NbtCompound nbtCompound =  this.writeNbt(new NbtCompound());
+            this.rocketSettingsNbt = nbtCompound.getCompound("RocketSettings");
+        } else if (this.world instanceof ServerWorld) {
+            this.networkUpdateSettings();
+        }
+    }
+
     @Override
     public boolean canHit() {
         return true;
@@ -303,15 +327,14 @@ public class RocketEntity extends Entity {
     protected void initDataTracker() {
     }
 
-
     public void readCustomDataFromNbt(NbtCompound nbt) {
-        System.out.println("Read Nbt");
+        System.out.println("Read Nbt: " + nbt);
         if (nbt.contains("Fuse", 10)) {
             this.fuseNbt = nbt.getCompound("Fuse");
         }
         if(nbt.contains("RocketSettings")) {
-            System.out.println("nbt should of worked?");
-            this.setRocketSettings(RocketSettings.fromNbt(nbt.getCompound("RocketSettings")));
+            System.out.println("read settings");
+            this.rocketSettingsNbt = nbt.getCompound("RocketSettings");
         }
     }
 
@@ -320,13 +343,8 @@ public class RocketEntity extends Entity {
         System.out.println("Wrote Nbt");
         NbtCompound nbtCompound;
 
-        if(getRocketSettings() != RocketSettings.SIMPLE_ROCKET) {
+        if(rocketSettings != null) {
             nbt.put("RocketSettings", this.rocketSettings.toNbt());
-            if(world.isClient()){
-                System.out.println("Rocket NBT Client: ");
-            } else{
-                System.out.println("Rocket NBT Server: ");
-            }
         }
 
         if (this.linkedEntity != null) {
