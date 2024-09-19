@@ -32,18 +32,26 @@ public class ClientNetworkHandler {
         IntList list = buf.readIntList();
         int rocketId = list.getInt(0);
         int otherId = list.getInt(1);
-        RocketEntity rocket = (RocketEntity) client.world.getEntityById(rocketId);
 
-        client.execute(() -> rocket.setLinkedEntityId(otherId));
+        client.execute(() -> {
+            Entity rocket = client.world.getEntityById(rocketId);
+            if(rocket instanceof RocketEntity){
+                ((RocketEntity) rocket).setLinkedEntityId(otherId);
+            }
+
+        });
     }
 
     public static void onRocketLaunch(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender){
         IntList list = buf.readIntList();
         int rocketId = list.getInt(0);
         double launchDirection = buf.readDouble();
-        RocketEntity rocket = (RocketEntity) client.world.getEntityById(rocketId);
-
-        client.execute(() -> rocket.Launch(launchDirection));
+        client.execute(() -> {
+            Entity rocket = client.world.getEntityById(rocketId);
+            if(rocket instanceof RocketEntity){
+                ((RocketEntity) rocket).Launch(launchDirection);
+            }
+        });
     }
 
     public static void onAssembleRocket(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender){

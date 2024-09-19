@@ -261,9 +261,7 @@ public class RocketEntity extends Entity {
 
     public void setLinkedEntityId(int id) {
         this.linkedEntityId = id;
-        if(id == 0){
-            this.detachFuse(false, false);
-        }
+        this.detachFuse(false, false);
     }
 
     public void networkAttachFuse(@Nullable Entity linkedEntity) {
@@ -305,7 +303,7 @@ public class RocketEntity extends Entity {
     protected void initDataTracker() {
     }
 
-    @Override
+
     public void readCustomDataFromNbt(NbtCompound nbt) {
         System.out.println("Read Nbt");
         if (nbt.contains("Fuse", 10)) {
