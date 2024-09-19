@@ -1,6 +1,10 @@
 package org.gum.csp.client.renderer;
 
+import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.MapCodec;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
@@ -10,15 +14,19 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.LightType;
 import org.gum.csp.client.CspMainClient;
+import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.entity.RocketEntity;
+import org.gum.csp.registries.BlockRegistry;
 
 public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
     private final EntityModelLoader modelLoader;
+    private final BlockRenderManager blockRenderManager;
 
     public RocketEntityRenderer(EntityRendererFactory.Context context){
         super(context);
         modelLoader = context.getModelLoader();
+        blockRenderManager = context.getBlockRenderManager();
     }
 
     @Override
@@ -46,7 +54,16 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
         matrices.multiply(rotation);
 
-        modelLoader.getModelPart(CspMainClient.ROCKET_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(getTexture(entity))), light, 0);
+
+
+        if(entity.rocketSettings.blocks != null && entity.rocketSettings.blocks.length > 0) {
+            for (RocketPart block : entity.rocketSettings.blocks) {
+                blockRenderManager.renderBlockAsEntity(block.Block, matrices, vertexConsumers, light, 0);
+            }
+        } else {
+            modelLoader.getModelPart(CspMainClient.ROCKET_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(getTexture(entity))), light, 0);
+        }
+
 
         matrices.pop();
 

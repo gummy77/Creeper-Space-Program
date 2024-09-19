@@ -1,7 +1,10 @@
 package org.gum.csp.datastructs;
 
+import net.minecraft.block.BlockState;
+
 public class RocketPart {
     public float Mass;
+    public BlockState Block;
     //public FuelComponent fuelComponent;
 
     //Calculated
