@@ -39,8 +39,7 @@ public class LaunchKit extends Item {
                 player.getStackInHand(hand).damage(1, player, (e) -> e.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
 
                 rocketEntity.detachFuse(true, false);
-                if (!world.isClient && world instanceof ServerWorld) {
-
+                if (!world.isClient && world instanceof ServerWorld && !rocketEntity.hasLaunched()) {
                     rocketEntity.networkLaunch();
                 }
                 actionResult = TypedActionResult.success(player.getStackInHand(hand));

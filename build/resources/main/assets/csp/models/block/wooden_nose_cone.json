@@ -1,31 +1,31 @@
 {
   "parent": "block/block",
   "textures": {
-    "all": "csp:block/wooden_nose_cone"
+    "all": "minecraft:block/stripped_oak_log"
   },
   "elements": [
     {
       "from": [ 5, 0, 5 ],
       "to": [  11, 10, 11 ],
       "faces": {
-        "down":  { "texture": "#bottom", "cullface": "down" },
-        "up":    { "texture": "#top",    "cullface": "up" },
-        "north": { "texture": "#side",   "cullface": "north" },
-        "south": { "texture": "#side",   "cullface": "south" },
-        "west":  { "texture": "#side",   "cullface": "west" },
-        "east":  { "texture": "#side",   "cullface": "east" }
+        "down":  { "texture": "#all", "cullface": "down" },
+        "up":    { "texture": "#all",    "cullface": "up" },
+        "north": { "texture": "#all",   "cullface": "north" },
+        "south": { "texture": "#all",   "cullface": "south" },
+        "west":  { "texture": "#all",   "cullface": "west" },
+        "east":  { "texture": "#all",   "cullface": "east" }
       }
     },
     {
       "from": [ 6, 10, 6 ],
       "to": [  10, 16, 10 ],
       "faces": {
-        "down":  { "texture": "#bottom", "cullface": "down" },
-        "up":    { "texture": "#top",    "cullface": "up" },
-        "north": { "texture": "#side",   "cullface": "north" },
-        "south": { "texture": "#side",   "cullface": "south" },
-        "west":  { "texture": "#side",   "cullface": "west" },
-        "east":  { "texture": "#side",   "cullface": "east" }
+        "down":  { "texture": "#all", "cullface": "down" },
+        "up":    { "texture": "#all",    "cullface": "up" },
+        "north": { "texture": "#all",   "cullface": "north" },
+        "south": { "texture": "#all",   "cullface": "south" },
+        "west":  { "texture": "#all",   "cullface": "west" },
+        "east":  { "texture": "#all",   "cullface": "east" }
       }
     }
   ]

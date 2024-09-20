@@ -24,7 +24,7 @@ public class RocketEntityModel extends EntityModel<RocketEntity> {
                 ModelTransform.pivot(0f, 16f, 0f));
 
 
-        return TexturedModelData.of(modelData, 32, 32);
+        return TexturedModelData.of(modelData, 16, 16);
     }
 
     @Override

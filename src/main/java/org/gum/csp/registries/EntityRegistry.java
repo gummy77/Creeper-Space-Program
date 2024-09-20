@@ -28,6 +28,7 @@ public class EntityRegistry {
                 Registry.ENTITY_TYPE,
                 new Identifier(CspMain.MODID, path),
                 FabricEntityTypeBuilder.create(settings.spawnGroup, type)
+
                         .dimensions(EntityDimensions.fixed(settings.x, settings.y))
                         .build());
 

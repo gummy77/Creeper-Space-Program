@@ -55,9 +55,7 @@ public class ClientNetworkHandler {
         client.execute(() -> {
             Entity entity = client.world.getEntityById(rocketId);
             if(entity instanceof RocketEntity){
-                System.out.println("ClientSent: " + nbtCompound);
                 ((RocketEntity) entity).readCustomDataFromNbt(nbtCompound);
-                ((RocketEntity) entity).readSettingsNbt();
             }
         });
     }

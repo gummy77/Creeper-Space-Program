@@ -21,6 +21,7 @@ import org.gum.csp.registries.BlockRegistry;
 import org.gum.csp.registries.EntityRegistry;
 import org.gum.csp.registries.NetworkingConstants;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mutable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +35,18 @@ public class RocketPartBlockEntity extends BlockEntity {
     }
     public RocketPartBlockEntity(BlockPos pos, BlockState state, RocketPart rocketPart) {
         super(BlockRegistry.ROCKET_PART_BLOCK_ENTITY, pos, state);
-        this.rocketPart = rocketPart;
+        this.rocketPart = rocketPart.copy();
+
         this.rocketPart.Block = state;
     }
 
     public void AssembleRocket(){
-        RocketPart[] parts = {this.rocketPart.setBlock(this.getCachedState())};
-        RocketSettings settings = new RocketSettings(parts);
+
+        BlockPos currentPos = new BlockPos(0,0,0);
+        ArrayList<RocketPart> parts = new ArrayList<RocketPart>(this.getneighbors(this.pos));
+
+
+        RocketSettings settings = new RocketSettings(parts.toArray(new RocketPart[0]));
 
         NbtCompound nbtCompound = new NbtCompound();
         nbtCompound.put("RocketSettings", settings.toNbt());
@@ -48,12 +54,24 @@ public class RocketPartBlockEntity extends BlockEntity {
         RocketEntity entity = new RocketEntity(EntityRegistry.ROCKET_ENTITY, world);
         entity.setPosition(pos.getX()+0.5f, pos.getY(), pos.getZ()+0.5f);
         entity.readCustomDataFromNbt(nbtCompound);
-        entity.readSettingsNbt();
 
         world.spawnEntity(entity);
+    }
 
-        System.out.println("Rocket entity: " + settings.blocks.length);
-        System.out.println("Rocket assembled: " + entity.getRocketSettings().blocks.length);
+    protected ArrayList<RocketPart> getneighbors(BlockPos basePos){
+        ArrayList<RocketPart> parts = new ArrayList<>();
+
+        BlockEntity entity = world.getBlockEntity(this.getPos().add(0, 1, 0));
+        if(entity instanceof RocketPartBlockEntity) {
+            parts.addAll(((RocketPartBlockEntity) entity).getneighbors(basePos));
+        }
+
+        BlockPos offset = this.pos.add(-basePos.getX(), -basePos.getY(), -basePos.getZ());
+
+        parts.add(this.rocketPart.setBlock(this.getCachedState(), offset.mutableCopy()));
+
+        world.breakBlock(this.getPos(), false);
+        return parts;
     }
 
     @Override

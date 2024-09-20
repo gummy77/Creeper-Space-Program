@@ -9,6 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 
 public class RocketSettings {
@@ -59,6 +60,7 @@ public class RocketSettings {
             NbtElement stateNbt = encodedState.result().get();
 
             blockNbt.put("BlockState", stateNbt);
+            blockNbt.putLong("Offset", blocks[i].offset.asLong());
             blockNbt.putFloat("Mass", blocks[i].Mass);
             blockNbt.putFloat("Volatility", blocks[i].Volatility);
             blockNbt.putFloat("Power", blocks[i].Power);
@@ -79,12 +81,12 @@ public class RocketSettings {
             Pair<BlockState, NbtElement> statePair = stateNbt.result().get();
             BlockState state = statePair.getFirst();
 
+            BlockPos Offset = BlockPos.fromLong(blockNbt.getLong("Offset"));
             float Mass = blockNbt.getFloat("Mass");
             float Volatility = blockNbt.getFloat("Volatility");
             float Power = blockNbt.getFloat("Power");
 
-            RocketPart part = new RocketPart(Mass, Volatility, Power);
-            part.Block = state;
+            RocketPart part = new RocketPart(Mass, Volatility, Power, state, Offset);
 
             blocks[i] = part;
         }

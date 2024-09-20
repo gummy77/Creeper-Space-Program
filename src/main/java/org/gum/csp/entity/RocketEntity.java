@@ -41,8 +41,6 @@ public class RocketEntity extends Entity {
 
     //ROCKET SETTINGS
     private RocketSettings rocketSettings;
-    private NbtCompound rocketSettingsNbt;
-    private boolean hasInitialized = false;
 
     public Vec3d rocketRotation = new Vec3d(0, 1f, 0);
 
@@ -59,11 +57,7 @@ public class RocketEntity extends Entity {
 
     public RocketEntity(EntityType<? extends Entity> entityType, World world) {
         super(entityType, world);
-        System.out.println("Init called on " + (world.isClient ? "Client" : "Server"));
 
-        NbtCompound nbtCompound = new NbtCompound();
-        this.readCustomDataFromNbt(nbtCompound);
-        System.out.println(nbtCompound);
     }
 
     public void Launch(double launchDirection){
@@ -75,6 +69,10 @@ public class RocketEntity extends Entity {
 
             this.launchParticles();
         }
+    }
+
+    public boolean hasLaunched(){
+        return this.isLaunching;
     }
 
     public void networkLaunch() {
@@ -112,11 +110,7 @@ public class RocketEntity extends Entity {
 
         if (!this.world.isClient) {
             this.updateFuse();
-            this.updateSettingsTick();
-            if(!hasInitialized) {
-                this.networkUpdateSettings();
-                hasInitialized = true;
-            }
+            this.networkUpdateSettings();
         }
 
         if (this.isLaunching) {
@@ -129,14 +123,18 @@ public class RocketEntity extends Entity {
                 }
             } else {
                 if(Math.abs(getVelocity().y) < 1) {
-                    System.out.println("Peaked!");
-                    kill();
+                    //System.out.println("Peaked!");
+                    //kill();
                 }
             }
 
             if(verticalCollision) {
-                getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 2, Explosion.DestructionType.BREAK);
-                kill();
+                if(this.getVelocity().length() >= 1) {
+                    getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 2, Explosion.DestructionType.BREAK);
+                    kill();
+                }else{
+                    this.setVelocity(0,0,0);
+                }
             }
 
             this.move(MovementType.SELF, getVelocity());
@@ -145,7 +143,7 @@ public class RocketEntity extends Entity {
     }
 
     private void enginesActive(){
-        float force = 0.05f;
+        float force = this.getRocketSettings().Acceleration * 0.2f;
         this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
         rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * 0.004f);
         rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * 0.004f);
@@ -165,7 +163,7 @@ public class RocketEntity extends Entity {
                 kill();
             }
         }
-        return super.handleAttack(attacker);
+        return false;//super.handleAttack(attacker);
     }
 
     @Override
@@ -217,12 +215,6 @@ public class RocketEntity extends Entity {
         this.rocketSettings = rocketSettings;
     }
 
-    protected void updateSettingsTick() {
-        if (this.rocketSettingsNbt != null) {
-            this.readSettingsNbt();
-        }
-    }
-
     protected void updateFuse() {
         if (this.fuseNbt != null) {
             this.readFuseNbt();
@@ -259,11 +251,13 @@ public class RocketEntity extends Entity {
     }
 
     public void networkUpdateSettings() {
-        PacketByteBuf buf = PacketByteBufs.create(); //TODO move to its own function and update to work with saving
-        buf.writeInt(this.getId());
-        buf.writeNbt(rocketSettings.toNbt());
-        for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
-            ServerPlayNetworking.send(player, NetworkingConstants.ASSEMBLE_ROCKET_PACKET_ID, buf);
+        if(rocketSettings != null) {
+            PacketByteBuf buf = PacketByteBufs.create(); //TODO move to its own function and update to work with saving
+            buf.writeInt(this.getId());
+            buf.writeNbt(rocketSettings.toNbt());
+            for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
+                ServerPlayNetworking.send(player, NetworkingConstants.ASSEMBLE_ROCKET_PACKET_ID, buf);
+            }
         }
     }
 
@@ -304,15 +298,6 @@ public class RocketEntity extends Entity {
         }
     }
 
-    public void readSettingsNbt() {
-        if(this.rocketSettingsNbt == null){
-            NbtCompound nbtCompound =  this.writeNbt(new NbtCompound());
-            this.rocketSettingsNbt = nbtCompound.getCompound("RocketSettings");
-        } else if (this.world instanceof ServerWorld) {
-            this.networkUpdateSettings();
-        }
-    }
-
     @Override
     public boolean canHit() {
         return true;
@@ -328,19 +313,16 @@ public class RocketEntity extends Entity {
     }
 
     public void readCustomDataFromNbt(NbtCompound nbt) {
-        System.out.println("Read Nbt: " + nbt);
         if (nbt.contains("Fuse", 10)) {
             this.fuseNbt = nbt.getCompound("Fuse");
         }
         if(nbt.contains("RocketSettings")) {
-            System.out.println("read settings");
-            this.rocketSettingsNbt = nbt.getCompound("RocketSettings");
+            this.rocketSettings = RocketSettings.fromNbt(nbt.getCompound("RocketSettings"));
         }
     }
 
     @Override
     protected void writeCustomDataToNbt(NbtCompound nbt) {
-        System.out.println("Wrote Nbt");
         NbtCompound nbtCompound;
 
         if(rocketSettings != null) {

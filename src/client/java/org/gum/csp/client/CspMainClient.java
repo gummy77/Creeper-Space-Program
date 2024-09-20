@@ -32,8 +32,6 @@ public class CspMainClient implements ClientModInitializer {
 
         registerParticle(ParticleRegistry.EXHAUST, PlumeParticle.Factory::new);
 
-
-
         ClientNetworkHandler.registerPacketHandlers();
     }
 

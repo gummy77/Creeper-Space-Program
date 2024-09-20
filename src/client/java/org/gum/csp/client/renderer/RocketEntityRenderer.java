@@ -37,12 +37,9 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 //        return frustum.isVisible(box);
     }
 
-
-
     @Override
     public void render(RocketEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
         matrices.push();
-
 
         Vec3d rotationVector = entity.getVelocity();
         Vec3d UP = new Vec3d(0,1,0);
@@ -54,16 +51,20 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
         matrices.multiply(rotation);
 
-
-
         if(entity.getRocketSettings().blocks != null && entity.getRocketSettings().blocks.length > 0) {
-            for (RocketPart block : entity.getRocketSettings().blocks) {
+            matrices.translate(-0.5f, 0, -0.5f);
+
+            RocketPart[] blocks = entity.getRocketSettings().blocks;
+
+            for (RocketPart block : blocks) {
+                matrices.push();
+                matrices.translate(block.offset.getX(), block.offset.getY(), block.offset.getZ());
                 blockRenderManager.renderBlockAsEntity(block.Block, matrices, vertexConsumers, light, 0);
+                matrices.pop();
             }
         } else {
             modelLoader.getModelPart(CspMainClient.ROCKET_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(getTexture(entity))), light, 0);
         }
-
 
         matrices.pop();
 
