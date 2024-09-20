@@ -29,7 +29,6 @@ public class RocketEntityModel extends EntityModel<RocketEntity> {
 
     @Override
     public void setAngles(RocketEntity entity, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
-
     }
 
     @Override
