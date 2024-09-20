@@ -129,7 +129,7 @@ public class RocketEntity extends Entity {
             }
 
             if(verticalCollision) {
-                if(this.getVelocity().length() >= 0.5f) {
+                if(this.getVelocity().length() >= 0.25f) {
                     getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 2, Explosion.DestructionType.BREAK);
                     kill();
                 }else{

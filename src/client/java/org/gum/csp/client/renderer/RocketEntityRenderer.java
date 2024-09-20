@@ -27,6 +27,8 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
         super(context);
         modelLoader = context.getModelLoader();
         blockRenderManager = context.getBlockRenderManager();
+        this.shadowRadius = 0.5f;
+        this.shadowOpacity = 0.5f;
     }
 
     @Override
