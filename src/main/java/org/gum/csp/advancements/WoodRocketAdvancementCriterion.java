@@ -15,19 +15,20 @@ import java.util.Optional;
 public class WoodRocketAdvancementCriterion extends AbstractCriterion<WoodRocketAdvancementCriterion.Conditions> {
     private static final Identifier ID = new Identifier(CspMain.MODID, "wood_rocket_advancement");
 
+    public WoodRocketAdvancementCriterion() {
+    }
+
     @Override
     protected Conditions conditionsFromJson(JsonObject obj, EntityPredicate.Extended playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {
-        return new Conditions();
+        return new Conditions(playerPredicate);
     }
 
     public static class Conditions extends AbstractCriterionConditions {
-        public Conditions() {
-            super(ID, EntityPredicate.Extended.EMPTY);
+        public Conditions(EntityPredicate.Extended playerPredicate) {
+            super(ID, playerPredicate);
         }
 
-        boolean requirementsMet() {
-            return true;
-        }
+        boolean requirementsMet() { return true; }
     }
 
     public void trigger(ServerPlayerEntity player) {
