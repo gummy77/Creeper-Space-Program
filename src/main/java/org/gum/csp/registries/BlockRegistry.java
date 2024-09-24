@@ -9,6 +9,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
 import org.gum.csp.block.RocketPartBlock;
+import org.gum.csp.datastructs.FuelComponent;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.entity.RocketPartBlockEntity;
 import org.spongepowered.asm.mixin.Mutable;
@@ -38,24 +39,33 @@ public class BlockRegistry {
     }
 
     static {
+        //Basic
 
         BASE_NOSE_CONE = (RocketPartBlock) register("base_nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
-                new RocketPart(1, 0, 0)));
+                new RocketPart(RocketPart.PartType.NOSE, 1, 1, 0, null)));
 
         BASE_BODY_SEGMENT = (RocketPartBlock) register("base_body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
-                new RocketPart(2, 4, 0)));
-
+                new RocketPart(
+                        RocketPart.PartType.BODY,2, 2,0,
+                        new FuelComponent(FuelComponent.FuelType.SOLID, 2, 1, 1)
+                )));
         BASE_EXHAUST = (RocketPartBlock) register("base_exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
-                new RocketPart(2, 6, 2)));
+                new RocketPart(
+                        RocketPart.PartType.EXHAUST,2, 2,3, null)));
+
+        //Wooden
 
         WOODEN_NOSE_CONE = (RocketPartBlock) register("wooden_nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.WOOD),
-                new RocketPart(1, 0, 0)));
+                new RocketPart(RocketPart.PartType.NOSE,1, 0, 0,null)));
 
         WOODEN_BODY_SEGMENT = (RocketPartBlock) register("wooden_body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.WOOD),
-                new RocketPart(2, 4, 0)));
+                new RocketPart(RocketPart.PartType.BODY,2, 7.5f, 0,
+                        new FuelComponent(FuelComponent.FuelType.SOLID, 2, 1, 1))));
 
         WOODEN_EXHAUST = (RocketPartBlock) register("wooden_exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.WOOD),
-                new RocketPart(2, 6, 2)));
+                new RocketPart(RocketPart.PartType.EXHAUST,2, 25, 2, null)));
+
+
 
         ROCKET_PART_BLOCK_ENTITY = registerEntity("rocker_part_block_entity", FabricBlockEntityTypeBuilder
                 .create(RocketPartBlockEntity::new,

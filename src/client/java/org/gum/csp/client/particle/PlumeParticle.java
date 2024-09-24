@@ -10,29 +10,30 @@ public class PlumeParticle extends AbstractSlowingParticle {
 
     protected PlumeParticle(ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
         super(clientWorld, d, e, f, g, h, i);
-        this.scale = 1f;
-        this.maxAge = getMaxAge();
-
+        this.scale = 1.5f;
+        this.maxAge = this.getMaxAge();
     }
+
 
     @Override
     public ParticleTextureSheet getType() {
-        return ParticleTextureSheet.PARTICLE_SHEET_LIT;
+        return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
     public float getSize(float tickDelta) {
-        float f = ((float)this.age + tickDelta) / (float)this.maxAge;
-        return this.scale * (float) (-Math.pow((f * 1.75f)-0.75f,2) + 1.1f);
+        float age = ((this.age) / (float) this.getMaxAge());
+        float newScale = (float) Math.max(Math.min((-Math.pow((age * 0.5)-0.5f,2) + 1f), 1), 0);
+        float newAlpha = (float) Math.max(Math.min((-Math.pow((age + 0.25),2) + 1.6f), 1), 0);
+
+        this.setAlpha(newAlpha);
+        return newScale;
     }
+
 
     @Override
     public int getMaxAge() {
-        return 100;
-    }
-
-    public int getBrightness(float tint) {
-        return 255; //j | k << 16;
+        return 130;
     }
 
     @Environment(EnvType.CLIENT)

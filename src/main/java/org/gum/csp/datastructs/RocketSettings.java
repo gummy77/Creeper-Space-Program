@@ -1,24 +1,19 @@
 package org.gum.csp.datastructs;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
-import com.mojang.serialization.Encoder;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.util.math.BlockPos;
-import org.slf4j.Logger;
+import org.gum.csp.registries.PayloadRegistry;
 
 public class RocketSettings {
     public RocketPart[] blocks;
+    public PayloadRegistry.PAYLOADS payload;
 
-    //Calculated
+    //Calculated from blocks
     public float Mass;
     public float Volatility;
     public float Power;
+    FuelComponent fuel;
+
+    //Calculated from Settings
     public float Acceleration;
     public float burnTime;
 
@@ -30,42 +25,53 @@ public class RocketSettings {
         blocks = new RocketPart[0];
     }
 
-    public RocketSettings (float Mass) { //setting these manually for now, will be based off of fuel later.
-        this.Mass = Mass;
+    public RocketSettings (RocketPart[] parts, PayloadRegistry.PAYLOADS payload){
+        this(parts);
+        this.payload = payload;
+        this.Mass += PayloadRegistry.getPayload(payload).Mass;
+        this.Acceleration = this.Power/this.Mass;
     }
 
     public RocketSettings (RocketPart[] parts) { //setting these manually for now, will be based off of fuel later.
         blocks = parts;
 
+        FuelComponent.FuelType type = FuelComponent.FuelType.SOLID;
+        float fuelCapacity = 0;
+        float fuelAmount = 0;
+        float fuelBurnPower = 1;
+        float fuelBurnSpeed = 1;
+
         for (RocketPart block : this.blocks) {
             this.Mass += block.Mass;
             this.Volatility += block.Volatility;
             this.Power += block.Power;
+
+            if(block.fuelComponent != null) {
+                type = block.fuelComponent.fuelType;
+                fuelCapacity += block.fuelComponent.capacity;
+                fuelAmount += block.fuelComponent.amount;
+                fuelBurnPower *= block.fuelComponent.burnPower;
+                fuelBurnSpeed *= block.fuelComponent.burnSpeed;
+            }
         }
+
+        this.fuel = new FuelComponent(type, fuelCapacity, fuelAmount, fuelBurnPower, fuelBurnSpeed);
+
+        this.Power = Power * fuelBurnPower;
+        this.burnTime = fuelAmount * fuelBurnSpeed;
+
         this.Acceleration = this.Power/this.Mass;
-    }
-
-    private void buildStats(){
-
     }
 
     public NbtCompound toNbt() {
         NbtCompound nbt = new NbtCompound();
 
+        if(payload != null) {
+            nbt.putString("Payload", payload.toString());
+        }
         nbt.putInt("BlockCount", blocks.length);
         for (int i = 0; i < blocks.length; i++) {
-            NbtCompound blockNbt = new NbtCompound();
-
-            DataResult<NbtElement> encodedState = BlockState.CODEC.encodeStart(NbtOps.INSTANCE, blocks[i].Block);
-            NbtElement stateNbt = encodedState.result().get();
-
-            blockNbt.put("BlockState", stateNbt);
-            blockNbt.putLong("Offset", blocks[i].offset.asLong());
-            blockNbt.putFloat("Mass", blocks[i].Mass);
-            blockNbt.putFloat("Volatility", blocks[i].Volatility);
-            blockNbt.putFloat("Power", blocks[i].Power);
-
-            nbt.put("Block"+i, blockNbt);
+            nbt.put("Block"+i, blocks[i].toNbt());
         }
 
         return nbt;
@@ -75,22 +81,20 @@ public class RocketSettings {
         int blockCount = nbt.getInt("BlockCount");
         RocketPart[] blocks = new RocketPart[blockCount];
 
+        PayloadRegistry.PAYLOADS payload = null;
+        try {
+            payload = PayloadRegistry.PAYLOADS.valueOf(nbt.getString("Payload"));
+        } catch (IllegalArgumentException ignored) {}
+
         for (int i = 0; i < blockCount; i++) {
             NbtCompound blockNbt = nbt.getCompound("Block"+i);
-            DataResult<Pair<BlockState, NbtElement>> stateNbt = BlockState.CODEC.decode(NbtOps.INSTANCE, blockNbt.get("BlockState"));
-            Pair<BlockState, NbtElement> statePair = stateNbt.result().get();
-            BlockState state = statePair.getFirst();
 
-            BlockPos Offset = BlockPos.fromLong(blockNbt.getLong("Offset"));
-            float Mass = blockNbt.getFloat("Mass");
-            float Volatility = blockNbt.getFloat("Volatility");
-            float Power = blockNbt.getFloat("Power");
-
-            RocketPart part = new RocketPart(Mass, Volatility, Power, state, Offset);
-
-            blocks[i] = part;
+            blocks[i] = RocketPart.fromNbt(blockNbt);;
         }
 
+        if(payload != null) {
+            return new RocketSettings(blocks, payload);
+        }
         return new RocketSettings(blocks);
     }
 

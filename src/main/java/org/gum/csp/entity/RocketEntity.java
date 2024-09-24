@@ -21,10 +21,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.gum.csp.datastructs.RocketSettings;
-import org.gum.csp.registries.ItemRegistry;
-import org.gum.csp.registries.NetworkingConstants;
-import org.gum.csp.registries.ParticleRegistry;
-import org.gum.csp.registries.SoundRegistry;
+import org.gum.csp.registries.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -68,7 +65,17 @@ public class RocketEntity extends Entity {
             this.launchDirection = launchDirection;
 
             this.launchParticles();
+
+            System.out.println("Launch Position: " + getPos());
         }
+    }
+
+    private float calculateMaxHeight(){
+        float b = this.getRocketSettings().burnTime;
+
+        float thing = (float) (-Math.pow((3.5*b - 25) , 2) + 400); //TODO do real math? or something?
+
+        return thing;
     }
 
     public boolean hasLaunched(){
@@ -76,6 +83,13 @@ public class RocketEntity extends Entity {
     }
 
     public void networkLaunch() {
+        if(Random.create().nextFloat() * 100f < getRocketSettings().Volatility) { //TODO network a failure event
+            //FAILURE ON LAUNCH
+            //getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, true, Explosion.DestructionType.BREAK);
+            //kill();
+            return;
+        }
+
         double launchDirection = Random.create().nextFloat() * Math.PI * 4;
 
         PacketByteBuf buf = PacketByteBufs.create();
@@ -86,7 +100,6 @@ public class RocketEntity extends Entity {
 
         Launch(launchDirection);
         playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 3f, 1f);
-
         getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, Explosion.DestructionType.BREAK);
 
         for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
@@ -97,7 +110,7 @@ public class RocketEntity extends Entity {
     private void launchParticles() {
         float smokeForce = 0.2f; //rocketSettings.Power / 10;
 
-        //TODO foreach engine present
+        //TODO foreach engine present -> if we get to boosters
         for (int i = 0; i < 360; i += 20) {
             float randomForce = Random.create().nextFloat();
             world.addParticle(ParticleRegistry.EXHAUST, this.getX(), this.getY(), this.getZ(), Math.sin(i) * smokeForce * randomForce, 0, Math.cos(i) * smokeForce * randomForce);
@@ -116,17 +129,28 @@ public class RocketEntity extends Entity {
         if (this.isLaunching) {
             launchTime += 1;
 
-            if(launchTime < 150) {
+            if(launchTime < this.getRocketSettings().burnTime * 20) {
                 enginesActive();
                 if(launchTime % 10 == 0) {
                     playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 3f, 1f);
                 }
             } else {
-                if(Math.abs(getVelocity().y) < 1) {
-                    //System.out.println("Peaked!");
-                    //kill();
+                if(Math.abs(getVelocity().y) < 0.1f) {
+                    System.out.println("Peaked Position: " + this.getPos());
+                    kill();
+                    if(this.getRocketSettings().payload != null){
+                        PayloadRegistry.getPayload(this.getRocketSettings().payload).onDeploy(this ,this.getBlockPos());
+                    }
+                    return;
                 }
             }
+
+            if(this.getPos().y > 500) {
+                System.out.println("MAX HEIGHT REACHED");
+                kill();
+            }
+
+            world.addImportantParticle(ParticleRegistry.EXHAUST, true, getPos().x, getPos().y, getPos().z, 0, 0, 0);
 
             if(verticalCollision) {
                 if(this.getVelocity().length() >= 0.25f) {
@@ -145,13 +169,13 @@ public class RocketEntity extends Entity {
     private void enginesActive(){
         float force = this.getRocketSettings().Acceleration * 0.2f;
         this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
-        rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * 0.004f);
-        rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * 0.004f);
+        rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * this.getRocketSettings().Acceleration * 0.02f);
+        rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * this.getRocketSettings().Acceleration * 0.02f);
 
         //TODO foreach engine present
         Vec3d particlePosition = getPos();
         world.addParticle(ParticleTypes.FLAME, true, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             world.addImportantParticle(ParticleRegistry.EXHAUST, true, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
         }
     }
@@ -197,11 +221,18 @@ public class RocketEntity extends Entity {
             String out;
 
             if(this.world.isClient) {
-                out = "client: ";
-            } else{
-                out = "server: ";
+                out = "\nClient: ";
+            } else {
+                out = "\nServer: ";
             }
-            System.out.println(out + "wand: " + this.getRocketSettings().blocks.length);
+
+            System.out.println(out + "\n" +
+                    "Mass: " + this.getRocketSettings().Mass + "\n" +
+                    "Volatility: " + this.getRocketSettings().Volatility + "\n" +
+                    "Power: " + this.getRocketSettings().Power + "\n" +
+                    "Acceleration: " + getRocketSettings().Acceleration + "\n" +
+                    "Burn Time: " + getRocketSettings().burnTime * 20 + " ticks (" + getRocketSettings().burnTime + " seconds)"
+            );
         }
         return ActionResult.PASS;
     }
