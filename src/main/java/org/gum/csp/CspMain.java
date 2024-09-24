@@ -12,8 +12,7 @@ public class CspMain implements ModInitializer {
         BlockRegistry.registerBlocks();
         EntityRegistry.registerEntities();
         EntityRegistry.registerEntityAttributes();
-
+        AdvancementRegistry.registerAdvancements();
         SoundRegistry.registerSounds();
-
     }
 }

@@ -4,12 +4,14 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import org.gum.csp.entity.RocketEntity;
+import org.gum.csp.registries.AdvancementRegistry;
 
 import java.util.List;
 
@@ -43,6 +45,9 @@ public class LaunchKit extends Item {
                     rocketEntity.networkLaunch();
                 }
                 actionResult = TypedActionResult.success(player.getStackInHand(hand));
+                if (player instanceof ServerPlayerEntity) {
+                    AdvancementRegistry.WOOD_ROCKET_LAUNCHED.trigger((ServerPlayerEntity) player);
+                }
             }
         }
 
