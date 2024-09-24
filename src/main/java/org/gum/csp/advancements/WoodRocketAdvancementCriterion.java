@@ -28,11 +28,11 @@ public class WoodRocketAdvancementCriterion extends AbstractCriterion<WoodRocket
             super(ID, playerPredicate);
         }
 
-        boolean requirementsMet() { return true; }
+        boolean test() { return true; }
     }
 
     public void trigger(ServerPlayerEntity player) {
-        trigger(player, Conditions::requirementsMet);
+        trigger(player, conditions -> conditions.test());
     }
 
     @Override
