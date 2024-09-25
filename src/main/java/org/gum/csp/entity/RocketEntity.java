@@ -177,10 +177,10 @@ public class RocketEntity extends Entity {
     }
 
     private void enginesActive(){
-        float force = this.getRocketSettings().Acceleration;
+        float force = this.getRocketSettings().Acceleration * 0.2f;
         this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
-        //rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * this.getRocketSettings().Acceleration * 0.02f);
-        //rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * this.getRocketSettings().Acceleration * 0.02f);
+        rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * this.getRocketSettings().Acceleration * 0.02f);
+        rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * this.getRocketSettings().Acceleration * 0.02f);
 
         //TODO foreach engine present
         Vec3d particlePosition = getPos();
