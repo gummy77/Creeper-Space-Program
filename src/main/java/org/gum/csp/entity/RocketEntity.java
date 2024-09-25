@@ -45,6 +45,8 @@ public class RocketEntity extends Entity {
     private float launchTime;
     private double launchDirection;
 
+    private BlockPos launchposition;
+
     public static final EntitySettings settings = new EntitySettings(
             "rocket_entity",
             SpawnGroup.MISC,
@@ -66,6 +68,7 @@ public class RocketEntity extends Entity {
 
             this.launchParticles();
 
+            this.launchposition = getBlockPos();
             System.out.println("Launch Position: " + getPos());
         }
     }
@@ -136,7 +139,14 @@ public class RocketEntity extends Entity {
                 }
             } else {
                 if(Math.abs(getVelocity().y) < 0.1f) {
-                    System.out.println("Peaked Position: " + this.getPos());
+                    System.out.println("Peak Reached");
+                    System.out.println("DeltaV: " + (this.getRocketSettings().Acceleration * this.getRocketSettings().burnTime * 20));
+                    System.out.println("Power: " + this.getRocketSettings().Power);
+                    System.out.println("Height Reached: " + (this.getBlockPos().getY() - this.launchposition.getY()) + "m");
+                    System.out.println("Distance Reached: " + Math.sqrt(
+                            Math.pow(this.getBlockPos().getX() - this.launchposition.getX(), 2) +
+                            Math.pow(this.getBlockPos().getZ() - this.launchposition.getZ(), 2)) + "m");
+
                     kill();
                     if(this.getRocketSettings().payload != null){
                         PayloadRegistry.getPayload(this.getRocketSettings().payload).onDeploy(this ,this.getBlockPos());
@@ -145,10 +155,10 @@ public class RocketEntity extends Entity {
                 }
             }
 
-            if(this.getPos().y > 500) {
-                System.out.println("MAX HEIGHT REACHED");
-                kill();
-            }
+//            if(this.getPos().y > 750) {
+//                System.out.println("MAX HEIGHT REACHED");
+//                kill();
+//            }
 
             world.addImportantParticle(ParticleRegistry.EXHAUST, true, getPos().x, getPos().y, getPos().z, 0, 0, 0);
 
@@ -167,10 +177,10 @@ public class RocketEntity extends Entity {
     }
 
     private void enginesActive(){
-        float force = this.getRocketSettings().Acceleration * 0.2f;
+        float force = this.getRocketSettings().Acceleration;
         this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
-        rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * this.getRocketSettings().Acceleration * 0.02f);
-        rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * this.getRocketSettings().Acceleration * 0.02f);
+        //rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * this.getRocketSettings().Acceleration * 0.02f);
+        //rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * this.getRocketSettings().Acceleration * 0.02f);
 
         //TODO foreach engine present
         Vec3d particlePosition = getPos();
