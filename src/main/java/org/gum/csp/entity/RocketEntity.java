@@ -20,7 +20,9 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
+import org.gum.csp.datastructs.Payload;
 import org.gum.csp.datastructs.RocketSettings;
+import org.gum.csp.item.PayloadItem;
 import org.gum.csp.registries.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,15 +72,20 @@ public class RocketEntity extends Entity {
 
             this.launchposition = getBlockPos();
             System.out.println("Launch Position: " + getPos());
+            System.out.println("Calculated Height: " + calculateMaxHeight());
         }
     }
 
     private float calculateMaxHeight(){
-        float b = this.getRocketSettings().burnTime;
+        float P = this.getRocketSettings().Power;
+        float M = this.getRocketSettings().Mass;
+        float T = this.getRocketSettings().burnTime;
+        System.out.println("P: "+P + " M: " + M + " T: " + T);
 
-        float thing = (float) (-Math.pow((3.5*b - 25) , 2) + 400); //TODO do real math? or something?
+        float log = (float) (  1f / (Math.pow(P*T, 3f) * 20f)  );
+        float H = (float) -(  Math.log10(log) * ((300f*P*T)/M)  );
 
-        return thing;
+        return H;
     }
 
     public boolean hasLaunched(){
@@ -139,17 +146,13 @@ public class RocketEntity extends Entity {
                 }
             } else {
                 if(Math.abs(getVelocity().y) < 0.1f) {
-                    System.out.println("Peak Reached");
-                    System.out.println("DeltaV: " + (this.getRocketSettings().Acceleration * this.getRocketSettings().burnTime * 20));
-                    System.out.println("Power: " + this.getRocketSettings().Power);
-                    System.out.println("Height Reached: " + (this.getBlockPos().getY() - this.launchposition.getY()) + "m");
-                    System.out.println("Distance Reached: " + Math.sqrt(
-                            Math.pow(this.getBlockPos().getX() - this.launchposition.getX(), 2) +
-                            Math.pow(this.getBlockPos().getZ() - this.launchposition.getZ(), 2)) + "m");
-
-                    kill();
                     if(this.getRocketSettings().payload != null){
-                        PayloadRegistry.getPayload(this.getRocketSettings().payload).onDeploy(this ,this.getBlockPos());
+                        Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
+                        if(payload.onDeploy(this , this.getBlockPos())){
+                            payload.onLand(this, new BlockPos(this.getPos().multiply(5f/3f)));
+                        };
+                    } else {
+                        kill();
                     }
                     return;
                 }
@@ -177,10 +180,10 @@ public class RocketEntity extends Entity {
     }
 
     private void enginesActive(){
-        float force = this.getRocketSettings().Acceleration * 0.2f;
+        float force = 0.15f;
         this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
-        rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * this.getRocketSettings().Acceleration * 0.02f);
-        rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * this.getRocketSettings().Acceleration * 0.02f);
+        rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * 0.01f);
+        rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * 0.01f);
 
         //TODO foreach engine present
         Vec3d particlePosition = getPos();
@@ -227,7 +230,6 @@ public class RocketEntity extends Entity {
                 return ActionResult.success(this.world.isClient);
             }
         } else if (itemStack.isOf(ItemRegistry.DEV_WAND)) {
-
             String out;
 
             if(this.world.isClient) {
@@ -243,8 +245,15 @@ public class RocketEntity extends Entity {
                     "Acceleration: " + getRocketSettings().Acceleration + "\n" +
                     "Burn Time: " + getRocketSettings().burnTime * 20 + " ticks (" + getRocketSettings().burnTime + " seconds)"
             );
+        } else if(itemStack.getItem().getClass() == PayloadItem.class) {
+            return addPayload(itemStack);
         }
         return ActionResult.PASS;
+    }
+
+    public ActionResult addPayload(ItemStack payloadItem) {
+        this.getRocketSettings().payload = PayloadRegistry.PAYLOADS.DEFAULT;
+        return ActionResult.SUCCESS;
     }
 
     public RocketSettings getRocketSettings() {

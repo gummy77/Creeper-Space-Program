@@ -8,6 +8,7 @@ import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
 import org.gum.csp.item.Assembler;
 import org.gum.csp.item.LaunchKit;
+import org.gum.csp.item.PayloadItem;
 import org.gum.csp.item.Rocket;
 
 public class ItemRegistry {
@@ -19,6 +20,8 @@ public class ItemRegistry {
     public static final LaunchKit LAUNCH_KIT;
     public static final Item FUSE;
     public static final Assembler ASSEMBLER;
+
+    public static final PayloadItem DEFAULT_PAYLOAD_ITEM;
 
     public static Item BASE_NOSE_CONE;
     public static Item BASE_BODY_SEGMENT;
@@ -48,6 +51,8 @@ public class ItemRegistry {
         LAUNCH_KIT = (LaunchKit) register("launchkit", new LaunchKit(getSettings().maxDamage(10)));
         FUSE = register("fuse", new Item(getSettings()));
         ASSEMBLER = (Assembler) register("assembler", new Assembler(getSettings().maxDamage(10)));
+
+        DEFAULT_PAYLOAD_ITEM = (PayloadItem) register("default_payload", new PayloadItem(getSettings(), PayloadRegistry.PAYLOADS.DEFAULT));
 
         BASE_NOSE_CONE = register("base_nose_cone", new BlockItem(BlockRegistry.BASE_NOSE_CONE, getSettings()));
         BASE_BODY_SEGMENT = register("base_body_segment", new BlockItem(BlockRegistry.BASE_BODY_SEGMENT, getSettings()));

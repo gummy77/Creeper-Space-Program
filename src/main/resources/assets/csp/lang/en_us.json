@@ -16,6 +16,8 @@
   "item.csp.assembler": "Assembler",
   "item.csp.fuse":"Fuse",
 
+  "_comment": "- Payloads -",
+  "item.csp.default_payload": "Default Payload",
 
   "_comment": "--- Crafting Items ---",
   "item.csp.wooden_fin": "Wooden Fin",
