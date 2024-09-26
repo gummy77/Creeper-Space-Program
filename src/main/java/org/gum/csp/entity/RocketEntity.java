@@ -47,8 +47,6 @@ public class RocketEntity extends Entity {
     private float launchTime;
     private double launchDirection;
 
-    private BlockPos launchposition;
-
     public static final EntitySettings settings = new EntitySettings(
             "rocket_entity",
             SpawnGroup.MISC,
@@ -58,21 +56,15 @@ public class RocketEntity extends Entity {
 
     public RocketEntity(EntityType<? extends Entity> entityType, World world) {
         super(entityType, world);
-
     }
 
     public void Launch(double launchDirection){
         if(!isLaunching) {
-
             this.isLaunching = true;
             this.launchTime = 0;
             this.launchDirection = launchDirection;
 
             this.launchParticles();
-
-            this.launchposition = getBlockPos();
-            System.out.println("Launch Position: " + getPos());
-            System.out.println("Calculated Height: " + calculateMaxHeight());
         }
     }
 
@@ -139,7 +131,7 @@ public class RocketEntity extends Entity {
         if (this.isLaunching) {
             launchTime += 1;
 
-            if(launchTime < this.getRocketSettings().burnTime * 20) {
+            if(launchTime < 60) {
                 enginesActive();
                 if(launchTime % 10 == 0) {
                     playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 3f, 1f);
@@ -158,11 +150,6 @@ public class RocketEntity extends Entity {
                 }
             }
 
-//            if(this.getPos().y > 750) {
-//                System.out.println("MAX HEIGHT REACHED");
-//                kill();
-//            }
-
             world.addImportantParticle(ParticleRegistry.EXHAUST, true, getPos().x, getPos().y, getPos().z, 0, 0, 0);
 
             if(verticalCollision) {
@@ -180,7 +167,7 @@ public class RocketEntity extends Entity {
     }
 
     private void enginesActive(){
-        float force = 0.15f;
+        float force = 0.12f;
         this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
         rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * 0.01f);
         rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * 0.01f);
@@ -190,6 +177,21 @@ public class RocketEntity extends Entity {
         world.addParticle(ParticleTypes.FLAME, true, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
         for (int i = 0; i < 3; i++) {
             world.addImportantParticle(ParticleRegistry.EXHAUST, true, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
+        }
+    }
+
+    @Override
+    public void checkDespawn() {
+        if(this.isLaunching) {
+            Entity entity = this.world.getClosestPlayer(this, -1.0);
+            if (entity != null) {
+                double d = entity.squaredDistanceTo(this);
+                int i = this.getType().getSpawnGroup().getImmediateDespawnRange();
+                int j = i * i;
+                if (d > (double) j) {
+                    this.discard();
+                }
+            }
         }
     }
 
@@ -366,6 +368,11 @@ public class RocketEntity extends Entity {
         if (nbt.contains("Fuse", 10)) {
             this.fuseNbt = nbt.getCompound("Fuse");
         }
+
+        if(nbt.contains("isLaunching")) this.isLaunching = nbt.getBoolean("isLaunching");
+        if(nbt.contains("launchDirection")) this.launchDirection = nbt.getDouble("launchDirection");
+        if(nbt.contains("launchTime")) this.launchTime = nbt.getInt("launchTime");
+
         if(nbt.contains("RocketSettings")) {
             this.rocketSettings = RocketSettings.fromNbt(nbt.getCompound("RocketSettings"));
         }
@@ -376,8 +383,12 @@ public class RocketEntity extends Entity {
         NbtCompound nbtCompound;
 
         if(rocketSettings != null) {
-            nbt.put("RocketSettings", this.rocketSettings.toNbt());
+            nbt.put("isLaunching", this.rocketSettings.toNbt());
         }
+
+        nbt.putBoolean("hasLaunched", this.isLaunching);
+        nbt.putDouble("launchDirection", this.launchDirection);
+        nbt.putFloat("launchTime", this.launchTime);
 
         if (this.linkedEntity != null) {
             nbtCompound = new NbtCompound();
