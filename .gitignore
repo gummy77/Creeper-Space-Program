@@ -108,3 +108,4 @@ replay_pid*
 
 # Temp In-use Files
 *.lock
+Build/tmp/*
