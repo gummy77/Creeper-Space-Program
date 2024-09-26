@@ -15,6 +15,7 @@ public class RocketPart {
     public PartType partType;
     public float Mass;
     public FuelComponent fuelComponent;
+    PartMaterial material;
 
     //set at assemble
     public BlockState Block;
@@ -30,16 +31,25 @@ public class RocketPart {
         this.Volatility = Volatility;
         this.Power = Power;
         this.fuelComponent = fuelComponent;
+        this.material = PartMaterial.BASE;
     }
 
     public RocketPart(PartType type, float Mass, float Volatility, float Power, FuelComponent fuelComponent, BlockState state, BlockPos offset) { //setting these manually for now, will be based off of fuel later.
-        this.partType = type;
-        this.Mass = Mass;
-        this.Volatility = Volatility;
-        this.Power = Power;
+        this(type, Mass, Volatility, Power, fuelComponent); // Call the other constructor to reduce repeating code
         this.Block = state;
         this.offset = offset;
-        this.fuelComponent = fuelComponent;
+        this.material = PartMaterial.BASE;
+    }
+
+    public RocketPart(PartType type, PartMaterial material, float Mass, float Volatility, float Power,
+                      FuelComponent fuelComponent, BlockState state, BlockPos offset) {
+        this(type, Mass, Volatility, Power, fuelComponent, state, offset);
+        this.material = material;
+    }
+
+    public RocketPart(PartType type, PartMaterial material,float Mass, float Volatility, float Power, FuelComponent fuelComponent) {
+        this(type, Mass, Volatility, Power, fuelComponent);
+        this.material = material;
     }
 
     public RocketPart setBlock(BlockState Block, BlockPos offset) {
@@ -55,6 +65,7 @@ public class RocketPart {
         nbt.putFloat("Mass", Mass);
         nbt.putFloat("Volatility", Volatility);
         nbt.putFloat("Power", Power);
+        nbt.putString("PartMaterial", material.toString());
 
         if(fuelComponent != null){
             nbt.put("fuelComponent", fuelComponent.toNbt());
@@ -75,6 +86,7 @@ public class RocketPart {
 
     public static RocketPart fromNbt(NbtCompound nbt){
         PartType Type = PartType.valueOf(nbt.getString("Type"));
+        PartMaterial Material = PartMaterial.valueOf(nbt.getString("PartMaterial"));
         float Mass = nbt.getFloat("Mass");
         float Volatility = nbt.getFloat("Volatility");
         float Power = nbt.getFloat("Power");
@@ -94,19 +106,27 @@ public class RocketPart {
         }
 
         if(Offset != null && state != null) {
-            return new RocketPart(Type, Mass, Volatility, Power, fuelComponent, state, Offset);
+            return new RocketPart(Type, Material, Mass, Volatility, Power, fuelComponent, state, Offset);
         } else {
             return new RocketPart(Type, Mass, Volatility, Power, fuelComponent);
         }
     }
 
     public RocketPart copy(){
-        return new RocketPart(partType, Mass, Volatility, Power, fuelComponent, Block, offset);
+        return new RocketPart(partType, material, Mass, Volatility, Power, fuelComponent, Block, offset);
     }
 
     public enum PartType {
         NOSE,
         BODY,
         EXHAUST
+    }
+
+    /**
+     * Gets the material that this part is made of
+     * @return This Rocket Parts 'material' value
+     */
+    public PartMaterial getMaterial() {
+        return material;
     }
 }

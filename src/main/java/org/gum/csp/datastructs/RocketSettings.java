@@ -1,7 +1,11 @@
 package org.gum.csp.datastructs;
 
+
 import net.minecraft.nbt.NbtCompound;
 import org.gum.csp.registries.PayloadRegistry;
+
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class RocketSettings {
     public RocketPart[] blocks;
@@ -12,6 +16,7 @@ public class RocketSettings {
     public float Volatility;
     public float Power;
     FuelComponent fuel;
+    PartMaterial[] primaryMaterials;
 
     //Calculated from Settings
     public float Acceleration;
@@ -61,6 +66,7 @@ public class RocketSettings {
         this.burnTime = fuelAmount * fuelBurnSpeed;
 
         this.Acceleration = this.Power/this.Mass;
+        this.primaryMaterials = calculatePrimaryMaterials();
     }
 
     public NbtCompound toNbt() {
@@ -101,5 +107,42 @@ public class RocketSettings {
     //Mass:         nose cone = 1, body = 2, tail = 2
     //Volatility:   nose cone = 0, body = 4, tail = 6
     public static RocketSettings SIMPLE_ROCKET = new RocketSettings(5f, 10f, 2f);
+
+    /**
+     * Calculates the most common materials among all used in the RocketPart's
+     * @return The most common materials by instance count (typically just one, but in the case of a tie there will be multiple)
+     */
+    private PartMaterial[] calculatePrimaryMaterials() {
+        Map<PartMaterial, Integer> materialMap = new HashMap<PartMaterial, Integer>();
+
+        for (RocketPart block : blocks) {
+            materialMap.compute(block.getMaterial(), (k, currentCount) -> currentCount == null ? 1 : currentCount + 1);
+        }
+
+        List<PartMaterial> mostCommonMaterials = new ArrayList<PartMaterial>();
+        int currentMaxCount = 0;
+
+        for (Map.Entry<PartMaterial, Integer> entry : materialMap.entrySet()) {
+            PartMaterial material = entry.getKey();
+            Integer count = entry.getValue();
+            if (currentMaxCount < count) {
+                mostCommonMaterials = new ArrayList<>(List.of(material));
+                currentMaxCount = count;
+            } else if (currentMaxCount == count) {
+                mostCommonMaterials.add(material);
+            }
+        }
+
+        return mostCommonMaterials.toArray(new PartMaterial[0]);
+    }
+
+    /**
+     * Checks the Primary Materials of the Rocket for Material
+     * @param material The Material to check for
+     * @return True if the material is one of the Primary Materials
+     */
+    public boolean primaryMaterialsContains(PartMaterial material) {
+        return Arrays.asList(primaryMaterials).contains(material);
+    }
 }
 

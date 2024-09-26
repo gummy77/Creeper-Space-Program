@@ -9,13 +9,17 @@ import net.minecraft.advancement.criterion.AbstractCriterionConditions;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.util.Identifier;
+import org.gum.csp.datastructs.PartMaterial;
+import org.gum.csp.datastructs.RocketSettings;
 
-import java.util.Optional;
+public class RocketAdvancementCriterion extends AbstractCriterion<RocketAdvancementCriterion.Conditions> {
+    private static Identifier ID;
 
-public class WoodRocketAdvancementCriterion extends AbstractCriterion<WoodRocketAdvancementCriterion.Conditions> {
-    private static final Identifier ID = new Identifier(CspMain.MODID, "wood_rocket_advancement");
+    private static PartMaterial material;
 
-    public WoodRocketAdvancementCriterion() {
+    public RocketAdvancementCriterion(PartMaterial materialTrigger, String name) {
+        material = materialTrigger;
+        ID = new Identifier(CspMain.MODID, name);
     }
 
     @Override
@@ -28,11 +32,17 @@ public class WoodRocketAdvancementCriterion extends AbstractCriterion<WoodRocket
             super(ID, playerPredicate);
         }
 
-        boolean test() { return true; }
+        boolean test(RocketSettings rocketSettings) {
+            if (material == PartMaterial.NONE) {
+                // THE ONLY TIME NONE SHOULD BE USED IS IF WE DON'T CARE ABOUT MATERIAL
+                return true;
+            }
+            return rocketSettings.primaryMaterialsContains(material);
+        }
     }
 
-    public void trigger(ServerPlayerEntity player) {
-        trigger(player, conditions -> conditions.test());
+    public void trigger(ServerPlayerEntity player, RocketSettings settings) {
+        trigger(player, conditions -> conditions.test(settings));
     }
 
     @Override
