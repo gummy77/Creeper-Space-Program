@@ -44,8 +44,8 @@ public class RocketEntity extends Entity {
     public Vec3d rocketRotation = new Vec3d(0, 1f, 0);
 
     private boolean isLaunching = false;
-    private float launchTime;
-    private double launchDirection;
+    private float launchTime = 0;
+    private double launchDirection = 0;
 
     public static final EntitySettings settings = new EntitySettings(
             "rocket_entity",
@@ -131,7 +131,7 @@ public class RocketEntity extends Entity {
         if (this.isLaunching) {
             launchTime += 1;
 
-            if(launchTime < 60) {
+            if(launchTime < 90) {
                 enginesActive();
                 if(launchTime % 10 == 0) {
                     playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 3f, 1f);
@@ -167,10 +167,10 @@ public class RocketEntity extends Entity {
     }
 
     private void enginesActive(){
-        float force = 0.12f;
+        float force = 0.075f;
         this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
-        rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * 0.01f);
-        rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * 0.01f);
+        rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * 0.005f);
+        rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * 0.005f);
 
         //TODO foreach engine present
         Vec3d particlePosition = getPos();
@@ -182,12 +182,13 @@ public class RocketEntity extends Entity {
 
     @Override
     public void checkDespawn() {
-        if(this.isLaunching) {
+        if(this.isLaunching && (this.launchTime > this.getRocketSettings().burnTime)) {
             Entity entity = this.world.getClosestPlayer(this, -1.0);
             if (entity != null) {
-                double d = entity.squaredDistanceTo(this);
+                Vec3d checkposition = new Vec3d(this.getX(), entity.getY(), this.getZ());
+                double d = entity.squaredDistanceTo(checkposition);
                 int i = this.getType().getSpawnGroup().getImmediateDespawnRange();
-                int j = i * i;
+                int j = i * i * i;
                 if (d > (double) j) {
                     this.discard();
                 }
@@ -254,17 +255,20 @@ public class RocketEntity extends Entity {
     }
 
     public ActionResult addPayload(ItemStack payloadItem) {
-        this.getRocketSettings().payload = PayloadRegistry.PAYLOADS.DEFAULT;
-        return ActionResult.SUCCESS;
+        if(this.getRocketSettings().payload == null) {
+            this.getRocketSettings().payload = PayloadRegistry.PAYLOADS.DEFAULT;
+            for (int i = 0; i < 10; i++) {
+                world.addParticle(ParticleTypes.GLOW, this.getPos().x+random.nextFloat()-0.5f, this.getPos().y + getRocketSettings().blocks.length-random.nextFloat(), this.getPos().z+random.nextFloat()-0.5f, 0, 0, 0);
+            }
+            return ActionResult.SUCCESS;
+        }
+        return ActionResult.FAIL;
     }
 
     public RocketSettings getRocketSettings() {
         if(rocketSettings == null)
             return RocketSettings.SIMPLE_ROCKET;
         return rocketSettings;
-    }
-    public void setRocketSettings(RocketSettings rocketSettings) {
-        this.rocketSettings = rocketSettings;
     }
 
     protected void updateFuse() {
@@ -361,6 +365,17 @@ public class RocketEntity extends Entity {
     }
 
     @Override
+    protected Box calculateBoundingBox() {
+        EntityDimensions dimensions;
+        if(this.getRocketSettings().blocks.length == 0) {
+            dimensions = EntityDimensions.fixed(0.8f, 2);
+        } else {
+            dimensions = EntityDimensions.fixed(0.8f, this.getRocketSettings().blocks.length);
+        }
+        return dimensions.getBoxAt(this.getPos());
+    }
+
+    @Override
     protected void initDataTracker() {
     }
 
@@ -375,6 +390,7 @@ public class RocketEntity extends Entity {
 
         if(nbt.contains("RocketSettings")) {
             this.rocketSettings = RocketSettings.fromNbt(nbt.getCompound("RocketSettings"));
+            this.setBoundingBox(calculateBoundingBox());
         }
     }
 
@@ -383,10 +399,10 @@ public class RocketEntity extends Entity {
         NbtCompound nbtCompound;
 
         if(rocketSettings != null) {
-            nbt.put("isLaunching", this.rocketSettings.toNbt());
+            nbt.put("RocketSettings", this.rocketSettings.toNbt());
         }
 
-        nbt.putBoolean("hasLaunched", this.isLaunching);
+        nbt.putBoolean("isLaunching", this.isLaunching);
         nbt.putDouble("launchDirection", this.launchDirection);
         nbt.putFloat("launchTime", this.launchTime);
 
