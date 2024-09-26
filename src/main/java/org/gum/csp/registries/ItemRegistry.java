@@ -21,6 +21,9 @@ public class ItemRegistry {
     public static final Item FUSE;
     public static final Assembler ASSEMBLER;
 
+    public static final Item WOODEN_FIN;
+    public static final Item IRON_NOZZLE;
+
     public static final PayloadItem DEFAULT_PAYLOAD_ITEM;
 
     public static Item BASE_NOSE_CONE;
@@ -50,7 +53,10 @@ public class ItemRegistry {
     static {
         LAUNCH_KIT = (LaunchKit) register("launchkit", new LaunchKit(getSettings().maxDamage(10)));
         FUSE = register("fuse", new Item(getSettings()));
-        ASSEMBLER = (Assembler) register("assembler", new Assembler(getSettings().maxDamage(10)));
+        ASSEMBLER = (Assembler) register("basic_assembler", new Assembler(getSettings().maxDamage(10)));
+
+        WOODEN_FIN = register("wooden_fin", new Item(getSettings()));
+        IRON_NOZZLE = register("iron_nozzle", new Item(getSettings()));
 
         DEFAULT_PAYLOAD_ITEM = (PayloadItem) register("default_payload", new PayloadItem(getSettings(), PayloadRegistry.PAYLOADS.DEFAULT));
 
