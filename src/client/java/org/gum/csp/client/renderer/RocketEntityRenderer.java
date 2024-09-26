@@ -3,6 +3,7 @@ package org.gum.csp.client.renderer;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.LightBlock;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -75,11 +76,11 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
         Entity linkedEntity = entity.getLinkedEntity();
         if (linkedEntity != null) {
-            this.renderFuse(entity, tickDelta, matrices, vertexConsumers, linkedEntity, light);
+            this.renderFuse(entity, tickDelta, matrices, vertexConsumers, linkedEntity);
         }
     }
 
-    private <E extends Entity> void renderFuse(RocketEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider provider, E holdingEntity, int light) {
+    private <E extends Entity> void renderFuse(RocketEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider provider, E holdingEntity) {
         matrices.push();
         Vec3d vec3d = holdingEntity.getLeashPos(tickDelta);
         double g = MathHelper.lerp(tickDelta, entity.prevX, entity.getX());
@@ -102,26 +103,25 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
         int u;
         for(u = 0; u <= 24; ++u) {
-            renderFusePiece(vertexConsumer, matrix4f, j, k, l, q, light, s, t, 0.025F, o, p, u);
+            renderFusePiece(vertexConsumer, matrix4f, j, k, l, q, s,0.025F, o, p, u);
         }
 
         for(u = 24; u >= 0; --u) {
-            renderFusePiece(vertexConsumer, matrix4f, j, k, l, q, light, s, t, 0.0F, o, p, u);
+            renderFusePiece(vertexConsumer, matrix4f, j, k, l, q, s, 0.0F, o, p, u);
         }
 
         matrices.pop();
     }
 
-    private static void renderFusePiece(VertexConsumer vertexConsumer, Matrix4f positionMatrix, float f, float g, float h, int EntityBlockLight, int linkedEntityBlockLight, int EntitySkyLight, int linkedEntitySkyLight, float j, float k, float l, int pieceIndex) {
+    private static void renderFusePiece(VertexConsumer vertexConsumer, Matrix4f positionMatrix, float f, float g, float h, int EntityBlockLight, int EntitySkyLight, float j, float k, float l, int pieceIndex) {
         float m = (float)pieceIndex / 24.0F;
-        int n = (int)MathHelper.lerp(m, (float)EntityBlockLight, (float)linkedEntityBlockLight);
-        int o = (int)MathHelper.lerp(m, (float)EntitySkyLight, (float)linkedEntitySkyLight);
-        int p = LightmapTextureManager.pack(n, o);
+        int p = LightmapTextureManager.pack(EntityBlockLight, EntitySkyLight);
+
         float u = f * m;
         float v = g > 0.0F ? g * m * m : g - g * (1.0F - m) * (1.0F - m);
         float w = h * m;
-        vertexConsumer.vertex(positionMatrix, u - k, v + j, w + l).color(0, 0, 0, 1.0F).light(p).next();
-        vertexConsumer.vertex(positionMatrix, u + k, v + (float) 0.025 - j, w - l).color(0, 0, 0, 1.0F).light(p).next();
+        vertexConsumer.vertex(positionMatrix, u - k, v + j, w + l).color(0.25f, 0.25f, 0.25f, 1.0F).light(p).next();
+        vertexConsumer.vertex(positionMatrix, u + k, v + (float) 0.025 - j, w - l).color(0.2f, 0.2f, 0.2f, 1.0F).light(p).next();
     }
 
     @Override
