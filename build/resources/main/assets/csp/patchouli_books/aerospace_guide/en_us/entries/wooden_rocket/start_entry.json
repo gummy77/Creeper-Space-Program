@@ -1,12 +1,17 @@
 {
   "name": "Getting Started",
-  "icon": "minecraft:oak_planks",
+  "icon": "minecraft:oak_wood",
   "advancement": "csp:root",
   "category": "csp:basic_rocketry",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Before we create our first rocket, we need to gather some items."
+      "text": "Lets get started creating our very first rocket. In order to begin, we first need to collect some items: $(li) Stripped Oak Logs $(li) Gunpowder $(li) Iron Ingot $(br2)Once you have collected all these items, we can get started creating our first rocket."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "csp:wooden_nose_cone",
+      "recipe2": "csp:wooden_body_segment"
     }
   ]
 }
