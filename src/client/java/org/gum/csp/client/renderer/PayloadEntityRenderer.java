@@ -33,16 +33,6 @@ public class PayloadEntityRenderer extends EntityRenderer<PayloadEntity> {
         super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
         matrices.push();
 
-        Vec3d rotationVector = entity.getVelocity();
-        Vec3d UP = new Vec3d(0,1,0);
-        Vec3d xAxis = UP.crossProduct(rotationVector);
-        float w = (float) (Math.sqrt(rotationVector.length() * rotationVector.length()) + UP.dotProduct(rotationVector));
-
-        Quaternion rotation = new Quaternion((float) xAxis.x, (float) xAxis.y, (float) xAxis.z, w);
-        rotation.normalize();
-
-        matrices.multiply(rotation);
-
         if(entity.getPayloadSettings() != null){
             if(entity.getPayloadSettings().blocks != null && entity.getPayloadSettings().blocks.length > 0) {
                 matrices.translate(-0.5f, 0, -0.5f);
@@ -59,7 +49,7 @@ public class PayloadEntityRenderer extends EntityRenderer<PayloadEntity> {
                 return;
             }
         }
-        modelLoader.getModelPart(CspMainClient.ROCKET_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(getTexture(entity))), light, OverlayTexture.DEFAULT_UV);
+        modelLoader.getModelPart(CspMainClient.PAYLOAD_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(getTexture(entity))), light, OverlayTexture.DEFAULT_UV);
         matrices.pop();
     }
 

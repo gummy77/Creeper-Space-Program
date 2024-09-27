@@ -138,12 +138,11 @@ public class RocketEntity extends Entity {
                 }
             } else {
                 if(Math.abs(getVelocity().y) < 0.1f) {
-                    if(this.getRocketSettings().payload != null){
+                    if(this.getRocketSettings().payload != null && !this.world.isClient){
                         Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
-                        payload.Deploy((ServerWorld) this.world, this , this.getBlockPos());
-                    } else {
-                        kill();
+                        payload.Deploy(this.world, this , this.getBlockPos());
                     }
+                    kill();
                     return;
                 }
             }

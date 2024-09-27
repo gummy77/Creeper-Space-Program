@@ -21,7 +21,7 @@ public class DefaultPayload extends Payload {
     @Override
     public boolean Deploy(World world, RocketEntity entity, BlockPos pos) {
         PayloadEntity payloadEntity = EntityRegistry.PAYLOAD_ENTITY.create(world);
-        payloadEntity.setPosition(pos.getX(), pos.getY() + 10f, pos.getZ());
+        payloadEntity.setPosition(pos.getX(), 350f, pos.getZ());
 
         NbtCompound nbtCompound = new NbtCompound();
         nbtCompound.put("PayloadSettings", entity.getRocketSettings().toNbt());

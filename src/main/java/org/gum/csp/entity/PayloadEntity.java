@@ -30,13 +30,11 @@ public class PayloadEntity extends Entity {
     public static final EntitySettings settings = new EntitySettings(
             "payload_entity",
             SpawnGroup.MISC,
-            2f, 1f,
+            1f, 1f,
             true
     );
 
     private PayloadSettings payloadSettings;
-
-    private boolean hasNetworked = false;
 
     public PayloadEntity(EntityType<?> type, World world) {
         super(type, world);
@@ -47,18 +45,18 @@ public class PayloadEntity extends Entity {
         super.tick();
 
         if(!world.isClient) {
-            if(!hasNetworked && payloadSettings != null) {
+            if(payloadSettings != null) {
                 PacketByteBuf buf = PacketByteBufs.create(); //TODO move to its own function and update to work with saving
                 buf.writeInt(this.getId());
                 buf.writeNbt(payloadSettings.toNbt());
                 for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
                     ServerPlayNetworking.send(player, NetworkingConstants.DEPLOY_PAYLOAD_PACKET_ID, buf);
                 }
-                hasNetworked = true;
             }
         }
 
         this.addVelocity(0, -0.02, 0);
+        this.setVelocity(this.getVelocity().multiply(0.95f));
         this.move(MovementType.SELF, this.getVelocity());
     }
 
@@ -99,11 +97,6 @@ public class PayloadEntity extends Entity {
 
         }
         return ActionResult.PASS;
-    }
-
-    @Override
-    public boolean isPushable() {
-        return true;
     }
 
     @Override
