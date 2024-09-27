@@ -10,6 +10,9 @@
   "item.csp.rocket": "Rocket Spawner (DEV)",
   "item.csp.dev_wand": "Dev Wand",
 
+  "_comment": "--- Entities ---",
+  "entity.csp.rocket_entity": "Rocket",
+  "entity.csp.payload_entity": "Payload",
 
   "_comment": "--- Items ---",
   "item.csp.launchkit": "Launch Kit",

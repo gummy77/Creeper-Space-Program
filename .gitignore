@@ -110,3 +110,4 @@ replay_pid*
 *.lock
 Build/tmp/*
 /.gradle/loom-cache/minecraftMaven/net/minecraft/
+/.gradle/loom-cache/

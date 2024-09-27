@@ -10,6 +10,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import org.gum.csp.entity.PayloadEntity;
 import org.gum.csp.entity.RocketEntity;
 import org.gum.csp.registries.NetworkingConstants;
 
@@ -20,6 +21,7 @@ public class ClientNetworkHandler {
         ClientPlayNetworking.registerGlobalReceiver(NetworkingConstants.ATTACH_FUSE_PACKET_ID, ClientNetworkHandler::onEntityLink);
         ClientPlayNetworking.registerGlobalReceiver(NetworkingConstants.LAUNCH_ROCKET_PACKET_ID, ClientNetworkHandler::onRocketLaunch);
         ClientPlayNetworking.registerGlobalReceiver(NetworkingConstants.ASSEMBLE_ROCKET_PACKET_ID, ClientNetworkHandler::onAssembleRocket);
+        ClientPlayNetworking.registerGlobalReceiver(NetworkingConstants.DEPLOY_PAYLOAD_PACKET_ID, ClientNetworkHandler::DeployPayload);
     }
 
     public static void onEntityLink(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender){
@@ -56,6 +58,19 @@ public class ClientNetworkHandler {
             Entity entity = client.world.getEntityById(rocketId);
             if(entity instanceof RocketEntity){
                 ((RocketEntity) entity).readCustomDataFromNbt(nbtCompound);
+            }
+        });
+    }
+
+    public static void DeployPayload(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender){
+        int payloadId = buf.readInt();
+        NbtCompound nbtCompound = new NbtCompound();
+        nbtCompound.put("PayloadSettings", buf.readNbt());
+
+        client.execute(() -> {
+            Entity entity = client.world.getEntityById(payloadId);
+            if(entity instanceof PayloadEntity){
+                ((PayloadEntity) entity).readCustomDataFromNbt(nbtCompound);
             }
         });
     }

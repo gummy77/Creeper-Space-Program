@@ -9,11 +9,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
 import org.gum.csp.entity.EntitySettings;
+import org.gum.csp.entity.PayloadEntity;
 import org.gum.csp.entity.RocketEntity;
 
 public class EntityRegistry {
 
     public static EntityType<RocketEntity> ROCKET_ENTITY;
+    public static EntityType<PayloadEntity> PAYLOAD_ENTITY;
 
     public static void registerEntityAttributes() {
 
@@ -21,6 +23,7 @@ public class EntityRegistry {
 
     public static void registerEntities() {
         ROCKET_ENTITY = registerEntity("rocket_entity", RocketEntity::new, RocketEntity.settings);
+        PAYLOAD_ENTITY = registerEntity("payload_entity", PayloadEntity::new, PayloadEntity.settings);
     }
 
     protected static <T extends Entity> EntityType<T> registerEntity(String path, EntityType.EntityFactory<T> type, EntitySettings settings) {

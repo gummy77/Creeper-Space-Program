@@ -140,9 +140,7 @@ public class RocketEntity extends Entity {
                 if(Math.abs(getVelocity().y) < 0.1f) {
                     if(this.getRocketSettings().payload != null){
                         Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
-                        if(payload.onDeploy(this , this.getBlockPos())){
-                            payload.onLand(this, new BlockPos(this.getPos().multiply(5f/3f)));
-                        };
+                        payload.Deploy((ServerWorld) this.world, this , this.getBlockPos());
                     } else {
                         kill();
                     }
@@ -203,7 +201,7 @@ public class RocketEntity extends Entity {
                 kill();
             }
         }
-        return false;//super.handleAttack(attacker);
+        return false;
     }
 
     @Override
@@ -234,20 +232,14 @@ public class RocketEntity extends Entity {
             }
         } else if (itemStack.isOf(ItemRegistry.DEV_WAND)) {
             String out;
-
-            if(this.world.isClient) {
-                out = "\nClient: ";
-            } else {
-                out = "\nServer: ";
+            if (!this.world.isClient) {
+                if(this.getRocketSettings().payload != null) {
+                    Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
+                    payload.Deploy(world, this, this.getBlockPos());
+                    kill();
+                }
             }
 
-            System.out.println(out + "\n" +
-                    "Mass: " + this.getRocketSettings().Mass + "\n" +
-                    "Volatility: " + this.getRocketSettings().Volatility + "\n" +
-                    "Power: " + this.getRocketSettings().Power + "\n" +
-                    "Acceleration: " + getRocketSettings().Acceleration + "\n" +
-                    "Burn Time: " + getRocketSettings().burnTime * 20 + " ticks (" + getRocketSettings().burnTime + " seconds)"
-            );
         } else if(itemStack.getItem().getClass() == PayloadItem.class) {
             return addPayload(itemStack);
         }

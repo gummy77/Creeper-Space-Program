@@ -15,8 +15,10 @@ import net.minecraft.particle.ParticleType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
+import org.gum.csp.client.model.PayloadEntityModel;
 import org.gum.csp.client.model.RocketEntityModel;
 import org.gum.csp.client.particle.PlumeParticle;
+import org.gum.csp.client.renderer.PayloadEntityRenderer;
 import org.gum.csp.client.renderer.RocketEntityRenderer;
 import org.gum.csp.registries.EntityRegistry;
 import org.gum.csp.registries.ParticleRegistry;
@@ -24,11 +26,13 @@ import org.gum.csp.registries.ParticleRegistry;
 public class CspMainClient implements ClientModInitializer {
 
     public static final EntityModelLayer ROCKET_MODEL_LAYER = registerModel("rocket_model", EntityRegistry.ROCKET_ENTITY, RocketEntityRenderer::new);
+    public static final EntityModelLayer PAYLOAD_MODEL_LAYER = registerModel("payload_model", EntityRegistry.PAYLOAD_ENTITY, PayloadEntityRenderer::new);
 
 
     @Override
     public void onInitializeClient() {
         EntityModelLayerRegistry.registerModelLayer(ROCKET_MODEL_LAYER, RocketEntityModel::getTexturedModelData);
+        EntityModelLayerRegistry.registerModelLayer(PAYLOAD_MODEL_LAYER, PayloadEntityModel::getTexturedModelData);
 
         registerParticle(ParticleRegistry.EXHAUST, PlumeParticle.Factory::new);
 

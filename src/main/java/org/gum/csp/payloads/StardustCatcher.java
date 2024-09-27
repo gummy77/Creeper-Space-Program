@@ -1,6 +1,8 @@
 package org.gum.csp.payloads;
 
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.gum.csp.datastructs.Payload;
 import org.gum.csp.entity.RocketEntity;
 
@@ -11,14 +13,9 @@ public class StardustCatcher extends Payload {
     }
 
     @Override
-    public boolean onDeploy(RocketEntity entity,  BlockPos pos) {
-        System.out.println("StardustCatcher: onDeploy");
+    public boolean Deploy(World world, RocketEntity entity, BlockPos pos) {
+        System.out.println("StardustCatcher: Deploy");
         System.out.println("StardustCatcher: "+pos);
         return true;
-    }
-
-    @Override
-    public void onLand(RocketEntity entity, BlockPos pos) {
-        System.out.println("StardustCatcher: onLand");
     }
 }
