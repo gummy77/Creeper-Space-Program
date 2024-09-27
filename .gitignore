@@ -109,3 +109,4 @@ replay_pid*
 # Temp In-use Files
 *.lock
 Build/tmp/*
+/.gradle/loom-cache/minecraftMaven/net/minecraft/
