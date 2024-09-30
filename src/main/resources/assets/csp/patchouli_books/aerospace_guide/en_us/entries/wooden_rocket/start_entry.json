@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Lets get started creating our very first rocket. In order to begin, we first need to collect some items: $(li) Stripped Oak Logs $(li) Gunpowder $(li) Iron Ingot $(br2)Once you have collected all these items, we can get started creating our first rocket."
+      "text": "Lets get started creating our very first rocket. In order to begin, we first need to collect some items: $(li) Stripped Oak Logs $(li) Gunpowder $(li) Iron Ingot $(br2)Once you have collected all these items, we can get started creating our first rocket. The recipes are on the right hand side."
     },
     {
       "type": "patchouli:crafting",
