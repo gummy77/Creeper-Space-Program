@@ -36,9 +36,6 @@ public class DefaultPayload extends Payload {
         nbtCompound.put("PayloadSettings", payloadSettings.toNbt());
         payloadEntity.readCustomDataFromNbt(nbtCompound);
 
-        System.out.println(nbtCompound);
-        System.out.println(payloadEntity.getPayloadSettings().returnItems);
-
         world.spawnEntity(payloadEntity);
         return true;
     }

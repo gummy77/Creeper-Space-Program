@@ -264,8 +264,9 @@ public class RocketEntity extends Entity {
             this.getRocketSettings().payload = payload;
 
             for (int i = 0; i < 10; i++) {
-                world.addParticle(ParticleTypes.GLOW, this.getPos().x+random.nextFloat()-0.5f, this.getPos().y + getRocketSettings().blocks.length-random.nextFloat(), this.getPos().z+random.nextFloat()-0.5f, 0, 0, 0);
+                world.addParticle(ParticleTypes.GLOW, this.getPos().x + random.nextFloat() - 0.5f, this.getPos().y + getRocketSettings().blocks.length - random.nextFloat(), this.getPos().z + random.nextFloat() - 0.5f, 0, 0, 0);
             }
+
             player.getStackInHand(hand).decrement(1);
             return ActionResult.SUCCESS;
         }
