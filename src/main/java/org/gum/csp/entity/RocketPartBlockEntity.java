@@ -133,10 +133,10 @@ public class RocketPartBlockEntity extends BlockEntity {
             return false;
         }
 
-        if (!(parts.get(0).partType == RocketPart.PartType.NOSE)) {
+        if (parts.get(0).partType != RocketPart.PartType.NOSE) {
             return false;
         }
-        if (!(parts.get(parts.size() - 1).partType == RocketPart.PartType.EXHAUST)) {
+        if (parts.get(parts.size() - 1).partType != RocketPart.PartType.EXHAUST) {
             return false;
         }
 
