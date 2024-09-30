@@ -1,5 +1,6 @@
 package org.gum.csp.registries;
 
+import net.minecraft.item.ItemStack;
 import org.gum.csp.datastructs.Payload;
 import org.gum.csp.payloads.DefaultPayload;
 import org.gum.csp.payloads.StardustCatcher;
@@ -18,6 +19,20 @@ public class PayloadRegistry {
             case MAPPER:
                 return null;
         }
+
+        return null;
+    }
+
+    public static PAYLOADS payloadFromStack(ItemStack stack) {
+        if(stack.getItem() == ItemRegistry.DEFAULT_PAYLOAD_ITEM) {
+            return PAYLOADS.DEFAULT;
+        }
+        /*
+        else if(stack.getItem() == ItemRegistry.STARDUST_CATCHER_PAYLOAD) {
+            return STARDUST_CATCHER;
+        }
+        */
+
 
         return null;
     }

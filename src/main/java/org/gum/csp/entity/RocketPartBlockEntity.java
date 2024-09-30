@@ -20,7 +20,7 @@ public class RocketPartBlockEntity extends BlockEntity {
 
     public RocketPartBlockEntity(BlockPos pos, BlockState state) {
         super(BlockRegistry.ROCKET_PART_BLOCK_ENTITY, pos, state);
-        this.rocketPart = new RocketPart(RocketPart.PartType.BODY, 1, 1,0 ,null);
+        this.rocketPart = new RocketPart(RocketPart.PartType.BODY, 0.5f, 1, 1,0 ,null);
     }
     public RocketPartBlockEntity(BlockPos pos, BlockState state, RocketPart rocketPart) {
         super(BlockRegistry.ROCKET_PART_BLOCK_ENTITY, pos, state);
@@ -37,12 +37,17 @@ public class RocketPartBlockEntity extends BlockEntity {
 
         if(parts.size() < 3){ //TODO have a "isvalid" function that checks if parts arent upside down and stuff
             //yell at players
+
+            for(RocketPart part : parts) {
+                world.breakBlock(baseBlock.pos.add(part.offset.getX(), part.offset.getY(), part.offset.getZ()), true);
+            }
             return;
+        } else {
+            for(RocketPart part : parts) {
+                world.breakBlock(baseBlock.pos.add(part.offset.getX(), part.offset.getY(), part.offset.getZ()), false);
+            }
         }
 
-        for(RocketPart part : parts) {
-            world.breakBlock(baseBlock.pos.add(part.offset.getX(), part.offset.getY(), part.offset.getZ()), false);
-        }
 
         RocketSettings settings = new RocketSettings(parts.toArray(new RocketPart[0]));
 

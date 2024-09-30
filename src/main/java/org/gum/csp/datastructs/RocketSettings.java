@@ -69,6 +69,16 @@ public class RocketSettings {
         this.primaryMaterials = calculatePrimaryMaterials();
     }
 
+    public float getMaxWidth(){
+        float mWidth = 0;
+        for(RocketPart block : this.blocks){
+            if(block.radius > mWidth){
+                mWidth = block.radius;
+            }
+        }
+        return mWidth;
+    }
+
     public NbtCompound toNbt() {
         NbtCompound nbt = new NbtCompound();
 

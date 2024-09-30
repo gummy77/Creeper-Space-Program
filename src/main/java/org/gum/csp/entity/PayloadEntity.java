@@ -3,27 +3,34 @@ package org.gum.csp.entity;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MovementType;
-import net.minecraft.entity.SpawnGroup;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
+import net.minecraft.particle.BlockStateParticleEffect;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.gum.csp.datastructs.Payload;
 import org.gum.csp.datastructs.PayloadSettings;
+import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.item.PayloadItem;
 import org.gum.csp.registries.ItemRegistry;
 import org.gum.csp.registries.NetworkingConstants;
 import org.gum.csp.registries.PayloadRegistry;
+
+import java.util.ArrayList;
 
 public class PayloadEntity extends Entity {
 
@@ -56,7 +63,7 @@ public class PayloadEntity extends Entity {
         }
 
         this.addVelocity(0, -0.02, 0);
-        this.setVelocity(this.getVelocity().multiply(0.95f));
+        //this.setVelocity(this.getVelocity().multiply(0.95f));
         this.move(MovementType.SELF, this.getVelocity());
     }
 
@@ -77,9 +84,36 @@ public class PayloadEntity extends Entity {
     @Override
     public boolean handleAttack(Entity attacker) {
         if(attacker instanceof PlayerEntity) {
-            if(((PlayerEntity) attacker).getStackInHand(((PlayerEntity) attacker).getActiveHand()).isOf(ItemRegistry.DEV_WAND)){
-                kill();
+
+            for(ItemStack stack : this.payloadSettings.returnItems) {
+                dropStack(stack);
             }
+
+            if(attacker instanceof ServerPlayerEntity) {
+                if(!((PlayerEntity) attacker).isCreative()) {
+                    for (RocketPart part : getPayloadSettings().blocks) {
+                        dropStack(part.Block.getBlock().asItem().getDefaultStack());
+                    }
+                }
+            } else {
+                for (RocketPart part : getPayloadSettings().blocks) {
+                    dropStack(part.Block.getBlock().asItem().getDefaultStack());
+                }
+            }
+
+            for (RocketPart part : getPayloadSettings().blocks) {
+                Vec3d partPos = this.getPos().add(part.offset.getX() - 0.5f, part.offset.getY(), part.offset.getZ() - 0.5f);
+                BlockState blockState = part.Block;
+                for (int i = 0; i < 10; i++) {
+                    Vec3d randomPos = partPos.add(random.nextFloat(), random.nextFloat(), random.nextFloat());
+                    world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), randomPos.x, randomPos.y, randomPos.z, 0, 0, 0);
+                }
+
+                playSound(blockState.getSoundGroup().getBreakSound(), 1, 1);
+            }
+
+            kill();
+
         }
         return false;
     }
@@ -110,6 +144,19 @@ public class PayloadEntity extends Entity {
     }
 
     @Override
+    protected Box calculateBoundingBox() {
+        if(this.getPayloadSettings() == null) return EntityDimensions.fixed(1, 1).getBoxAt(this.getPos());
+        EntityDimensions dimensions;
+        if(this.getPayloadSettings().blocks.length == 0) {
+            dimensions = EntityDimensions.fixed(0.8f, 2);
+        } else {
+            float width = this.getPayloadSettings().getMaxWidth();
+            dimensions = EntityDimensions.fixed(width/16f, this.getPayloadSettings().blocks.length);
+        }
+        return dimensions.getBoxAt(this.getPos());
+    }
+
+    @Override
     protected void initDataTracker() {
 
     }
@@ -118,6 +165,7 @@ public class PayloadEntity extends Entity {
     public void readCustomDataFromNbt(NbtCompound nbt) {
         if(nbt.contains("PayloadSettings")) {
             this.payloadSettings = PayloadSettings.fromNbt(nbt.getCompound("PayloadSettings"));
+            this.setBoundingBox(calculateBoundingBox());
         }
     }
 

@@ -58,6 +58,8 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
         matrices.multiply(rotation);
 
         if(entity.getRocketSettings().blocks != null && entity.getRocketSettings().blocks.length > 0) {
+            this.shadowRadius = entity.getRocketSettings().getMaxWidth() * 0.0625f * 1.5f;
+
             matrices.translate(-0.5f, 0, -0.5f);
 
             RocketPart[] blocks = entity.getRocketSettings().blocks;

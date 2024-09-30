@@ -43,28 +43,28 @@ public class BlockRegistry {
         //Basic
 
         BASE_NOSE_CONE = (RocketPartBlock) register("base_nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
-                new RocketPart(RocketPart.PartType.NOSE, 1, 1, 0, null)));
+                new RocketPart(RocketPart.PartType.NOSE, 6f, 1, 1, 0, null)));
 
         BASE_BODY_SEGMENT = (RocketPartBlock) register("base_body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
                 new RocketPart(
-                        RocketPart.PartType.BODY,2, 2,0,
+                        RocketPart.PartType.BODY, 6f,2, 2,0,
                         new FuelComponent(FuelComponent.FuelType.SOLID, 2, 1, 1)
                 )));
         BASE_EXHAUST = (RocketPartBlock) register("base_exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
                 new RocketPart(
-                        RocketPart.PartType.EXHAUST,2, 2,3, null)));
+                        RocketPart.PartType.EXHAUST, 6f,2, 2,3, null)));
 
         //Wooden
 
         WOODEN_NOSE_CONE = (RocketPartBlock) register("wooden_nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.WOOD),
-                new RocketPart(RocketPart.PartType.NOSE, PartMaterial.WOOD,1, 0, 0,null)));
+                new RocketPart(RocketPart.PartType.NOSE, PartMaterial.WOOD, 6f,1, 0, 0,null)));
 
         WOODEN_BODY_SEGMENT = (RocketPartBlock) register("wooden_body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.WOOD),
-                new RocketPart(RocketPart.PartType.BODY, PartMaterial.WOOD,2, 7.5f, 0,
+                new RocketPart(RocketPart.PartType.BODY, PartMaterial.WOOD, 6f,2, 7.5f, 0,
                         new FuelComponent(FuelComponent.FuelType.SOLID, 2, 1, 1))));
 
         WOODEN_EXHAUST = (RocketPartBlock) register("wooden_exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.WOOD),
-                new RocketPart(RocketPart.PartType.EXHAUST, PartMaterial.WOOD,2, 25, 2, null)));
+                new RocketPart(RocketPart.PartType.EXHAUST, PartMaterial.WOOD, 6f,2, 25, 2, null)));
 
 
 

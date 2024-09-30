@@ -13,7 +13,7 @@ public class StardustCatcher extends Payload {
     }
 
     @Override
-    public boolean Deploy(World world, RocketEntity entity, BlockPos pos) {
+    public boolean Deploy(World world, RocketEntity entity, BlockPos pos, float heightReached) {
         System.out.println("StardustCatcher: Deploy");
         System.out.println("StardustCatcher: "+pos);
         return true;

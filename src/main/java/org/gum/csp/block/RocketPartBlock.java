@@ -22,7 +22,10 @@ public class RocketPartBlock extends BlockWithEntity {
 
     @Override
     public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext ctx) {
-        return VoxelShapes.cuboid(0.312f, 0.0f, 0.312f, 0.6875f, 1f, 0.6875f);
+        float width = rocketPart.radius;
+        float offset = (16 - width) / 2;
+
+        return VoxelShapes.cuboid(offset * 0.0625, 0.0f, offset * 0.0625, (width + offset) * 0.0625, 1f, (width + offset) * 0.0625);
     }
 
     @Override

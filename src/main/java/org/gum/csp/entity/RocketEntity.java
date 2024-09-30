@@ -68,11 +68,10 @@ public class RocketEntity extends Entity {
         }
     }
 
-    private float calculateMaxHeight(){
+    public float calculateMaxHeight(){
         float P = this.getRocketSettings().Power;
         float M = this.getRocketSettings().Mass;
         float T = this.getRocketSettings().burnTime;
-        System.out.println("P: "+P + " M: " + M + " T: " + T);
 
         float log = (float) (  1f / (Math.pow(P*T, 3f) * 20f)  );
         float H = (float) -(  Math.log10(log) * ((300f*P*T)/M)  );
@@ -107,6 +106,17 @@ public class RocketEntity extends Entity {
         for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
             ServerPlayNetworking.send(player, NetworkingConstants.LAUNCH_ROCKET_PACKET_ID, buf);
         }
+
+        float payloadDistance = this.calculateMaxHeight() * (0.5f);
+
+        Vec3d payloadPosition = new Vec3d(Math.cos(launchDirection), 0, -Math.sin(launchDirection));
+        System.out.println("Payload Dir: " + payloadPosition);
+        payloadPosition = payloadPosition.multiply(payloadDistance);
+
+        if(this.getRocketSettings().payload != null) {
+            Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
+            payload.Deploy(world, this, this.getBlockPos().add(payloadPosition.x, payloadPosition.y, payloadPosition.z), this.calculateMaxHeight());
+        }
     }
 
     private void launchParticles() {
@@ -138,10 +148,10 @@ public class RocketEntity extends Entity {
                 }
             } else {
                 if(Math.abs(getVelocity().y) < 0.1f) {
-                    if(this.getRocketSettings().payload != null && !this.world.isClient){
-                        Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
-                        payload.Deploy(this.world, this , this.getBlockPos());
-                    }
+//                    if(this.getRocketSettings().payload != null && !this.world.isClient){
+//                        Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
+//                        payload.Deploy(this.world, this , this.getBlockPos());
+//                    }
                     kill();
                     return;
                 }
@@ -234,23 +244,29 @@ public class RocketEntity extends Entity {
             if (!this.world.isClient) {
                 if(this.getRocketSettings().payload != null) {
                     Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
-                    payload.Deploy(world, this, this.getBlockPos());
+                    payload.Deploy(world, this, this.getBlockPos(), this.calculateMaxHeight());
                     kill();
                 }
             }
 
         } else if(itemStack.getItem().getClass() == PayloadItem.class) {
-            return addPayload(itemStack);
+            return addPayload(itemStack, player, hand);
         }
         return ActionResult.PASS;
     }
 
-    public ActionResult addPayload(ItemStack payloadItem) {
+    public ActionResult addPayload(ItemStack payloadItem, PlayerEntity player, Hand hand) {
         if(this.getRocketSettings().payload == null) {
-            this.getRocketSettings().payload = PayloadRegistry.PAYLOADS.DEFAULT;
+
+            PayloadRegistry.PAYLOADS payload = PayloadRegistry.payloadFromStack(payloadItem);
+            if(payload == null) return ActionResult.FAIL;
+
+            this.getRocketSettings().payload = payload;
+
             for (int i = 0; i < 10; i++) {
                 world.addParticle(ParticleTypes.GLOW, this.getPos().x+random.nextFloat()-0.5f, this.getPos().y + getRocketSettings().blocks.length-random.nextFloat(), this.getPos().z+random.nextFloat()-0.5f, 0, 0, 0);
             }
+            player.getStackInHand(hand).decrement(1);
             return ActionResult.SUCCESS;
         }
         return ActionResult.FAIL;
@@ -361,7 +377,8 @@ public class RocketEntity extends Entity {
         if(this.getRocketSettings().blocks.length == 0) {
             dimensions = EntityDimensions.fixed(0.8f, 2);
         } else {
-            dimensions = EntityDimensions.fixed(0.8f, this.getRocketSettings().blocks.length);
+            float width = this.getRocketSettings().getMaxWidth();
+            dimensions = EntityDimensions.fixed(width/16f, this.getRocketSettings().blocks.length);
         }
         return dimensions.getBoxAt(this.getPos());
     }

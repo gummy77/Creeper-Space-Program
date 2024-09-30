@@ -10,9 +10,12 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.math.Vec3d;
+import org.gum.csp.datastructs.Payload;
 import org.gum.csp.entity.PayloadEntity;
 import org.gum.csp.entity.RocketEntity;
 import org.gum.csp.registries.NetworkingConstants;
+import org.gum.csp.registries.PayloadRegistry;
 
 @Environment(EnvType.CLIENT)
 public class ClientNetworkHandler {
@@ -43,7 +46,7 @@ public class ClientNetworkHandler {
         double launchDirection = buf.readDouble();
         client.execute(() -> {
             Entity rocket = client.world.getEntityById(rocketId);
-            if(rocket instanceof RocketEntity){
+            if(rocket instanceof RocketEntity) {
                 ((RocketEntity) rocket).Launch(launchDirection);
             }
         });

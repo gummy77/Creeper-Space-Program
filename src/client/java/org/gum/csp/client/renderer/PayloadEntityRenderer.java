@@ -34,6 +34,7 @@ public class PayloadEntityRenderer extends EntityRenderer<PayloadEntity> {
         matrices.push();
 
         if(entity.getPayloadSettings() != null){
+            this.shadowRadius = entity.getPayloadSettings().getMaxWidth() * 0.0625f * 1.5f;
             if(entity.getPayloadSettings().blocks != null && entity.getPayloadSettings().blocks.length > 0) {
                 matrices.translate(-0.5f, 0, -0.5f);
 
