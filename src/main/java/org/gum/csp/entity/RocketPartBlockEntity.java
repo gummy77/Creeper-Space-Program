@@ -35,18 +35,21 @@ public class RocketPartBlockEntity extends BlockEntity {
 
         ArrayList<RocketPart> parts = new ArrayList<>(baseBlock.getneighbors(baseBlock.pos));
 
-        if(parts.size() < 3){ //TODO have a "isvalid" function that checks if parts arent upside down and stuff
+        boolean validConfig = isValidConfig(parts);
+
+        if(!validConfig){
             //yell at players
 
             for(RocketPart part : parts) {
                 world.breakBlock(baseBlock.pos.add(part.offset.getX(), part.offset.getY(), part.offset.getZ()), true);
             }
             return;
-        } else {
-            for(RocketPart part : parts) {
-                world.breakBlock(baseBlock.pos.add(part.offset.getX(), part.offset.getY(), part.offset.getZ()), false);
-            }
         }
+
+        for(RocketPart part : parts) {
+            world.breakBlock(baseBlock.pos.add(part.offset.getX(), part.offset.getY(), part.offset.getZ()), false);
+        }
+
 
 
         RocketSettings settings = new RocketSettings(parts.toArray(new RocketPart[0]));
@@ -123,6 +126,28 @@ public class RocketPartBlockEntity extends BlockEntity {
     @Override
     public NbtCompound toInitialChunkDataNbt() {
         return createNbt();
+    }
+
+    private boolean isValidConfig(ArrayList<RocketPart> parts) {
+        if (parts.size() < 3) {
+            return false;
+        }
+
+        if (!(parts.get(0).partType == RocketPart.PartType.NOSE)) {
+            return false;
+        }
+        if (!(parts.get(parts.size() - 1).partType == RocketPart.PartType.EXHAUST)) {
+            return false;
+        }
+
+        for (int rocketPartIndex = 1; rocketPartIndex < parts.size() - 1; rocketPartIndex++) {
+            if (parts.get(rocketPartIndex).partType == RocketPart.PartType.NOSE
+            || parts.get(rocketPartIndex).partType == RocketPart.PartType.EXHAUST) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }
