@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "csp:wooden_rocket.nose_cone"
+          "name": "csp:wooden_rocket/nose_cone"
         }
       ],
       "conditions": [

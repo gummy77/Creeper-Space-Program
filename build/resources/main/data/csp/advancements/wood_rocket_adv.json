@@ -2,7 +2,7 @@
   "parent": "csp:create_first_rocket",
   "display": {
     "icon": {
-      "item": "csp:wooden_nose_cone"
+      "item": "csp:wooden_rocket/nose_cone"
     },
     "title": {
       "translate": "advancements.csp.wood_rocket_adv.title"

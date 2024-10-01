@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "csp:copper_rocket.nose_cone"
+          "name": "csp:copper_rocket/nose_cone"
         }
       ],
       "conditions": [

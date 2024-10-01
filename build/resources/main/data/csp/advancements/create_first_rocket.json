@@ -2,7 +2,7 @@
   "parent": "csp:root",
   "display": {
     "icon": {
-      "item": "csp:wooden_exhaust"
+      "item": "csp:wooden_rocket/exhaust"
     },
     "title": {
       "translate": "advancements.csp.create_first_rocket.title"
@@ -22,9 +22,9 @@
         "items": [
           {
             "items": [
-              "csp:wooden_body_segment",
-              "csp:wooden_nose_cone",
-              "csp:wooden_exhaust",
+              "csp:wooden_rocket/body_segment",
+              "csp:wooden_rocket/nose_cone",
+              "csp:wooden_rocket/exhaust",
               "csp:rocket"
             ]
           }

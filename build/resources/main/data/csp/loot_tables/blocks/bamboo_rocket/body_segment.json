@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "csp:bamboo_rocket.body_segment"
+          "name": "csp:bamboo_rocket/body_segment"
         }
       ],
       "conditions": [

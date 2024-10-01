@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "csp:wooden_rocket.body_segment"
+          "name": "csp:wooden_rocket/body_segment"
         }
       ],
       "conditions": [

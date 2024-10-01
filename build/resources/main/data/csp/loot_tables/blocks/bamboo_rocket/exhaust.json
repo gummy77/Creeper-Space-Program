@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "csp:bamboo_rocket.wooden_exhaust"
+          "name": "csp:bamboo_rocket/exhaust"
         }
       ],
       "conditions": [
