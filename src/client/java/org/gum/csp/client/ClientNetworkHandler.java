@@ -43,11 +43,10 @@ public class ClientNetworkHandler {
     public static void onRocketLaunch(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender){
         IntList list = buf.readIntList();
         int rocketId = list.getInt(0);
-        double launchDirection = buf.readDouble();
         client.execute(() -> {
             Entity rocket = client.world.getEntityById(rocketId);
             if(rocket instanceof RocketEntity) {
-                ((RocketEntity) rocket).Launch(launchDirection);
+                ((RocketEntity) rocket).Launch();
             }
         });
     }
@@ -55,7 +54,9 @@ public class ClientNetworkHandler {
     public static void onAssembleRocket(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender){
         int rocketId = buf.readInt();
         NbtCompound nbtCompound = new NbtCompound();
+        nbtCompound.putDouble("launchDirection", buf.readDouble());
         nbtCompound.put("RocketSettings", buf.readNbt());
+
 
         client.execute(() -> {
             Entity entity = client.world.getEntityById(rocketId);

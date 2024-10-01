@@ -146,6 +146,10 @@ public class RocketSettings {
         return mostCommonMaterials.toArray(new PartMaterial[0]);
     }
 
+    public String getRocketTitle(){
+        return calculatePrimaryMaterials()[0].toString() + " Rocket";
+    }
+
     /**
      * Checks the Primary Materials of the Rocket for Material
      * @param material The Material to check for

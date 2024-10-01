@@ -2,14 +2,12 @@ package org.gum.csp.registries;
 
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.minecraft.data.client.ModelProvider;
 import net.minecraft.item.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
-import org.gum.csp.item.Assembler;
-import org.gum.csp.item.LaunchKit;
-import org.gum.csp.item.PayloadItem;
-import org.gum.csp.item.Rocket;
+import org.gum.csp.item.*;
 
 public class ItemRegistry {
 
@@ -20,6 +18,8 @@ public class ItemRegistry {
     public static final LaunchKit LAUNCH_KIT;
     public static final Item FUSE;
     public static final Assembler ASSEMBLER;
+    public static final PayloadTrackingCompass PAYLOAD_COMPASS;
+    public static final Item ROCKET_INSPECTOR;
 
     public static final Item WOODEN_FIN;
     public static final Item IRON_NOZZLE;
@@ -38,6 +38,7 @@ public class ItemRegistry {
             .build();
 
     public static void registerItems() {
+
     }
 
     public static Item register (String path, Item item) {
@@ -52,6 +53,8 @@ public class ItemRegistry {
         LAUNCH_KIT = (LaunchKit) register("launchkit", new LaunchKit(getSettings().maxDamage(10)));
         FUSE = register("fuse", new Item(getSettings()));
         ASSEMBLER = (Assembler) register("basic_assembler", new Assembler(getSettings().maxDamage(10)));
+        PAYLOAD_COMPASS = (PayloadTrackingCompass) register("payload_compass", new PayloadTrackingCompass(getSettings()));
+        ROCKET_INSPECTOR = register("rocket_inspector", new PayloadTrackingCompass(getSettings()));
 
         WOODEN_FIN = register("wooden_fin", new Item(getSettings()));
         IRON_NOZZLE = register("iron_nozzle", new Item(getSettings()));

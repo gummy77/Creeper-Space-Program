@@ -19,9 +19,10 @@
   "item.csp.launchkit": "Launch Kit",
   "item.csp.basic_assembler": "Basic Assembler",
   "item.csp.fuse":"Fuse",
+  "item.csp.payload_compass": "Payload Tracking Compass",
 
   "_comment": "- Payloads -",
-  "item.csp.default_payload": "Default Payload",
+  "item.csp.default_payload": "Dummy Payload",
 
   "_comment": "--- Crafting Items ---",
   "item.csp.wooden_fin": "Wooden Fin",

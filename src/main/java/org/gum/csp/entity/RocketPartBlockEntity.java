@@ -7,6 +7,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.registries.BlockRegistry;
@@ -37,7 +38,11 @@ public class RocketPartBlockEntity extends BlockEntity {
 
         boolean validConfig = isValidConfig(parts);
 
-        if(!validConfig){
+        RocketSettings settings = new RocketSettings(parts.toArray(new RocketPart[0]));
+
+        boolean canFly = (settings.Power*5 / settings.Mass) > 1;
+
+        if(!validConfig || !canFly){
             //yell at players
 
             for(RocketPart part : parts) {
@@ -52,10 +57,9 @@ public class RocketPartBlockEntity extends BlockEntity {
 
 
 
-        RocketSettings settings = new RocketSettings(parts.toArray(new RocketPart[0]));
-
         NbtCompound nbtCompound = new NbtCompound();
         nbtCompound.put("RocketSettings", settings.toNbt());
+        nbtCompound.putDouble("launchDirection",  Random.create().nextFloat() * Math.PI * 4);
 
         RocketEntity entity = new RocketEntity(EntityRegistry.ROCKET_ENTITY, world);
         entity.setPosition(baseBlock.pos.getX()+0.5f, baseBlock.pos.getY(), baseBlock.pos.getZ()+0.5f);

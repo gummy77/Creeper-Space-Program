@@ -14,15 +14,20 @@ import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
+import org.apache.logging.log4j.message.Message;
 import org.gum.csp.datastructs.Payload;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.item.PayloadItem;
+import org.gum.csp.item.PayloadTrackingCompass;
 import org.gum.csp.registries.*;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,11 +63,10 @@ public class RocketEntity extends Entity {
         super(entityType, world);
     }
 
-    public void Launch(double launchDirection){
+    public void Launch(){
         if(!isLaunching) {
             this.isLaunching = true;
             this.launchTime = 0;
-            this.launchDirection = launchDirection;
 
             this.launchParticles();
         }
@@ -91,15 +95,12 @@ public class RocketEntity extends Entity {
             return;
         }
 
-        double launchDirection = Random.create().nextFloat() * Math.PI * 4;
-
         PacketByteBuf buf = PacketByteBufs.create();
         buf.writeIntList(IntList.of(
                 this.getId()
         ));
-        buf.writeDouble(launchDirection);
 
-        Launch(launchDirection);
+        Launch();
         playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 3f, 1f);
         getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, Explosion.DestructionType.BREAK);
 
@@ -107,16 +108,21 @@ public class RocketEntity extends Entity {
             ServerPlayNetworking.send(player, NetworkingConstants.LAUNCH_ROCKET_PACKET_ID, buf);
         }
 
-        float payloadDistance = this.calculateMaxHeight() * (0.5f);
-
-        Vec3d payloadPosition = new Vec3d(Math.cos(launchDirection), 0, -Math.sin(launchDirection));
-        System.out.println("Payload Dir: " + payloadPosition);
-        payloadPosition = payloadPosition.multiply(payloadDistance);
 
         if(this.getRocketSettings().payload != null) {
             Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
-            payload.Deploy(world, this, this.getBlockPos().add(payloadPosition.x, payloadPosition.y, payloadPosition.z), this.calculateMaxHeight());
+            payload.Deploy(world, this, this.getPayloadPosition(), this.calculateMaxHeight());
         }
+    }
+
+    protected BlockPos getPayloadPosition(){
+        float payloadDistance = this.calculateMaxHeight() * (0.5f);
+
+        Vec3d payloadPosition = new Vec3d(Math.cos(launchDirection), 0, -Math.sin(launchDirection));
+        payloadPosition.add(getPos());
+        payloadPosition = payloadPosition.multiply(payloadDistance);
+
+        return new BlockPos(payloadPosition.x, payloadPosition.y, payloadPosition.z);
     }
 
     private void launchParticles() {
@@ -251,8 +257,41 @@ public class RocketEntity extends Entity {
 
         } else if(itemStack.getItem().getClass() == PayloadItem.class) {
             return addPayload(itemStack, player, hand);
+        } else if(itemStack.isOf(ItemRegistry.PAYLOAD_COMPASS)) {
+            return addPayloadTracker(this, itemStack, player, hand);
+        } else if(itemStack.isOf(ItemRegistry.ROCKET_INSPECTOR)) {
+            return displayStats(player);
         }
         return ActionResult.PASS;
+    }
+
+    public ActionResult displayStats(PlayerEntity player) {
+        //System.out.println("DISPLAY STATS");
+        if(world.isClient) {
+
+            player.sendMessage(Text.literal(this.getRocketSettings().getRocketTitle()
+                    + " - TWR: " + (int) this.getRocketSettings().Power * 5 + "kg/" + (float)((int)(this.getRocketSettings().Mass*100))/100 + "kg"
+                    + " = " + (float)((int)(this.getRocketSettings().Power * 5/this.getRocketSettings().Mass * 100))/100
+                    + " - Calculated Max Height: " + (int) this.calculateMaxHeight() + "m"
+                    + " - Chance of Failure: " + (int)this.getRocketSettings().Volatility+"%"
+            ), true);
+
+
+            //player.sendMessage(Text.literal("Power"),true);
+        }
+        return ActionResult.SUCCESS;
+    }
+
+    public ActionResult addPayloadTracker(RocketEntity entity, ItemStack itemStack, PlayerEntity player, Hand hand) {
+        BlockPos blockPos = entity.getPayloadPosition();
+        World world = entity.getWorld();
+
+        if(this.getRocketSettings().payload != null) {
+            world.playSound((PlayerEntity)null, blockPos, SoundEvents.ITEM_LODESTONE_COMPASS_LOCK, SoundCategory.PLAYERS, 1.0F, 1.0F);
+            PayloadTrackingCompass.writeNbt(world.getRegistryKey(), this.getId(), blockPos, itemStack.getOrCreateNbt());
+            return ActionResult.SUCCESS;
+        }
+        return ActionResult.FAIL;
     }
 
     public ActionResult addPayload(ItemStack payloadItem, PlayerEntity player, Hand hand) {
@@ -318,7 +357,10 @@ public class RocketEntity extends Entity {
         if(rocketSettings != null) {
             PacketByteBuf buf = PacketByteBufs.create(); //TODO move to its own function and update to work with saving
             buf.writeInt(this.getId());
+            buf.writeDouble(this.launchDirection);
             buf.writeNbt(rocketSettings.toNbt());
+
+
             for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
                 ServerPlayNetworking.send(player, NetworkingConstants.ASSEMBLE_ROCKET_PACKET_ID, buf);
             }
