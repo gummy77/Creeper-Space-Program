@@ -8,6 +8,7 @@ import org.gum.csp.CspMain;
 public class SoundRegistry {
 
     public static SoundEvent WOODEN_ROCKET_LAUNCH;
+    public static SoundEvent BASIC_ASSEMBLE;
 
     public static void registerSounds() {
     }
@@ -19,5 +20,6 @@ public class SoundRegistry {
 
     static {
         WOODEN_ROCKET_LAUNCH = registerSound("wooden_rocket_launch");
+        BASIC_ASSEMBLE = registerSound("basic_assemble");
     }
 }

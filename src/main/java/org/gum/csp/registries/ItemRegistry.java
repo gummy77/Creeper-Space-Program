@@ -26,13 +26,11 @@ public class ItemRegistry {
 
     public static final PayloadItem DEFAULT_PAYLOAD_ITEM;
 
-    public static Item BASE_NOSE_CONE;
-    public static Item BASE_BODY_SEGMENT;
-    public static Item BASE_EXHAUST;
+    public static Item BASE_NOSE_CONE, BASE_BODY_SEGMENT, BASE_EXHAUST;
 
-    public static Item WOODEN_NOSE_CONE;
-    public static Item WOODEN_BODY_SEGMENT;
-    public static Item WOODEN_EXHAUST;
+    public static Item WOODEN_NOSE_CONE, WOODEN_BODY_SEGMENT, WOODEN_EXHAUST;
+    public static Item BAMBOO_NOSE_CONE, BAMBOO_BODY_SEGMENT, BAMBOO_EXHAUST;
+    public static Item COPPER_NOSE_CONE, COPPER_BODY_SEGMENT, COPPER_EXHAUST;
 
     public static final ItemGroup MODGROUP = FabricItemGroupBuilder.create(
                     new Identifier(CspMain.MODID, "cspmodgroup"))
@@ -64,9 +62,17 @@ public class ItemRegistry {
         BASE_BODY_SEGMENT = register("base_body_segment", new BlockItem(BlockRegistry.BASE_BODY_SEGMENT, getSettings()));
         BASE_EXHAUST = register("base_exhaust", new BlockItem(BlockRegistry.BASE_EXHAUST, getSettings()));
 
-        WOODEN_NOSE_CONE = register("wooden_nose_cone", new BlockItem(BlockRegistry.WOODEN_NOSE_CONE, getSettings()));
-        WOODEN_BODY_SEGMENT = register("wooden_body_segment", new BlockItem(BlockRegistry.WOODEN_BODY_SEGMENT, getSettings()));
-        WOODEN_EXHAUST = register("wooden_exhaust", new BlockItem(BlockRegistry.WOODEN_EXHAUST, getSettings()));
+        WOODEN_NOSE_CONE = register("wooden_rocket/nose_cone", new BlockItem(BlockRegistry.WOODEN_NOSE_CONE, getSettings()));
+        WOODEN_BODY_SEGMENT = register("wooden_rocket/body_segment", new BlockItem(BlockRegistry.WOODEN_BODY_SEGMENT, getSettings()));
+        WOODEN_EXHAUST = register("wooden_rocket/exhaust", new BlockItem(BlockRegistry.WOODEN_EXHAUST, getSettings()));
+
+        BAMBOO_NOSE_CONE = register("bamboo_rocket/nose_cone", new BlockItem(BlockRegistry.BAMBOO_NOSE_CONE, getSettings()));
+        BAMBOO_BODY_SEGMENT = register("bamboo_rocket/body_segment", new BlockItem(BlockRegistry.BAMBOO_BODY_SEGMENT, getSettings()));
+        BAMBOO_EXHAUST = register("bamboo_rocket/exhaust", new BlockItem(BlockRegistry.BAMBOO_EXHAUST, getSettings()));
+
+        COPPER_NOSE_CONE = register("copper_rocket/nose_cone", new BlockItem(BlockRegistry.COPPER_NOSE_CONE, getSettings()));
+        COPPER_BODY_SEGMENT = register("copper_rocket/body_segment", new BlockItem(BlockRegistry.COPPER_BODY_SEGMENT, getSettings()));
+        COPPER_EXHAUST = register("copper_rocket/exhaust", new BlockItem(BlockRegistry.COPPER_EXHAUST, getSettings()));
 
         ROCKET = (Rocket) register("rocket", new Rocket(getSettings()));
         ADRIAN = register("adrian", new Item(getSettings().food(new FoodComponent.Builder().hunger(10).build())));

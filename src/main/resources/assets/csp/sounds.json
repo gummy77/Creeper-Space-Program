@@ -4,5 +4,11 @@
     "sounds": [
       "csp:wooden_rocket_launch"
     ]
+  },
+  "basic_assemble": {
+    "subtitle": "sound.csp.basic_assemble",
+    "sounds": [
+      "csp:basic_assemble"
+    ]
   }
 }
