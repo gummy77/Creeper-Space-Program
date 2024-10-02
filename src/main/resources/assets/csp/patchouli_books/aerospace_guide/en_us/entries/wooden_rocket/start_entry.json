@@ -10,8 +10,8 @@
     },
     {
       "type": "patchouli:crafting",
-      "recipe": "csp:wooden_nose_cone",
-      "recipe2": "csp:wooden_body_segment"
+      "recipe": "csp:wooden_rocket/nose_cone",
+      "recipe2": "csp:wooden_rocket/body_segment"
     }
   ]
 }
