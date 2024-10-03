@@ -1,17 +1,40 @@
 {
   "name": "Getting Started",
   "icon": "minecraft:oak_wood",
-  "advancement": "csp:root",
+  "advancement": "csp:launch_firework_rocket",
   "category": "csp:basic_rocketry",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Lets get started creating our very first rocket. In order to begin, we first need to collect some items: $(li) Stripped Oak Logs $(li) Gunpowder $(li) Iron Ingot $(br2)Once you have collected all these items, we can get started creating our first rocket. The recipes are on the right hand side."
+      "text": "Lets get started creating our very first rocket. In order to begin, we first need to collect some items: $(li) Wooden Planks (any variant)$(li) Gunpowder $(li) Iron Ingot $(br2)Once you have collected all these items, we can get started creating our first rocket. The recipes are on the right hand side."
     },
     {
       "type": "patchouli:crafting",
       "recipe": "csp:wooden_rocket/nose_cone",
       "recipe2": "csp:wooden_rocket/body_segment"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "csp:wooden_rocket/exhaust",
+      "text": "$(br2)Once you have crafted all three of these items, arrange them as shown on the page to the right to create a very basic rocket!"
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Basic Wooden Rocket",
+      "multiblock": {
+        "mapping" : {
+          "C": "csp:wooden_rocket/nose_cone",
+          "B": "csp:wooden_rocket/body_segment",
+          "E": "csp:wooden_rocket/exhaust"
+        },
+        "pattern": [
+          [" C "],
+          [" B "],
+          ["0E "]
+        ],
+        "symmetrical": true
+      },
+      "enable_visualize": false
     }
   ]
 }

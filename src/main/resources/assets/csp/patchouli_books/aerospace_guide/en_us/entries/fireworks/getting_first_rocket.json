@@ -12,6 +12,15 @@
       "type": "patchouli:crafting",
       "recipe": "minecraft:firework_rocket_simple",
       "text": "$(br2)After you have created this rocket, give it a launch by pointing your cross-hair at the ground, and while holding the item use the action button. "
+    },
+    {
+      "type": "patchouli:text",
+      "text": "That firework wasn't very exciting, there was no real shape to it. If we add a firework star, we can make the firework appear in different shapes. The Following Firework stars are included in the game, these can be found $(l:https://minecraft.wiki/w/Firework_Star)here. "
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "minecraft:firework_star.white",
+      "text": "The above crafting recipe shows how to craft a white Firework star. If you want to craft another colour star, substitute the white dye for another colour."
     }
   ]
 }
