@@ -102,11 +102,15 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
             matrices.scale(0.025f, -0.025f, 0.025f);
 
-            textRenderer.draw(matrices, rocketSettings.getRocketTitle(), 0, 0, 0xffffffff);
-            textRenderer.draw(matrices, "Power: " + rocketSettings.Power + "kg/s", 0, 10, 0xffffffff);
+            matrices.push();
+            matrices.scale(1.5f, 1.5f , 1.5f);
+            textRenderer.draw(matrices, rocketSettings.getRocketTitle(), 0, -5, 0xffffffff);
+            matrices.pop();
+            textRenderer.draw(matrices, "Power: " + (rocketSettings.Power * 5) + "kg/s", 0, 10, 0xffffffff);
             textRenderer.draw(matrices, "Mass: " + rocketSettings.Mass + "kg", 0, 20, 0xffffffff);
-            textRenderer.draw(matrices, "Estimated Height: " + (int) (RocketEntity.calculateMaxHeight(rocketSettings)) + "m", 0, 30, 0xffffffff);
-            textRenderer.draw(matrices, "Chance of Failure: " + rocketSettings.Volatility + "%", 0, 40, 0xffffffff);
+            textRenderer.draw(matrices, "   -> TWR: " + (float)((int)(rocketSettings.Power * 5 / rocketSettings.Mass * 100)) / 100, 0, 30, 0xffffffff);
+            textRenderer.draw(matrices, "Estimated Height: " + (int) (RocketEntity.calculateMaxHeight(rocketSettings)) + "m", 0, 45, 0xffffffff);
+            textRenderer.draw(matrices, "Chance of Failure: " + rocketSettings.Volatility + "%", 0, 55, 0xffffffff);
 
             matrices.pop();
         }
