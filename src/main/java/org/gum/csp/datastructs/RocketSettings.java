@@ -147,7 +147,7 @@ public class RocketSettings {
     }
 
     public String getRocketTitle(){
-        return calculatePrimaryMaterials()[0].toString() + " Rocket";
+        return calculatePrimaryMaterials()[0].getFormattedName() + " Rocket";
     }
 
     /**

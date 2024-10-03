@@ -23,8 +23,7 @@ public enum PartMaterial {
         return value;
     }
 
-    @Override
-    public String toString() {
+    public String getFormattedName() {
         return formattedName;
     }
 }

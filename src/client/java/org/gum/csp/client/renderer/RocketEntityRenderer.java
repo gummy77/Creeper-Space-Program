@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LightBlock;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -11,11 +12,14 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.LightType;
 import org.gum.csp.client.CspMainClient;
 import org.gum.csp.datastructs.RocketPart;
+import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.entity.RocketEntity;
 import org.gum.csp.registries.BlockRegistry;
 
@@ -23,11 +27,14 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
     private final EntityModelLoader modelLoader;
     private final BlockRenderManager blockRenderManager;
+    private final TextRenderer textRenderer;
 
     public RocketEntityRenderer(EntityRendererFactory.Context context){
         super(context);
         modelLoader = context.getModelLoader();
         blockRenderManager = context.getBlockRenderManager();
+        textRenderer = context.getTextRenderer();
+
         this.shadowRadius = 0.5f;
         this.shadowOpacity = 0.5f;
     }
@@ -76,10 +83,34 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
         matrices.pop();
 
+        if(entity.shouldRenderInfo()) {
+            renderRocketStats(entity, tickDelta, matrices, vertexConsumers);
+        }
+
         Entity linkedEntity = entity.getLinkedEntity();
         if (linkedEntity != null) {
             this.renderFuse(entity, tickDelta, matrices, vertexConsumers, linkedEntity);
         }
+    }
+
+    private void renderRocketStats(RocketEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers) {
+        RocketSettings rocketSettings = entity.getRocketSettings();
+        if(rocketSettings != null) {
+
+            matrices.push();
+            matrices.translate(0.5f, 3 , 0);
+
+            matrices.scale(0.025f, -0.025f, 0.025f);
+
+            textRenderer.draw(matrices, rocketSettings.getRocketTitle(), 0, 0, 0xffffffff);
+            textRenderer.draw(matrices, "Power: " + rocketSettings.Power + "kg/s", 0, 10, 0xffffffff);
+            textRenderer.draw(matrices, "Mass: " + rocketSettings.Mass + "kg", 0, 20, 0xffffffff);
+            textRenderer.draw(matrices, "Estimated Height: " + (int) (RocketEntity.calculateMaxHeight(rocketSettings)) + "m", 0, 30, 0xffffffff);
+            textRenderer.draw(matrices, "Chance of Failure: " + rocketSettings.Volatility + "%", 0, 40, 0xffffffff);
+
+            matrices.pop();
+        }
+
     }
 
     private <E extends Entity> void renderFuse(RocketEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider provider, E holdingEntity) {

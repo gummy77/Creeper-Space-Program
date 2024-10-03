@@ -4,20 +4,15 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.minecraft.client.item.CompassAnglePredicateProvider;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
-import net.minecraft.client.particle.ParticleTextureData;
-import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.item.CompassItem;
-import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
 import org.gum.csp.client.item.PayloadCompassAnglePredicateProvider;
 import org.gum.csp.client.model.PayloadEntityModel;
@@ -29,6 +24,7 @@ import org.gum.csp.item.PayloadTrackingCompass;
 import org.gum.csp.registries.EntityRegistry;
 import org.gum.csp.registries.ItemRegistry;
 import org.gum.csp.registries.ParticleRegistry;
+import org.gum.csp.registries.ScreenRegistry;
 
 public class CspMainClient implements ClientModInitializer {
 

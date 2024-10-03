@@ -79,5 +79,9 @@ public class ClientNetworkHandler {
         });
     }
 
+//    public static void OpenStatsDisplay(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender){
+//        client.screen
+//    }
+
 
 }

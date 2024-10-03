@@ -16,7 +16,7 @@
     {
       "type": "patchouli:crafting",
       "recipe": "csp:wooden_rocket/exhaust",
-      "text": "Once you have crafted all three of these items, arrange them as shown on the page to the right to create a very basic rocket!"
+      "text": "$(br2)Once you have crafted all three of these items, arrange them as shown on the page to the right to create a very basic rocket!"
     },
     {
       "type": "patchouli:multiblock",

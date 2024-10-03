@@ -1,29 +1,32 @@
 package org.gum.csp.entity;
 
+import com.sun.jna.platform.unix.X11;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.impl.gui.FabricGuiEntry;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
-import org.apache.logging.log4j.message.Message;
 import org.gum.csp.datastructs.Payload;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.item.PayloadItem;
@@ -52,6 +55,9 @@ public class RocketEntity extends Entity {
     private float launchTime = 0;
     private double launchDirection = 0;
 
+    private boolean shouldRenderInfo = false;
+    private int renderTime = 0;
+
     public static final EntitySettings settings = new EntitySettings(
             "rocket_entity",
             SpawnGroup.MISC,
@@ -76,6 +82,17 @@ public class RocketEntity extends Entity {
         float P = this.getRocketSettings().Power;
         float M = this.getRocketSettings().Mass;
         float T = this.getRocketSettings().burnTime;
+
+        float log = (float) (  1f / (Math.pow(P*T, 3f) * 20f)  );
+        float H = (float) -(  Math.log10(log) * ((300f*P*T)/M)  );
+
+        return H;
+    }
+
+    public static float calculateMaxHeight(RocketSettings settings){
+        float P = settings.Power;
+        float M = settings.Mass;
+        float T = settings.burnTime;
 
         float log = (float) (  1f / (Math.pow(P*T, 3f) * 20f)  );
         float H = (float) -(  Math.log10(log) * ((300f*P*T)/M)  );
@@ -142,6 +159,13 @@ public class RocketEntity extends Entity {
         if (!this.world.isClient) {
             this.updateFuse();
             this.networkUpdateSettings();
+        } else {
+            if(this.shouldRenderInfo) {
+                this.renderTime -= 1;
+                if(this.renderTime <= 0) {
+                    this.shouldRenderInfo = false;
+                }
+            }
         }
 
         if (this.isLaunching) {
@@ -265,19 +289,23 @@ public class RocketEntity extends Entity {
         return ActionResult.PASS;
     }
 
+    public boolean shouldRenderInfo(){
+        return this.shouldRenderInfo;
+    }
+
     public ActionResult displayStats(PlayerEntity player) {
         //System.out.println("DISPLAY STATS");
         if(world.isClient) {
 
-            player.sendMessage(Text.literal(this.getRocketSettings().getRocketTitle()
-                    + " - TWR: " + (int) this.getRocketSettings().Power * 5 + "kg/" + (float)((int)(this.getRocketSettings().Mass*100))/100 + "kg"
-                    + " = " + (float)((int)(this.getRocketSettings().Power * 5/this.getRocketSettings().Mass * 100))/100
-                    + " - Calculated Max Height: " + (int) this.calculateMaxHeight() + "m"
-                    + " - Chance of Failure: " + (int)this.getRocketSettings().Volatility+"%"
-            ), true);
+//            player.sendMessage(Text.of(this.getRocketSettings().getRocketTitle()
+//                    + " - TWR: " + (int) this.getRocketSettings().Power * 5 + "kg/" + (float)((int)(this.getRocketSettings().Mass*100))/100 + "kg"
+//                    + " = " + (float)((int)(this.getRocketSettings().Power * 5/this.getRocketSettings().Mass * 100))/100
+//                    + " - Calculated Max Height: " + (int) this.calculateMaxHeight() + "m"
+//                    + " - Chance of Failure: " + (int)this.getRocketSettings().Volatility+"%"
+//            ), true);
 
-
-            //player.sendMessage(Text.literal("Power"),true);
+            this.renderTime = 60; // Time delay for text
+            this.shouldRenderInfo = true;
         }
         return ActionResult.SUCCESS;
     }
