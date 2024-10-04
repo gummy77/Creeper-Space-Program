@@ -1,22 +1,17 @@
 package org.gum.csp.entity;
 
-import com.sun.jna.platform.unix.X11;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.loader.impl.gui.FabricGuiEntry;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
@@ -56,7 +51,8 @@ public class RocketEntity extends Entity {
     private double launchDirection = 0;
 
     private boolean shouldRenderInfo = false;
-    private int renderTime = 0;
+    private PlayerEntity infoLinkedPlayer;
+    private int infoRenderTime = 0;
 
     public static final EntitySettings settings = new EntitySettings(
             "rocket_entity",
@@ -161,8 +157,8 @@ public class RocketEntity extends Entity {
             this.networkUpdateSettings();
         } else {
             if(this.shouldRenderInfo) {
-                this.renderTime -= 1;
-                if(this.renderTime <= 0) {
+                this.infoRenderTime -= 1;
+                if(this.infoRenderTime <= 0) {
                     this.shouldRenderInfo = false;
                 }
             }
@@ -289,8 +285,12 @@ public class RocketEntity extends Entity {
         return ActionResult.PASS;
     }
 
-    public boolean shouldRenderInfo(){
-        return this.shouldRenderInfo;
+    public int getRenderInfo(){
+        return this.shouldRenderInfo ? this.infoRenderTime : 0;
+    }
+
+    public PlayerEntity getInfoLinkedPlayer(){
+        return infoLinkedPlayer;
     }
 
     public ActionResult displayStats(PlayerEntity player) {
@@ -304,8 +304,9 @@ public class RocketEntity extends Entity {
 //                    + " - Chance of Failure: " + (int)this.getRocketSettings().Volatility+"%"
 //            ), true);
 
-            this.renderTime = 60; // Time delay for text
+            this.infoRenderTime = 90; // Time delay for text
             this.shouldRenderInfo = true;
+            this.infoLinkedPlayer = player;
         }
         return ActionResult.SUCCESS;
     }
