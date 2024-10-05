@@ -45,16 +45,16 @@ public class BlockRegistry {
         //Basic
 
         BASE_NOSE_CONE = (RocketPartBlock) register("base_nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
-                new RocketPart(RocketPart.PartType.NOSE, 6f, 1, 1, 0, null)));
+                new RocketPart(RocketPart.PartType.NOSE, 6f, 1, 0, 0, null)));
 
         BASE_BODY_SEGMENT = (RocketPartBlock) register("base_body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
                 new RocketPart(
-                        RocketPart.PartType.BODY, 6f,2, 2,0,
+                        RocketPart.PartType.BODY, 6f,2, 0,0,
                         new FuelComponent(FuelComponent.FuelType.SOLID, 2, 1, 1)
                 )));
         BASE_EXHAUST = (RocketPartBlock) register("base_exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
                 new RocketPart(
-                        RocketPart.PartType.EXHAUST, 6f,2, 2,3, null)));
+                        RocketPart.PartType.EXHAUST, 6f,2, 0,3, null)));
 
         //Wooden
 
@@ -62,11 +62,11 @@ public class BlockRegistry {
                 new RocketPart(RocketPart.PartType.NOSE, PartMaterial.WOOD, 6f,1, 0, 0,null)));
 
         WOODEN_BODY_SEGMENT = (RocketPartBlock) register("wooden_rocket/body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.WOOD),
-                new RocketPart(RocketPart.PartType.BODY, PartMaterial.WOOD, 6f,2, 7.5f, 0,
+                new RocketPart(RocketPart.PartType.BODY, PartMaterial.WOOD, 6f,2, 2.5f, 0,
                         new FuelComponent(FuelComponent.FuelType.SOLID, 2, 1, 1))));
 
         WOODEN_EXHAUST = (RocketPartBlock) register("wooden_rocket/exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.WOOD),
-                new RocketPart(RocketPart.PartType.EXHAUST, PartMaterial.WOOD, 6f,2, 25, 2, null)));
+                new RocketPart(RocketPart.PartType.EXHAUST, PartMaterial.WOOD, 6f,2, 10, 2, null)));
 
         //Bamboo
 
@@ -74,11 +74,11 @@ public class BlockRegistry {
                 new RocketPart(RocketPart.PartType.NOSE, PartMaterial.BAMBOO, 5f,0.5f, 0, 0,null)));
 
         BAMBOO_BODY_SEGMENT = (RocketPartBlock) register("bamboo_rocket/body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.BAMBOO),
-                new RocketPart(RocketPart.PartType.BODY, PartMaterial.BAMBOO, 4f,0.5f, 10f, 0,
+                new RocketPart(RocketPart.PartType.BODY, PartMaterial.BAMBOO, 4f,0.5f, 3f, 0,
                         new FuelComponent(FuelComponent.FuelType.SOLID, 1.5f, 1, 1))));
 
         BAMBOO_EXHAUST = (RocketPartBlock) register("bamboo_rocket/exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.BAMBOO),
-                new RocketPart(RocketPart.PartType.EXHAUST, PartMaterial.BAMBOO, 5f,0.5f, 25, 1, null)));
+                new RocketPart(RocketPart.PartType.EXHAUST, PartMaterial.BAMBOO, 5f,0.5f, 12.5f, 1, null)));
 
         //Copper
 
@@ -86,11 +86,11 @@ public class BlockRegistry {
                 new RocketPart(RocketPart.PartType.NOSE, PartMaterial.COPPER, 8f,2, 0, 0,null)));
 
         COPPER_BODY_SEGMENT = (RocketPartBlock) register("copper_rocket/body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
-                new RocketPart(RocketPart.PartType.BODY, PartMaterial.COPPER, 8f,3, 5f, 0,
+                new RocketPart(RocketPart.PartType.BODY, PartMaterial.COPPER, 8f,3, 2f, 0,
                         new FuelComponent(FuelComponent.FuelType.SOLID, 3, 1, 1))));
 
         COPPER_EXHAUST = (RocketPartBlock) register("copper_rocket/exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
-                new RocketPart(RocketPart.PartType.EXHAUST, PartMaterial.COPPER, 8f,3, 15, 4, null)));
+                new RocketPart(RocketPart.PartType.EXHAUST, PartMaterial.COPPER, 8f,3, 7.5f, 4, null)));
 
 
 

@@ -29,7 +29,7 @@ public class Assembler extends Item {
         if(blockEntity instanceof RocketPartBlockEntity rocketPartBlockEntity) {
 
             if (!context.getWorld().isClient && context.getWorld() instanceof ServerWorld) {
-                rocketPartBlockEntity.AssembleRocket();
+                rocketPartBlockEntity.AssembleRocket(context.getPlayer());
 
             }
             context.getWorld().playSound(context.getPlayer(), blockEntity.getPos(), SoundRegistry.BASIC_ASSEMBLE, SoundCategory.BLOCKS, 1, 1);

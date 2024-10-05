@@ -10,6 +10,8 @@ import java.util.*;
 public class RocketSettings {
     public RocketPart[] blocks;
     public PayloadRegistry.PAYLOADS payload;
+    public boolean isFailing = false;
+    public int failurePart = 0;
 
     //Calculated from blocks
     public float Mass;
@@ -30,15 +32,17 @@ public class RocketSettings {
         blocks = new RocketPart[0];
     }
 
-    public RocketSettings (RocketPart[] parts, PayloadRegistry.PAYLOADS payload){
-        this(parts);
+    public RocketSettings (RocketPart[] parts, PayloadRegistry.PAYLOADS payload, boolean isFailing){
+        this(parts, isFailing);
         this.payload = payload;
         this.Mass += PayloadRegistry.getPayload(payload).Mass;
         this.Acceleration = this.Power/this.Mass;
     }
 
-    public RocketSettings (RocketPart[] parts) { //setting these manually for now, will be based off of fuel later.
+    public RocketSettings (RocketPart[] parts, boolean isFailing) { //setting these manually for now, will be based off of fuel later.
         blocks = parts;
+
+        this.isFailing = isFailing;
 
         FuelComponent.FuelType type = FuelComponent.FuelType.SOLID;
         float fuelCapacity = 0;
@@ -85,6 +89,7 @@ public class RocketSettings {
         if(payload != null) {
             nbt.putString("Payload", payload.toString());
         }
+        nbt.putBoolean("Failing", isFailing);
         nbt.putInt("BlockCount", blocks.length);
         for (int i = 0; i < blocks.length; i++) {
             nbt.put("Block"+i, blocks[i].toNbt());
@@ -96,6 +101,8 @@ public class RocketSettings {
     public static RocketSettings fromNbt(NbtCompound nbt) {
         int blockCount = nbt.getInt("BlockCount");
         RocketPart[] blocks = new RocketPart[blockCount];
+
+        boolean isFailing = nbt.getBoolean("Failing");
 
         PayloadRegistry.PAYLOADS payload = null;
         try {
@@ -109,9 +116,9 @@ public class RocketSettings {
         }
 
         if(payload != null) {
-            return new RocketSettings(blocks, payload);
+            return new RocketSettings(blocks, payload, isFailing);
         }
-        return new RocketSettings(blocks);
+        return new RocketSettings(blocks, isFailing);
     }
 
     //Mass:         nose cone = 1, body = 2, tail = 2

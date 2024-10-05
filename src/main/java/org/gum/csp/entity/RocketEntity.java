@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -11,10 +12,12 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
+import net.minecraft.particle.BlockStateParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -23,6 +26,7 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.gum.csp.datastructs.Payload;
+import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.item.PayloadItem;
 import org.gum.csp.item.PayloadTrackingCompass;
@@ -53,6 +57,10 @@ public class RocketEntity extends Entity {
     private boolean shouldRenderInfo = false;
     private PlayerEntity infoLinkedPlayer;
     private int infoRenderTime = 0;
+
+    private int health = 4;
+
+    private boolean isAboutToExplode = false;
 
     public static final EntitySettings settings = new EntitySettings(
             "rocket_entity",
@@ -100,31 +108,67 @@ public class RocketEntity extends Entity {
         return this.isLaunching;
     }
 
-    public void networkLaunch() {
-        if(Random.create().nextFloat() * 100f < getRocketSettings().Volatility) { //TODO network a failure event
-            //FAILURE ON LAUNCH
-            //getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, true, Explosion.DestructionType.BREAK);
-            //kill();
-            return;
+    public void haveFailure(int type, int part) {
+        System.out.println((this.world.isClient ? "Client" : "Server") + " - fails");
+        this.getRocketSettings().isFailing = true;
+        this.getRocketSettings().failurePart = part;
+        if(type == 0) {
+            this.isAboutToExplode = true;
         }
+    }
+
+    public boolean networkFailure() {
+        return networkFailure(random.nextBetween(0, 1));
+    }
+
+    public boolean networkFailure(int failureType) {
+        int partFailure = random.nextBetween(0, this.getRocketSettings().blocks.length - 1);
 
         PacketByteBuf buf = PacketByteBufs.create();
         buf.writeIntList(IntList.of(
-                this.getId()
+                this.getId(),
+                failureType,
+                partFailure
         ));
 
-        Launch();
-        playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 3f, 1f);
-        getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, Explosion.DestructionType.BREAK);
-
         for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
-            ServerPlayNetworking.send(player, NetworkingConstants.LAUNCH_ROCKET_PACKET_ID, buf);
+            ServerPlayNetworking.send(player, NetworkingConstants.ROCKET_FAILURE_PACKET_ID, buf);
         }
 
+        this.haveFailure(failureType, partFailure);
 
-        if(this.getRocketSettings().payload != null) {
-            Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
-            payload.Deploy(world, this, this.getPayloadPosition(), this.calculateMaxHeight());
+        if(failureType == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public void networkLaunch() {
+        boolean failedOnLaunch = false;
+        if(Random.create().nextFloat() * 100f < getRocketSettings().Volatility) { //TODO network a failure event
+            failedOnLaunch = networkFailure();
+        }
+
+        playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 3f, 1f);
+
+        if(!failedOnLaunch){
+            getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, Explosion.DestructionType.BREAK);
+
+            Launch();
+
+            PacketByteBuf buf = PacketByteBufs.create();
+            buf.writeIntList(IntList.of(
+                    this.getId()
+            ));
+
+            for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
+                ServerPlayNetworking.send(player, NetworkingConstants.LAUNCH_ROCKET_PACKET_ID, buf);
+            }
+
+            if (this.getRocketSettings().payload != null) {
+                Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
+                payload.Deploy(world, this, this.getPayloadPosition(), this.calculateMaxHeight());
+            }
         }
     }
 
@@ -164,20 +208,27 @@ public class RocketEntity extends Entity {
             }
         }
 
+        if(this.isAboutToExplode) {
+            this.launchTime += 1f;
+            RocketPart part = this.getRocketSettings().blocks[this.getRocketSettings().failurePart];
+            Vec3d particlePosition = getPos().add(part.offset.getX(), part.offset.getY(), part.offset.getZ());
+
+            world.addImportantParticle(ParticleTypes.FLAME, true, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0.1f);
+            world.addImportantParticle(ParticleTypes.FLAME, true, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, -0.1f);
+
+            if(this.launchTime >= random.nextBetween(30, 60)){
+                //System.out.println(this.world.isClient + " - fails");
+                this.explode();
+            }
+        }
+
         if (this.isLaunching) {
             launchTime += 1;
 
             if(launchTime < 90) {
                 enginesActive();
-                if(launchTime % 10 == 0) {
-                    playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 3f, 1f);
-                }
             } else {
                 if(Math.abs(getVelocity().y) < 0.1f) {
-//                    if(this.getRocketSettings().payload != null && !this.world.isClient){
-//                        Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
-//                        payload.Deploy(this.world, this , this.getBlockPos());
-//                    }
                     kill();
                     return;
                 }
@@ -199,11 +250,36 @@ public class RocketEntity extends Entity {
         }
     }
 
+    private void explode() {
+        System.out.println("explodes with: " + this.getRocketSettings().blocks.length + " blocks");
+        world.playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1, true);
+
+        for(RocketPart part : this.getRocketSettings().blocks) {
+            Vec3d particlePosition = getPos().add(part.offset.getX(), part.offset.getY(), part.offset.getZ());
+            for(int i = 0; i < 20; i++) {
+                Vec3d vel = new Vec3d(random.nextFloat()-0.5f, random.nextFloat()-0.5f, random.nextFloat()-0.5f);
+                vel = vel.multiply(Math.sqrt(vel.length()) * 0.25f);
+                world.addImportantParticle(ParticleTypes.FLAME, true, particlePosition.x, particlePosition.y, particlePosition.z, -vel.x * 3, -vel.y * 3, -vel.z * 3);
+                world.addImportantParticle(ParticleRegistry.EXHAUST, true, particlePosition.x, particlePosition.y, particlePosition.z, vel.x, vel.y, vel.z);
+            }
+        }
+
+        if(!world.isClient) {
+            getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 2, true, Explosion.DestructionType.BREAK);
+            kill();
+        }
+        this.isAboutToExplode = false;
+    }
+
     private void enginesActive(){
         float force = 0.075f;
         this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
         rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * 0.005f);
         rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * 0.005f);
+
+        if(launchTime % 10 == 0) {
+            playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 3f, 1f);
+        }
 
         //TODO foreach engine present
         Vec3d particlePosition = getPos();
@@ -232,9 +308,33 @@ public class RocketEntity extends Entity {
     @Override
     public boolean handleAttack(Entity attacker) {
         if(attacker instanceof PlayerEntity) {
-            if(((PlayerEntity) attacker).getStackInHand(((PlayerEntity) attacker).getActiveHand()).isOf(ItemRegistry.DEV_WAND)){
-                kill();
+            for (RocketPart part : getRocketSettings().blocks) {
+                Vec3d partPos = this.getPos().add(part.offset.getX() - (part.radius * 0.0625f * 0.5f), part.offset.getY(), part.offset.getZ() - (part.radius * 0.0625f * 0.5f));
+                BlockState blockState = part.Block;
+                for (int i = 0; i < 5; i++) {
+                    Vec3d randomPos = partPos.add(random.nextFloat() * part.radius * 0.0625f, random.nextFloat(), random.nextFloat() * part.radius * 0.0625f);
+                    world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), randomPos.x, randomPos.y, randomPos.z, 0, 0, 0);
+                }
+
+                playSound(blockState.getSoundGroup().getBreakSound(), 1, 1);
             }
+            if (this.health <= 0) {
+                dropStack(PayloadRegistry.getPayloadStack(this.getRocketSettings().payload), getRocketSettings().blocks.length);
+                if (attacker instanceof ServerPlayerEntity) {
+                    if (!((PlayerEntity) attacker).isCreative()) {
+                        for (RocketPart part : getRocketSettings().blocks) {
+                            dropStack(part.Block.getBlock().asItem().getDefaultStack(), part.offset.getY());
+                        }
+                    }
+                } else {
+                    for (RocketPart part : getRocketSettings().blocks) {
+                        dropStack(part.Block.getBlock().asItem().getDefaultStack(), part.offset.getY());
+                    }
+                }
+                kill();
+                return true;
+            }
+            this.health -= 1;
         }
         return false;
     }
@@ -266,15 +366,9 @@ public class RocketEntity extends Entity {
                 return ActionResult.success(this.world.isClient);
             }
         } else if (itemStack.isOf(ItemRegistry.DEV_WAND)) {
-            String out;
-            if (!this.world.isClient) {
-                if(this.getRocketSettings().payload != null) {
-                    Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
-                    payload.Deploy(world, this, this.getBlockPos(), this.calculateMaxHeight());
-                    kill();
-                }
+            if(!this.world.isClient) {
+                this.networkFailure(0);
             }
-
         } else if(itemStack.getItem().getClass() == PayloadItem.class) {
             return addPayload(itemStack, player, hand);
         } else if(itemStack.isOf(ItemRegistry.PAYLOAD_COMPASS)) {
@@ -294,16 +388,7 @@ public class RocketEntity extends Entity {
     }
 
     public ActionResult displayStats(PlayerEntity player) {
-        //System.out.println("DISPLAY STATS");
         if(world.isClient) {
-
-//            player.sendMessage(Text.of(this.getRocketSettings().getRocketTitle()
-//                    + " - TWR: " + (int) this.getRocketSettings().Power * 5 + "kg/" + (float)((int)(this.getRocketSettings().Mass*100))/100 + "kg"
-//                    + " = " + (float)((int)(this.getRocketSettings().Power * 5/this.getRocketSettings().Mass * 100))/100
-//                    + " - Calculated Max Height: " + (int) this.calculateMaxHeight() + "m"
-//                    + " - Chance of Failure: " + (int)this.getRocketSettings().Volatility+"%"
-//            ), true);
-
             this.infoRenderTime = 90; // Time delay for text
             this.shouldRenderInfo = true;
             this.infoLinkedPlayer = player;

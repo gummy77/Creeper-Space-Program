@@ -23,6 +23,19 @@ public class PayloadRegistry {
         return null;
     }
 
+    public static ItemStack getPayloadStack(PAYLOADS payload) {
+        switch (payload) {
+            case DEFAULT:
+                return ItemRegistry.DEFAULT_PAYLOAD_ITEM.getDefaultStack();
+            case STARDUST:
+                return null;
+            case MAPPER:
+                return null;
+        }
+
+        return null;
+    }
+
     public static PAYLOADS payloadFromStack(ItemStack stack) {
         if(stack.getItem() == ItemRegistry.DEFAULT_PAYLOAD_ITEM) {
             return PAYLOADS.DEFAULT;

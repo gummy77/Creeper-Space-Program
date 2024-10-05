@@ -20,6 +20,7 @@
   "item.csp.basic_assembler": "Basic Assembler",
   "item.csp.fuse":"Fuse",
   "item.csp.payload_compass": "Payload Tracking Compass",
+  "item.csp.rocket_inspector": "Rocket Inspector",
 
   "_comment": "- Payloads -",
   "item.csp.default_payload": "Dummy Payload",

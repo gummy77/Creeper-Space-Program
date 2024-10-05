@@ -2,6 +2,7 @@ package org.gum.csp.entity;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
@@ -30,7 +31,7 @@ public class RocketPartBlockEntity extends BlockEntity {
         this.rocketPart.Block = state;
     }
 
-    public void AssembleRocket(){
+    public void AssembleRocket(PlayerEntity player) {
 
         RocketPartBlockEntity baseBlock = getBase(this.pos);
 
@@ -38,15 +39,14 @@ public class RocketPartBlockEntity extends BlockEntity {
 
         boolean validConfig = isValidConfig(parts);
 
-        RocketSettings settings = new RocketSettings(parts.toArray(new RocketPart[0]));
+        RocketSettings settings = new RocketSettings(parts.toArray(new RocketPart[0]), false);
 
         boolean canFly = (settings.Power*5 / settings.Mass) > 1;
 
         if(!validConfig || !canFly){
             //yell at players
-
             for(RocketPart part : parts) {
-                world.breakBlock(baseBlock.pos.add(part.offset.getX(), part.offset.getY(), part.offset.getZ()), true);
+                world.breakBlock(baseBlock.pos.add(part.offset.getX(), part.offset.getY(), part.offset.getZ()), !player.isCreative());
             }
             return;
         }
