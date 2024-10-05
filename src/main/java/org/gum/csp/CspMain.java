@@ -8,10 +8,10 @@ public class CspMain implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        ItemRegistry.registerItems();
         BlockRegistry.registerBlocks();
         EntityRegistry.registerEntities();
         EntityRegistry.registerEntityAttributes();
+        ItemRegistry.registerItems();
         ScreenRegistry.registerScreens();
         AdvancementRegistry.registerAdvancements();
         SoundRegistry.registerSounds();

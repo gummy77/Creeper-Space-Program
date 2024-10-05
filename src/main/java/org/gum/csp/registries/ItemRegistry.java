@@ -5,6 +5,7 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.data.client.ModelProvider;
 import net.minecraft.item.*;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
 import org.gum.csp.item.*;
@@ -20,6 +21,8 @@ public class ItemRegistry {
     public static final Assembler ASSEMBLER;
     public static final PayloadTrackingCompass PAYLOAD_COMPASS;
     public static final Item ROCKET_INSPECTOR;
+
+    public static SpawnEggItem GNEEP_SPAWN_EGG;
 
     public static final Item WOODEN_FIN;
     public static final Item IRON_NOZZLE;
@@ -38,7 +41,7 @@ public class ItemRegistry {
             .build();
 
     public static void registerItems() {
-
+        GNEEP_SPAWN_EGG = (SpawnEggItem) register("gneep_spawn_egg", new SpawnEggItem(EntityRegistry.GNEEP_ENTITY, 0xffffff, ColorHelper.Argb.getArgb(1, 0, 1, 0), getSettings()));
     }
 
     public static Item register (String path, Item item) {

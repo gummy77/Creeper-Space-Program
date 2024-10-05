@@ -28,10 +28,9 @@ public class EntitySettings {
         this.spawnsNaturally = true;
     }
 
-    public EntitySettings(String path, SpawnGroup spawnGroup, TagKey<Biome> selectorTag, float x, float y) {
+    public EntitySettings(String path, SpawnGroup spawnGroup, float x, float y) {
         this.path = path;
         this.spawnGroup = spawnGroup;
-        this.selectorTag = selectorTag;
         this.x = x;
         this.y = y;
     }
