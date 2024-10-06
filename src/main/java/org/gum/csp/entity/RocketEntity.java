@@ -319,7 +319,9 @@ public class RocketEntity extends Entity {
                 playSound(blockState.getSoundGroup().getBreakSound(), 1, 1);
             }
             if (this.health <= 0) {
-                dropStack(PayloadRegistry.getPayloadStack(this.getRocketSettings().payload), getRocketSettings().blocks.length);
+                if(this.getRocketSettings().payload != null) {
+                    dropStack(PayloadRegistry.getPayloadStack(this.getRocketSettings().payload), getRocketSettings().blocks.length);
+                }
                 if (attacker instanceof ServerPlayerEntity) {
                     if (!((PlayerEntity) attacker).isCreative()) {
                         for (RocketPart part : getRocketSettings().blocks) {

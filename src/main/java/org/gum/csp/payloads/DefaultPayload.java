@@ -27,7 +27,7 @@ public class DefaultPayload extends Payload {
     public boolean Deploy(World world, RocketEntity entity, BlockPos pos, float heightReached) {
 
         PayloadEntity payloadEntity = EntityRegistry.PAYLOAD_ENTITY.create(world);
-        payloadEntity.setPosition(pos.getX(), -50f, pos.getZ());
+        payloadEntity.setPosition(pos.getX(), 350f, pos.getZ());
 
         PayloadSettings payloadSettings = new PayloadSettings(entity.getRocketSettings());
         payloadSettings.returnItems.add(ItemRegistry.ADRIAN.getDefaultStack());
@@ -38,5 +38,10 @@ public class DefaultPayload extends Payload {
 
         world.spawnEntity(payloadEntity);
         return true;
+    }
+
+    @Override
+    public boolean onOpen(World world, BlockPos pos, Entity entity) {
+        return false;
     }
 }

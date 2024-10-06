@@ -1,5 +1,6 @@
 package org.gum.csp.datastructs;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -12,4 +13,5 @@ public abstract class Payload {
 
     public abstract boolean Deploy(World world, RocketEntity entity, BlockPos pos, float heightReached);
 
+    public abstract boolean onOpen(World world, BlockPos pos, Entity attacker);
 }

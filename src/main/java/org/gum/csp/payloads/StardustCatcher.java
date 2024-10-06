@@ -1,5 +1,6 @@
 package org.gum.csp.payloads;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -17,5 +18,10 @@ public class StardustCatcher extends Payload {
         System.out.println("StardustCatcher: Deploy");
         System.out.println("StardustCatcher: "+pos);
         return true;
+    }
+
+    @Override
+    public boolean onOpen(World world, BlockPos pos, Entity entity) {
+        return false;
     }
 }

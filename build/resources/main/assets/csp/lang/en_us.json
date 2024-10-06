@@ -8,12 +8,12 @@
 
   "_comment": "--- Debug Stuff ---",
   "item.csp.adrian": "Unobtaidrian",
-  "item.csp.rocket": "Rocket Spawner (DEV)",
   "item.csp.dev_wand": "Dev Wand",
 
   "_comment": "--- Entities ---",
   "entity.csp.rocket_entity": "Rocket",
   "entity.csp.payload_entity": "Payload",
+  "entity.csp.gneep_entity": "Gneep",
 
   "_comment": "--- Items ---",
   "item.csp.launchkit": "Launch Kit",
@@ -21,6 +21,8 @@
   "item.csp.fuse":"Fuse",
   "item.csp.payload_compass": "Payload Tracking Compass",
   "item.csp.rocket_inspector": "Rocket Inspector",
+
+  "item.csp.gneep_spawn_egg": "Gneep Spawn Egg",
 
   "_comment": "- Payloads -",
   "item.csp.default_payload": "Dummy Payload",
@@ -45,7 +47,6 @@
   "block.csp.copper_rocket.nose_cone": "Copper Nose Cone",
   "block.csp.copper_rocket.body_segment": "Copper Body Segment",
   "block.csp.copper_rocket.exhaust": "Copper Exhaust",
-
 
   "_comment": "--- Advancement Stuff ---",
   "advancements.csp.root.title": "This stuff explodes!?",

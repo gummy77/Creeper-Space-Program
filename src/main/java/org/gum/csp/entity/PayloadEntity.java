@@ -89,6 +89,8 @@ public class PayloadEntity extends Entity {
                 dropStack(stack);
             }
 
+            PayloadRegistry.getPayload(this.payloadSettings.payload).onOpen(world, this.getBlockPos(), attacker);
+
             if(attacker instanceof ServerPlayerEntity) {
                 if(!((PlayerEntity) attacker).isCreative()) {
                     for (RocketPart part : getPayloadSettings().blocks) {
@@ -111,6 +113,7 @@ public class PayloadEntity extends Entity {
 
                 playSound(blockState.getSoundGroup().getBreakSound(), 1, 1);
             }
+
 
             kill();
 

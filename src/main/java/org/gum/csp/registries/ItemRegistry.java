@@ -13,7 +13,6 @@ import org.gum.csp.item.*;
 public class ItemRegistry {
 
     public static final Item ADRIAN;
-    public static final Rocket ROCKET;
     public static final Item DEV_WAND;
 
     public static final LaunchKit LAUNCH_KIT;
@@ -80,7 +79,6 @@ public class ItemRegistry {
         COPPER_BODY_SEGMENT = register("copper_rocket/body_segment", new BlockItem(BlockRegistry.COPPER_BODY_SEGMENT, getSettings()));
         COPPER_EXHAUST = register("copper_rocket/exhaust", new BlockItem(BlockRegistry.COPPER_EXHAUST, getSettings()));
 
-        ROCKET = (Rocket) register("rocket", new Rocket(getSettings()));
         ADRIAN = register("adrian", new Item(getSettings().food(new FoodComponent.Builder().hunger(10).build())));
         DEV_WAND = register("dev_wand", new Item(getSettings()));
     }
