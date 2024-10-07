@@ -24,8 +24,7 @@
             "items": [
               "csp:wooden_rocket/body_segment",
               "csp:wooden_rocket/nose_cone",
-              "csp:wooden_rocket/exhaust",
-              "csp:rocket"
+              "csp:wooden_rocket/exhaust"
             ]
           }
         ]

@@ -15,12 +15,13 @@
     },
     {
       "type": "patchouli:text",
-      "text": "That firework wasn't very exciting, there was no real shape to it. If we add a firework star, we can make the firework appear in different shapes. The Following Firework stars are included in the game, these can be found $(l:https://minecraft.wiki/w/Firework_Star)here. "
+      "text": "That firework wasn't very exciting, there was no real shape to it. If we add a firework star, we can make the firework appear in different shapes. The Following Firework stars are included in the game, these can be found $(l:https://minecraft.wiki/w/Firework_Star)here.$(/l) $(br2)If we want, we can also add more gunpowder when creating a rocket, to make its flight duration longer."
     },
     {
-      "type": "patchouli:crafting",
-      "recipe": "minecraft:firework_star.white",
-      "text": "The above crafting recipe shows how to craft a white Firework star. If you want to craft another colour star, substitute the white dye for another colour."
+      "type": "patchouli:entity",
+      "entity": "minecraft:firework_rocket",
+      "scale": 1.5,
+      "offset": -0.4
     }
   ]
 }

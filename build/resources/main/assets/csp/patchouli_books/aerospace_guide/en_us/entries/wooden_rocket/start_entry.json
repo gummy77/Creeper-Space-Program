@@ -16,7 +16,12 @@
     {
       "type": "patchouli:crafting",
       "recipe": "csp:wooden_rocket/exhaust",
-      "text": "$(br2)Once you have crafted all three of these items, arrange them as shown on the page to the right to create a very basic rocket!"
+      "recipe2": "csp:iron_nozzle"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "csp:wooden_fin",
+      "text": "$(br2)Once you have crafted all of these items, arrange them as shown on the next page, to create a very basic rocket!"
     },
     {
       "type": "patchouli:multiblock",
@@ -35,6 +40,10 @@
         "symmetrical": true
       },
       "enable_visualize": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "That is it for this book entry, you can read the previous entry here: $(l:fireworks/getting_first_rocket) $(li) The first rockets. $(/l)"
     }
   ]
 }
