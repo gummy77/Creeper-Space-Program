@@ -6,7 +6,31 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Congratulations on your first rocket, now lets give it an upgrade!"
+      "text": "Congratulations on your first rocket. Up until now, your rockets have been extremely basic, but did you know you can create rockets from multiple body pieces. $(br)Have a go creating a rocket like the one to the right!"
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Large Wooden Rocket",
+      "multiblock": {
+        "mapping" : {
+          "C": "csp:wooden_rocket/nose_cone",
+          "B": "csp:wooden_rocket/body_segment",
+          "E": "csp:wooden_rocket/exhaust"
+        },
+        "pattern": [
+          [" C "],
+          [" B "],
+          [" B "],
+          ["0B "],
+          [" E "]
+        ],
+        "symmetrical": true
+      },
+      "enable_visualize": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Wood is not the only "
     }
   ]
 }
