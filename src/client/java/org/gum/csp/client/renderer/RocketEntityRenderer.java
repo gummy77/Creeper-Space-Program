@@ -1,5 +1,6 @@
 package org.gum.csp.client.renderer;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
@@ -8,6 +9,7 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.LightType;
@@ -15,6 +17,8 @@ import org.gum.csp.client.CspMainClient;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.entity.RocketEntity;
+
+import java.util.Properties;
 
 public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
@@ -34,7 +38,7 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
     @Override
     public boolean shouldRender(RocketEntity entity, Frustum frustum, double x, double y, double z) {
-        return true; //TODO make this work
+        return true; //TODO make this work (below code doesnt)
 //        Box box = new Box(x, y, z, x + entity.getWidth(), y + entity.getHeight(), z + entity.getWidth());
 //        box.offset(entity.renderPosition.getX(), entity.renderPosition.getY(), entity.renderPosition.getZ());
 //        return frustum.isVisible(box);
@@ -57,6 +61,13 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
         matrices.multiply(rotation);
 
+
+        /* damage wobble here probably
+
+        float wobbleRotation = entity.getWobble();
+        matrices.multiply(Quaternion.fromEuler(0, wobbleRotation, 0));
+        */
+
         if(entity.getRocketSettings().blocks != null && entity.getRocketSettings().blocks.length > 0) {
             this.shadowRadius = entity.getRocketSettings().getMaxWidth() * 0.0625f * 1.5f;
 
@@ -67,7 +78,8 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
             for (RocketPart block : blocks) {
                 matrices.push();
                 matrices.translate(block.offset.getX(), block.offset.getY(), block.offset.getZ());
-                blockRenderManager.renderBlockAsEntity(block.Block, matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV);
+                BlockState state = block.Block;
+                blockRenderManager.renderBlockAsEntity(state, matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV);
                 matrices.pop();
             }
         } else {
@@ -87,7 +99,7 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
         }
     }
 
-    private double lastrotation = 0;
+    private double lastrotation = 0; //TODO make this not jitter
 
     private void renderRocketStats(RocketEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int infoTime) {
         RocketSettings rocketSettings = entity.getRocketSettings();
@@ -101,9 +113,9 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
             double lerpSpeed = tickDelta * 0.1;
 
-            double newRotation = Math.atan2(x, y);
-            double rotation = (lastrotation * (1 - lerpSpeed)) + (newRotation * lerpSpeed);
-            lastrotation = rotation;
+//            double newRotation = Math.atan2(x, y);
+//            double rotation = (lastrotation * (1 - lerpSpeed)) + (newRotation * lerpSpeed);
+//            lastrotation = rotation;
 
             int alpha = 0;
             if(infoTime > 20) {
@@ -114,7 +126,7 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
             int Color = ColorHelper.Argb.getArgb(alpha, 255, 255,255);
 
             matrices.push();
-            matrices.multiply(Quaternion.fromEulerXyz(0, (float) rotation  - 0.4f, 0));
+            matrices.multiply(Quaternion.fromEulerXyz(0, (float) /*rotation  - 0.4f */ Math.PI/2, 0));
             matrices.translate(0.5f, 3 , 0);
             matrices.scale(0.025f, -0.025f, 0.025f);
 
@@ -124,11 +136,13 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
             textRenderer.draw(matrices, rocketSettings.getRocketTitle(), 0, -5, Color);
             matrices.pop();
 
-            textRenderer.draw(matrices, "Power: " + (rocketSettings.Power * 5) + "kg/s", 0, 10, Color);
+            textRenderer.draw(matrices, "Power: " + rocketSettings.Power + "N", 0, 10, Color);
             textRenderer.draw(matrices, "Mass: " + rocketSettings.Mass + "kg", 0, 20, Color);
-            textRenderer.draw(matrices, "   -> TWR: " + (float)((int)(rocketSettings.Power * 5 / rocketSettings.Mass * 100)) / 100, 0, 30, Color);
-            textRenderer.draw(matrices, "Estimated Height: " + (int) (RocketEntity.calculateMaxHeight(rocketSettings)) + "m", 0, 45, Color);
-            textRenderer.draw(matrices, "Chance of Failure: " + rocketSettings.Volatility + "%", 0, 55, Color);
+            textRenderer.draw(matrices, "   -> TWR: " + (float)((int)(rocketSettings.Power / rocketSettings.Mass * 100)) / 100, 0, 30, Color);
+
+            textRenderer.draw(matrices, "Burn Time: " + rocketSettings.burnTime + "s", 0, 45, Color);
+            textRenderer.draw(matrices, "Estimated Height: " + (int) (RocketEntity.calculateMaxHeight(rocketSettings)) + "m", 0, 55, Color);
+            textRenderer.draw(matrices, "Chance of Failure: " + rocketSettings.Volatility + "%", 0, 65, Color);
 
             matrices.pop();
         }

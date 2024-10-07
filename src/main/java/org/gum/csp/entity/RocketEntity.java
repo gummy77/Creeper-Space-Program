@@ -94,24 +94,24 @@ public class RocketEntity extends Entity {
     }
 
     public static float calculateMaxHeight(RocketSettings settings){
-        float P = settings.Power;
-        float M = settings.Mass;
-        float T = settings.burnTime;
+        float f = settings.Power;
+        float m = settings.Mass;
+        float t = settings.burnTime;
 
-        float log = (float) (  1f / (Math.pow(P*T, 3f) * 20f)  );
-        float H = (float) -(  Math.log10(log) * ((300f*P*T)/M)  );
+        float a = f/m;
+        float vi = a*t;
+        float h = (vi*vi) / (2 * 9.8f);
 
-        return H;
+        return h;
     }
 
     public boolean hasLaunched(){
         return this.isLaunching;
     }
 
-    public void haveFailure(int type, int part) {
+    public void haveFailure(int type) {
         System.out.println((this.world.isClient ? "Client" : "Server") + " - fails");
         this.getRocketSettings().isFailing = true;
-        this.getRocketSettings().failurePart = part;
         if(type == 0) {
             this.isAboutToExplode = true;
         }
@@ -122,20 +122,18 @@ public class RocketEntity extends Entity {
     }
 
     public boolean networkFailure(int failureType) {
-        int partFailure = random.nextBetween(0, this.getRocketSettings().blocks.length - 1);
 
         PacketByteBuf buf = PacketByteBufs.create();
         buf.writeIntList(IntList.of(
                 this.getId(),
-                failureType,
-                partFailure
+                failureType
         ));
 
         for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
             ServerPlayNetworking.send(player, NetworkingConstants.ROCKET_FAILURE_PACKET_ID, buf);
         }
 
-        this.haveFailure(failureType, partFailure);
+        this.haveFailure(failureType);
 
         if(failureType == 0) {
             return true;
@@ -173,11 +171,13 @@ public class RocketEntity extends Entity {
     }
 
     protected BlockPos getPayloadPosition(){
-        float payloadDistance = this.calculateMaxHeight() * (0.5f);
+        float payloadDistance = this.calculateMaxHeight() * (2f/3f);
+
 
         Vec3d payloadPosition = new Vec3d(Math.cos(launchDirection), 0, -Math.sin(launchDirection));
-        payloadPosition.add(getPos());
         payloadPosition = payloadPosition.multiply(payloadDistance);
+
+        payloadPosition = payloadPosition.add(this.getPos());
 
         return new BlockPos(payloadPosition.x, payloadPosition.y, payloadPosition.z);
     }
@@ -201,7 +201,7 @@ public class RocketEntity extends Entity {
             this.networkUpdateSettings();
         } else {
             if(this.shouldRenderInfo) {
-                this.infoRenderTime -= 1;
+                //this.infoRenderTime -= 1;
                 if(this.infoRenderTime <= 0) {
                     this.shouldRenderInfo = false;
                 }
@@ -209,12 +209,13 @@ public class RocketEntity extends Entity {
         }
 
         if(this.isAboutToExplode) {
-            this.launchTime += 1f;
-            RocketPart part = this.getRocketSettings().blocks[this.getRocketSettings().failurePart];
-            Vec3d particlePosition = getPos().add(part.offset.getX(), part.offset.getY(), part.offset.getZ());
-
-            world.addImportantParticle(ParticleTypes.FLAME, true, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0.1f);
-            world.addImportantParticle(ParticleTypes.FLAME, true, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, -0.1f);
+            this.launchTime += this.world.isClient ? 1.2f : 1f;
+            Vec3d particlePosition = getPos().add(0, 0.75f, 0);
+            for (int i = 0; i < 10; i++) {
+                Vec3d dir = new Vec3d(Math.sin(random.nextFloat() * Math.PI * 2), 0, Math.cos(random.nextFloat() * Math.PI * 2));
+                dir = dir.multiply(0.025f);
+                world.addImportantParticle(ParticleTypes.FLAME, true, particlePosition.x, particlePosition.y, particlePosition.z, dir.x, 0, dir.z);
+            }
 
             if(this.launchTime >= random.nextBetween(30, 60)){
                 //System.out.println(this.world.isClient + " - fails");
@@ -368,14 +369,14 @@ public class RocketEntity extends Entity {
                 return ActionResult.success(this.world.isClient);
             }
         } else if (itemStack.isOf(ItemRegistry.DEV_WAND)) {
-//            if(!this.world.isClient) {
-//                this.networkFailure(0);
-//            }
-            if (this.getRocketSettings().payload != null) {
-                Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
-                payload.Deploy(world, this, this.getBlockPos(), this.calculateMaxHeight());
-                kill();
+            if(!this.world.isClient) {
+                this.networkFailure(0);
             }
+//            if (this.getRocketSettings().payload != null) {
+//                Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
+//                payload.Deploy(world, this, this.getBlockPos(), this.calculateMaxHeight());
+//                kill();
+//            }
         } else if(itemStack.getItem().getClass() == PayloadItem.class) {
             return addPayload(itemStack, player, hand);
         } else if(itemStack.isOf(ItemRegistry.PAYLOAD_COMPASS)) {
@@ -523,6 +524,10 @@ public class RocketEntity extends Entity {
                 }
             }
         }
+    }
+
+    public int getHealth(){
+        return this.health;
     }
 
     @Override

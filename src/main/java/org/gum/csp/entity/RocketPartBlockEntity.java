@@ -41,7 +41,7 @@ public class RocketPartBlockEntity extends BlockEntity {
 
         RocketSettings settings = new RocketSettings(parts.toArray(new RocketPart[0]), false);
 
-        boolean canFly = (settings.Power*5 / settings.Mass) > 1;
+        boolean canFly = (settings.Power / settings.Mass) >= 1;
 
         if(!validConfig || !canFly){
             //yell at players

@@ -57,12 +57,11 @@ public class ClientNetworkHandler {
         IntList list = buf.readIntList();
         int rocketId = list.getInt(0);
         int failureLocation = list.getInt(1);
-        int failurePart = list.getInt(2);
 
         client.execute(() -> {
             Entity rocket = client.world.getEntityById(rocketId);
             if(rocket instanceof RocketEntity) {
-                ((RocketEntity) rocket).haveFailure(failureLocation, failurePart);
+                ((RocketEntity) rocket).haveFailure(failureLocation);
             }
         });
     }
