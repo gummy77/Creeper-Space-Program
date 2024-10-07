@@ -19,6 +19,8 @@ public class BlockRegistry {
 
     public static BlockEntityType<RocketPartBlockEntity> ROCKET_PART_BLOCK_ENTITY;
 
+    public static final Block BLAST_RESISTANT_STONE, HEAVY_BLAST_RESISTANT_STONE;
+
 
     public static RocketPartBlock BASE_NOSE_CONE;
     public static RocketPartBlock BASE_BODY_SEGMENT;
@@ -42,54 +44,57 @@ public class BlockRegistry {
     }
 
     static {
+        BLAST_RESISTANT_STONE = register("blast_resistant_stone", new Block(FabricBlockSettings.of(Material.STONE).resistance(9).hardness(5)));
+        HEAVY_BLAST_RESISTANT_STONE = register("heavy_blast_resistant_stone", new Block(FabricBlockSettings.of(Material.STONE).resistance(15).hardness(5)));
+
         //Basic
 
-        BASE_NOSE_CONE = (RocketPartBlock) register("base_nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
+        BASE_NOSE_CONE = (RocketPartBlock) register("base_nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(5),
                 new RocketPart(RocketPart.PartType.NOSE, 6f, 1, 0, 0, null)));
 
-        BASE_BODY_SEGMENT = (RocketPartBlock) register("base_body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
+        BASE_BODY_SEGMENT = (RocketPartBlock) register("base_body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(5),
                 new RocketPart(
                         RocketPart.PartType.BODY, 6f,2, 0,0,
                         new FuelComponent(FuelComponent.FuelType.SOLID, 2, 1, 1)
                 )));
-        BASE_EXHAUST = (RocketPartBlock) register("base_exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
+        BASE_EXHAUST = (RocketPartBlock) register("base_exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(5),
                 new RocketPart(
                         RocketPart.PartType.EXHAUST, 6f,2, 0,3, null)));
 
         //Wooden
 
-        WOODEN_NOSE_CONE = (RocketPartBlock) register("wooden_rocket/nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.WOOD),
+        WOODEN_NOSE_CONE = (RocketPartBlock) register("wooden_rocket/nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.WOOD).hardness(2),
                 new RocketPart(RocketPart.PartType.NOSE, PartMaterial.WOOD, 6f,1, 0, 0,null)));
 
-        WOODEN_BODY_SEGMENT = (RocketPartBlock) register("wooden_rocket/body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.WOOD),
+        WOODEN_BODY_SEGMENT = (RocketPartBlock) register("wooden_rocket/body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.WOOD).hardness(2),
                 new RocketPart(RocketPart.PartType.BODY, PartMaterial.WOOD, 6f,2, 2.5f, 0,
                         new FuelComponent(FuelComponent.FuelType.SOLID, 2, 1, 1))));
 
-        WOODEN_EXHAUST = (RocketPartBlock) register("wooden_rocket/exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.WOOD),
+        WOODEN_EXHAUST = (RocketPartBlock) register("wooden_rocket/exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.WOOD).hardness(2),
                 new RocketPart(RocketPart.PartType.EXHAUST, PartMaterial.WOOD, 6f,2, 10, 2, null)));
 
         //Bamboo
 
-        BAMBOO_NOSE_CONE = (RocketPartBlock) register("bamboo_rocket/nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.BAMBOO),
+        BAMBOO_NOSE_CONE = (RocketPartBlock) register("bamboo_rocket/nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.BAMBOO).hardness(1),
                 new RocketPart(RocketPart.PartType.NOSE, PartMaterial.BAMBOO, 5f,0.5f, 0, 0,null)));
 
-        BAMBOO_BODY_SEGMENT = (RocketPartBlock) register("bamboo_rocket/body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.BAMBOO),
+        BAMBOO_BODY_SEGMENT = (RocketPartBlock) register("bamboo_rocket/body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.BAMBOO).hardness(1),
                 new RocketPart(RocketPart.PartType.BODY, PartMaterial.BAMBOO, 4f,0.5f, 3f, 0,
                         new FuelComponent(FuelComponent.FuelType.SOLID, 1.5f, 1, 1))));
 
-        BAMBOO_EXHAUST = (RocketPartBlock) register("bamboo_rocket/exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.BAMBOO),
+        BAMBOO_EXHAUST = (RocketPartBlock) register("bamboo_rocket/exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.BAMBOO).hardness(1),
                 new RocketPart(RocketPart.PartType.EXHAUST, PartMaterial.BAMBOO, 5f,0.5f, 12.5f, 1, null)));
 
         //Copper
 
-        COPPER_NOSE_CONE = (RocketPartBlock) register("copper_rocket/nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
+        COPPER_NOSE_CONE = (RocketPartBlock) register("copper_rocket/nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(3),
                 new RocketPart(RocketPart.PartType.NOSE, PartMaterial.COPPER, 8f,2, 0, 0,null)));
 
-        COPPER_BODY_SEGMENT = (RocketPartBlock) register("copper_rocket/body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
+        COPPER_BODY_SEGMENT = (RocketPartBlock) register("copper_rocket/body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(3),
                 new RocketPart(RocketPart.PartType.BODY, PartMaterial.COPPER, 8f,3, 2f, 0,
                         new FuelComponent(FuelComponent.FuelType.SOLID, 3, 1, 1))));
 
-        COPPER_EXHAUST = (RocketPartBlock) register("copper_rocket/exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.METAL),
+        COPPER_EXHAUST = (RocketPartBlock) register("copper_rocket/exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(3),
                 new RocketPart(RocketPart.PartType.EXHAUST, PartMaterial.COPPER, 8f,3, 7.5f, 4, null)));
 
 

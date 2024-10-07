@@ -368,8 +368,13 @@ public class RocketEntity extends Entity {
                 return ActionResult.success(this.world.isClient);
             }
         } else if (itemStack.isOf(ItemRegistry.DEV_WAND)) {
-            if(!this.world.isClient) {
-                this.networkFailure(0);
+//            if(!this.world.isClient) {
+//                this.networkFailure(0);
+//            }
+            if (this.getRocketSettings().payload != null) {
+                Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
+                payload.Deploy(world, this, this.getBlockPos(), this.calculateMaxHeight());
+                kill();
             }
         } else if(itemStack.getItem().getClass() == PayloadItem.class) {
             return addPayload(itemStack, player, hand);
@@ -399,7 +404,7 @@ public class RocketEntity extends Entity {
     }
 
     public ActionResult addPayloadTracker(RocketEntity entity, ItemStack itemStack, PlayerEntity player, Hand hand) {
-        BlockPos blockPos = entity.getPayloadPosition();
+        BlockPos blockPos = this.getPayloadPosition();
         World world = entity.getWorld();
 
         if(this.getRocketSettings().payload != null) {

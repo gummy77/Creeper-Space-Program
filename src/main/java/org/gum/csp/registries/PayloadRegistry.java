@@ -11,29 +11,21 @@ public class PayloadRegistry {
 
     public static Payload getPayload(PAYLOADS i) {
 
-        switch (i) {
-            case DEFAULT:
-                return DEFAULT_PAYLOAD;
-            case STARDUST:
-                return STARDUST_CATCHER;
-            case MAPPER:
-                return null;
-        }
+        return switch (i) {
+            case DEFAULT -> DEFAULT_PAYLOAD;
+            case STARDUST -> STARDUST_CATCHER;
+            case MAPPER -> null;
+        };
 
-        return null;
     }
 
     public static ItemStack getPayloadStack(PAYLOADS payload) {
-        switch (payload) {
-            case DEFAULT:
-                return ItemRegistry.DEFAULT_PAYLOAD_ITEM.getDefaultStack();
-            case STARDUST:
-                return null;
-            case MAPPER:
-                return null;
-        }
+        return switch (payload) {
+            case DEFAULT -> ItemRegistry.DEFAULT_PAYLOAD_ITEM.getDefaultStack();
+            case STARDUST -> null;
+            case MAPPER -> null;
+        };
 
-        return null;
     }
 
     public static PAYLOADS payloadFromStack(ItemStack stack) {

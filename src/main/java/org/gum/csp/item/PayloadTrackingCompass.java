@@ -51,7 +51,6 @@ public class PayloadTrackingCompass extends Item {
         boolean bl2 = nbt.contains("PayloadDimension");
 
 
-
         if (bl && bl2) {
             Optional<RegistryKey<World>> optional = getPayloadDimension(nbt);
             if (optional.isPresent()) {
@@ -62,12 +61,12 @@ public class PayloadTrackingCompass extends Item {
 
                     if(entity instanceof RocketEntity) {
                         BlockPos blockPos = entity.getBlockPos();
-                        return GlobalPos.create((RegistryKey)optional.get(), blockPos);
+                        return GlobalPos.create(optional.get(), blockPos);
                     }
                 }
 
                 BlockPos blockPos = NbtHelper.toBlockPos(nbt.getCompound("PayloadPos"));
-                return GlobalPos.create((RegistryKey)optional.get(), blockPos);
+                return GlobalPos.create(optional.get(), blockPos);
             }
         }
 

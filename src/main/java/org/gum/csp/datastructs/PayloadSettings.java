@@ -22,6 +22,8 @@ public class PayloadSettings {
     public PayloadSettings(RocketSettings rocketSettings) {
         this();
 
+        this.payload = rocketSettings.payload;
+
         RocketPart[] parts = new RocketPart[rocketSettings.blocks.length];
         for(int i = 0; i < rocketSettings.blocks.length; i++) {
             parts[i] = rocketSettings.blocks[i].copy();

@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.LightType;
+import org.gum.csp.CspMain;
 import org.gum.csp.client.CspMainClient;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.entity.PayloadEntity;
@@ -29,11 +30,25 @@ public class PayloadEntityRenderer extends EntityRenderer<PayloadEntity> {
     }
 
     @Override
+    public boolean shouldRender(PayloadEntity entity, Frustum frustum, double x, double y, double z) {
+        return true;
+    }
+
+    @Override
     public void render(PayloadEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
         super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
         matrices.push();
 
         if(entity.getPayloadSettings() != null){
+            if(!entity.isOnGround()){
+                matrices.push();
+                matrices.translate(0, 3, 0);
+
+                matrices.multiply(Quaternion.fromEulerXyz((float) Math.PI, 0, 0));
+                modelLoader.getModelPart(CspMainClient.PARACHUTE_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(new Identifier(CspMain.MODID, "textures/entity/parachute_texture.png"))), light,  OverlayTexture.DEFAULT_UV);
+                matrices.pop();
+            }
+
             this.shadowRadius = entity.getPayloadSettings().getMaxWidth() * 0.0625f * 1.5f;
             if(entity.getPayloadSettings().blocks != null && entity.getPayloadSettings().blocks.length > 0) {
                 matrices.translate(-0.5f, 0, -0.5f);
@@ -56,6 +71,6 @@ public class PayloadEntityRenderer extends EntityRenderer<PayloadEntity> {
 
     @Override
     public Identifier getTexture(PayloadEntity entity) {
-        return new Identifier("csp", "textures/entity/rocket.png");
+        return new Identifier(CspMain.MODID, "textures/entity/rocket.png");
     }
 }

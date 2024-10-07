@@ -36,7 +36,7 @@ public class ItemRegistry {
 
     public static final ItemGroup MODGROUP = FabricItemGroupBuilder.create(
                     new Identifier(CspMain.MODID, "cspmodgroup"))
-            .icon(() -> new ItemStack(Items.TROPICAL_FISH))
+            .icon(() -> new ItemStack(Items.FIREWORK_ROCKET))
             .build();
 
     public static void registerItems() {

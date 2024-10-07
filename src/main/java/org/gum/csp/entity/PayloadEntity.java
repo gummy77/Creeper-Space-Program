@@ -21,6 +21,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import org.gum.csp.datastructs.Payload;
 import org.gum.csp.datastructs.PayloadSettings;
@@ -63,7 +64,10 @@ public class PayloadEntity extends Entity {
         }
 
         this.addVelocity(0, -0.02, 0);
-        //this.setVelocity(this.getVelocity().multiply(0.95f));
+        this.setVelocity(this.getVelocity().multiply(0.99f));
+        if(getBlockPos().getY() - world.getTopPosition(Heightmap.Type.MOTION_BLOCKING, getBlockPos()).getY() < 80) {
+            this.setVelocity(this.getVelocity().multiply(0.925f));
+        }
         this.move(MovementType.SELF, this.getVelocity());
     }
 
@@ -85,11 +89,13 @@ public class PayloadEntity extends Entity {
     public boolean handleAttack(Entity attacker) {
         if(attacker instanceof PlayerEntity) {
 
-            for(ItemStack stack : this.payloadSettings.returnItems) {
+            for(ItemStack stack : this.getPayloadSettings().returnItems) {
                 dropStack(stack);
             }
 
-            PayloadRegistry.getPayload(this.payloadSettings.payload).onOpen(world, this.getBlockPos(), attacker);
+            if(this.getPayloadSettings().payload != null) {
+                PayloadRegistry.getPayload(this.getPayloadSettings().payload).onOpen(world, this.getBlockPos(), attacker);
+            }
 
             if(attacker instanceof ServerPlayerEntity) {
                 if(!((PlayerEntity) attacker).isCreative()) {
