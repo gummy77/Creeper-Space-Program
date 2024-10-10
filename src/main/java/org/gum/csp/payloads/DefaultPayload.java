@@ -30,7 +30,6 @@ public class DefaultPayload extends Payload {
         payloadEntity.setPosition(pos.getX(), 350f, pos.getZ());
 
         PayloadSettings payloadSettings = new PayloadSettings(entity.getRocketSettings());
-        payloadSettings.returnItems.add(ItemRegistry.ADRIAN.getDefaultStack());
 
         NbtCompound nbtCompound = new NbtCompound();
         nbtCompound.put("PayloadSettings", payloadSettings.toNbt());

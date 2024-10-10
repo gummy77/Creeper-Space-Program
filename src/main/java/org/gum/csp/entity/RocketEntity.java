@@ -408,7 +408,7 @@ public class RocketEntity extends Entity {
         BlockPos blockPos = this.getPayloadPosition();
         World world = entity.getWorld();
 
-        if(this.getRocketSettings().payload != null) {
+        if(this.getRocketSettings().payload != null && this.getRocketSettings().payload.canBeTracked()) {
             world.playSound((PlayerEntity)null, blockPos, SoundEvents.ITEM_LODESTONE_COMPASS_LOCK, SoundCategory.PLAYERS, 1.0F, 1.0F);
             PayloadTrackingCompass.writeNbt(world.getRegistryKey(), this.getId(), blockPos, itemStack.getOrCreateNbt());
             return ActionResult.SUCCESS;

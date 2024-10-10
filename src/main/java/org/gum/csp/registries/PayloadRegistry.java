@@ -1,19 +1,21 @@
 package org.gum.csp.registries;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.gum.csp.datastructs.Payload;
-import org.gum.csp.payloads.DefaultPayload;
-import org.gum.csp.payloads.StardustCatcher;
+import org.gum.csp.payloads.*;
 
 public class PayloadRegistry {
     public static Payload STARDUST_CATCHER = new StardustCatcher();
     public static Payload DEFAULT_PAYLOAD = new DefaultPayload();
+    public static Payload RAIN_STARTER = new RainStarter();
 
     public static Payload getPayload(PAYLOADS i) {
 
         return switch (i) {
             case DEFAULT -> DEFAULT_PAYLOAD;
             case STARDUST -> STARDUST_CATCHER;
+            case RAIN_STARTER -> RAIN_STARTER;
             case MAPPER -> null;
         };
 
@@ -23,6 +25,7 @@ public class PayloadRegistry {
         return switch (payload) {
             case DEFAULT -> ItemRegistry.DEFAULT_PAYLOAD_ITEM.getDefaultStack();
             case STARDUST -> null;
+            case RAIN_STARTER -> ItemRegistry.RAIN_STARTER_ITEM.getDefaultStack();
             case MAPPER -> null;
         };
 
@@ -31,6 +34,8 @@ public class PayloadRegistry {
     public static PAYLOADS payloadFromStack(ItemStack stack) {
         if(stack.getItem() == ItemRegistry.DEFAULT_PAYLOAD_ITEM) {
             return PAYLOADS.DEFAULT;
+        } else if(stack.getItem() == ItemRegistry.RAIN_STARTER_ITEM) {
+            return PAYLOADS.RAIN_STARTER;
         }
         /*
         else if(stack.getItem() == ItemRegistry.STARDUST_CATCHER_PAYLOAD) {
@@ -38,13 +43,23 @@ public class PayloadRegistry {
         }
         */
 
-
         return null;
     }
 
     public enum PAYLOADS {
-        DEFAULT,
-        STARDUST,
-        MAPPER,
+        DEFAULT(true),
+        STARDUST(true),
+        RAIN_STARTER(false),
+        MAPPER(true);
+
+        private final boolean canBeTracked;
+
+        public boolean canBeTracked() {
+            return canBeTracked;
+        }
+
+        PAYLOADS(boolean canBeTracked) {
+            this.canBeTracked = canBeTracked;
+        }
     }
 }

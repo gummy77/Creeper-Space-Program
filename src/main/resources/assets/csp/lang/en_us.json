@@ -36,17 +36,17 @@
   "block.csp.base_body_segment": "Basic Body Segment",
   "block.csp.base_exhaust": "Basic Exhaust",
 
-  "block.csp.wooden_rocket.nose_cone": "Wooden Nose Cone",
-  "block.csp.wooden_rocket.body_segment": "Wooden Body Segment",
-  "block.csp.wooden_rocket.exhaust": "Wooden Exhaust",
+  "block.csp.rocket.wooden.nose_cone": "Wooden Nose Cone",
+  "block.csp.rocket.wooden.body_segment": "Wooden Body Segment",
+  "block.csp.rocket.wooden.exhaust": "Wooden Exhaust",
 
-  "block.csp.bamboo_rocket.nose_cone": "Bamboo Nose Cone",
-  "block.csp.bamboo_rocket.body_segment": "Bamboo Body Segment",
-  "block.csp.bamboo_rocket.exhaust": "Bamboo Exhaust",
+  "block.csp.rocket.bamboo.nose_cone": "Bamboo Nose Cone",
+  "block.csp.rocket.bamboo.body_segment": "Bamboo Body Segment",
+  "block.csp.rocket.bamboo.exhaust": "Bamboo Exhaust",
 
-  "block.csp.copper_rocket.nose_cone": "Copper Nose Cone",
-  "block.csp.copper_rocket.body_segment": "Copper Body Segment",
-  "block.csp.copper_rocket.exhaust": "Copper Exhaust",
+  "block.csp.rocket.copper.nose_cone": "Copper Nose Cone",
+  "block.csp.rocket.copper.body_segment": "Copper Body Segment",
+  "block.csp.rocket.copper.exhaust": "Copper Exhaust",
 
   "_comment": "--- Advancement Stuff ---",
   "advancements.csp.root.title": "This stuff explodes!?",
