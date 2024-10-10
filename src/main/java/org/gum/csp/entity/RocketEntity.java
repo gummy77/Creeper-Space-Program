@@ -19,6 +19,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.*;
@@ -408,10 +409,16 @@ public class RocketEntity extends Entity {
         BlockPos blockPos = this.getPayloadPosition();
         World world = entity.getWorld();
 
-        if(this.getRocketSettings().payload != null && this.getRocketSettings().payload.canBeTracked()) {
-            world.playSound((PlayerEntity)null, blockPos, SoundEvents.ITEM_LODESTONE_COMPASS_LOCK, SoundCategory.PLAYERS, 1.0F, 1.0F);
-            PayloadTrackingCompass.writeNbt(world.getRegistryKey(), this.getId(), blockPos, itemStack.getOrCreateNbt());
-            return ActionResult.SUCCESS;
+        if(this.getRocketSettings().payload != null) {
+            if(this.getRocketSettings().payload.canBeTracked()) {
+                world.playSound((PlayerEntity) null, blockPos, SoundEvents.ITEM_LODESTONE_COMPASS_LOCK, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                PayloadTrackingCompass.writeNbt(world.getRegistryKey(), this.getId(), blockPos, itemStack.getOrCreateNbt());
+                return ActionResult.SUCCESS;
+            } else {
+                player.sendMessage(Text.of("This payload cannot be tracked"), true);
+            }
+        } else {
+            player.sendMessage(Text.of("This rocket has no payload"), true);
         }
         return ActionResult.FAIL;
     }
@@ -428,8 +435,12 @@ public class RocketEntity extends Entity {
                 world.addParticle(ParticleTypes.GLOW, this.getPos().x + random.nextFloat() - 0.5f, this.getPos().y + getRocketSettings().blocks.length - random.nextFloat(), this.getPos().z + random.nextFloat() - 0.5f, 0, 0, 0);
             }
 
+            player.sendMessage(Text.of("Attached payload"), true);
+
             player.getStackInHand(hand).decrement(1);
             return ActionResult.SUCCESS;
+        } else {
+            player.sendMessage(Text.of("This rocket already has a payload"), true);
         }
         return ActionResult.FAIL;
     }

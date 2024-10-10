@@ -65,9 +65,9 @@ public class ItemRegistry {
         RAIN_STARTER_ITEM = (PayloadItem) register("payloads/rain_starter_payload", new PayloadItem(getSettings(), PayloadRegistry.PAYLOADS.RAIN_STARTER)) ;
 
 
-        BASE_NOSE_CONE = register("base_nose_cone", new BlockItem(BlockRegistry.BASE_NOSE_CONE, getSettings()));
-        BASE_BODY_SEGMENT = register("base_body_segment", new BlockItem(BlockRegistry.BASE_BODY_SEGMENT, getSettings()));
-        BASE_EXHAUST = register("base_exhaust", new BlockItem(BlockRegistry.BASE_EXHAUST, getSettings()));
+        BASE_NOSE_CONE = register("rocket/base/nose_cone", new BlockItem(BlockRegistry.BASE_NOSE_CONE, getSettings()));
+        BASE_BODY_SEGMENT = register("rocket/base/body_segment", new BlockItem(BlockRegistry.BASE_BODY_SEGMENT, getSettings()));
+        BASE_EXHAUST = register("rocket/base/exhaust", new BlockItem(BlockRegistry.BASE_EXHAUST, getSettings()));
 
         WOODEN_NOSE_CONE = register("rocket/wooden/nose_cone", new BlockItem(BlockRegistry.WOODEN_NOSE_CONE, getSettings()));
         WOODEN_BODY_SEGMENT = register("rocket/wooden/body_segment", new BlockItem(BlockRegistry.WOODEN_BODY_SEGMENT, getSettings()));
