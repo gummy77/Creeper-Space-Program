@@ -47,18 +47,23 @@ public class PayloadRegistry {
     }
 
     public enum PAYLOADS {
-        DEFAULT(true),
-        STARDUST(true),
-        RAIN_STARTER(false),
-        MAPPER(true);
+        DEFAULT(true, 0),
+        STARDUST(true, 10000),
+        RAIN_STARTER(false, 750),
+        MAPPER(true, 1000);
 
         private final boolean canBeTracked;
+        private final float minHeight;
 
         public boolean canBeTracked() {
             return canBeTracked;
         }
+        public float minHeight() {
+            return minHeight;
+        }
 
-        PAYLOADS(boolean canBeTracked) {
+        PAYLOADS(boolean canBeTracked, float minHeight) {
+            this.minHeight = minHeight;
             this.canBeTracked = canBeTracked;
         }
     }

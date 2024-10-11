@@ -1,10 +1,15 @@
 package org.gum.csp.item;
 
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
+import net.minecraft.world.World;
 import org.gum.csp.registries.PayloadRegistry;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 public class PayloadItem extends Item {
@@ -15,10 +20,8 @@ public class PayloadItem extends Item {
     }
 
     @Override
-    public Optional<TooltipData> getTooltipData(ItemStack stack) {
-        TooltipData tooltipData = super.getTooltipData(stack).orElse(null);
-        Optional<TooltipData> data = Optional.of(tooltipData);
-
-        return data;
+    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
+        tooltip.add(Text.of("Min Height: " + (payloadsType.minHeight() == 0 ? "none" : payloadsType.minHeight()+"m")));
+        tooltip.add(Text.of(payloadsType.canBeTracked() ? "Trackable" : "Untrackable"));
     }
 }

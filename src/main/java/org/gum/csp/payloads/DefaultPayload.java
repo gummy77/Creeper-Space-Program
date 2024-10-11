@@ -29,6 +29,8 @@ public class DefaultPayload extends Payload {
         PayloadEntity payloadEntity = EntityRegistry.PAYLOAD_ENTITY.create(world);
         payloadEntity.setPosition(pos.getX(), 350f, pos.getZ());
 
+        System.out.println(pos);
+
         PayloadSettings payloadSettings = new PayloadSettings(entity.getRocketSettings());
 
         NbtCompound nbtCompound = new NbtCompound();

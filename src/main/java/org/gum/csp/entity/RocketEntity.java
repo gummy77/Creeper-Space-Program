@@ -84,14 +84,7 @@ public class RocketEntity extends Entity {
     }
 
     public float calculateMaxHeight(){
-        float P = this.getRocketSettings().Power;
-        float M = this.getRocketSettings().Mass;
-        float T = this.getRocketSettings().burnTime;
-
-        float log = (float) (  1f / (Math.pow(P*T, 3f) * 20f)  );
-        float H = (float) -(  Math.log10(log) * ((300f*P*T)/M)  );
-
-        return H;
+        return calculateMaxHeight(this.getRocketSettings());
     }
 
     public static float calculateMaxHeight(RocketSettings settings){
@@ -172,8 +165,9 @@ public class RocketEntity extends Entity {
     }
 
     protected BlockPos getPayloadPosition(){
-        float payloadDistance = this.calculateMaxHeight() * (2f/3f);
+        float payloadDistance = this.calculateMaxHeight() * 0.6f;
 
+        System.out.println(payloadDistance+"m");
 
         Vec3d payloadPosition = new Vec3d(Math.cos(launchDirection), 0, -Math.sin(launchDirection));
         payloadPosition = payloadPosition.multiply(payloadDistance);
