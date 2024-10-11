@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "bgb",
+    "bgb",
+    "bgb"
+  ],
+  "key": {
+    "b": {
+      "tag": "minecraft:bamboo"
+    },
+    "g": {
+      "item": "minecraft:gunpowder"
+    }
+  },
+  "result": {
+    "item": "csp:rocket/bamboo/body_segment",
+    "count": 1
+  }
+}

@@ -23,7 +23,7 @@ public class ItemRegistry {
 
     public static SpawnEggItem GNEEP_SPAWN_EGG;
 
-    public static final Item WOODEN_FIN;
+    public static final Item WOODEN_FIN, BAMBOO_FIN, COPPER_FIN;
     public static final Item IRON_NOZZLE;
 
     public static final PayloadItem DEFAULT_PAYLOAD_ITEM, RAIN_STARTER_ITEM;
@@ -59,11 +59,13 @@ public class ItemRegistry {
         ROCKET_INSPECTOR = register("rocket_inspector", new PayloadTrackingCompass(getSettings()));
 
         WOODEN_FIN = register("wooden_fin", new Item(getSettings()));
+        BAMBOO_FIN = register("bamboo_fin", new Item(getSettings()));
+        COPPER_FIN = register("copper_fin", new Item(getSettings()));
+
         IRON_NOZZLE = register("iron_nozzle", new Item(getSettings()));
 
         DEFAULT_PAYLOAD_ITEM = (PayloadItem) register("payloads/default_payload", new PayloadItem(getSettings(), PayloadRegistry.PAYLOADS.DEFAULT));
         RAIN_STARTER_ITEM = (PayloadItem) register("payloads/rain_starter_payload", new PayloadItem(getSettings(), PayloadRegistry.PAYLOADS.RAIN_STARTER)) ;
-
 
         BASE_NOSE_CONE = register("rocket/base/nose_cone", new BlockItem(BlockRegistry.BASE_NOSE_CONE, getSettings()));
         BASE_BODY_SEGMENT = register("rocket/base/body_segment", new BlockItem(BlockRegistry.BASE_BODY_SEGMENT, getSettings()));

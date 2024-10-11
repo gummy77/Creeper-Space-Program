@@ -6,13 +6,16 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.passive.PassiveEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.sound.SoundEvent;
 import net.minecraft.tag.BiomeTags;
 import net.minecraft.world.World;
+import org.gum.csp.registries.SoundRegistry;
 import org.jetbrains.annotations.Nullable;
 
 public class GneepEntity extends TameableEntity {
@@ -31,6 +34,21 @@ public class GneepEntity extends TameableEntity {
         return MobEntity.createMobAttributes()
                 .add(EntityAttributes.GENERIC_MAX_HEALTH, 6.0)
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.1f);
+    }
+
+    @Override
+    protected @Nullable SoundEvent getDeathSound() {
+        return SoundRegistry.GNEEP_DEATH;
+    }
+
+    @Override
+    protected @Nullable SoundEvent getHurtSound(DamageSource source) {
+        return SoundRegistry.GNEEP_HURT;
+    }
+
+    @Override
+    protected @Nullable SoundEvent getAmbientSound() {
+        return SoundRegistry.GNEEP_IDLE;
     }
 
     protected void initGoals() {

@@ -10,6 +10,8 @@ public class SoundRegistry {
     public static SoundEvent WOODEN_ROCKET_LAUNCH;
     public static SoundEvent BASIC_ASSEMBLE;
 
+    public static SoundEvent GNEEP_DEATH, GNEEP_HURT, GNEEP_IDLE;
+
     public static void registerSounds() {
     }
 
@@ -21,5 +23,9 @@ public class SoundRegistry {
     static {
         WOODEN_ROCKET_LAUNCH = registerSound("wooden_rocket_launch");
         BASIC_ASSEMBLE = registerSound("basic_assemble");
+
+        GNEEP_DEATH = registerSound("gneep_death");
+        GNEEP_HURT = registerSound("gneep_hurt");
+        GNEEP_IDLE = registerSound("gneep_idle");
     }
 }
