@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "bgb",
+    "bgb",
+    "fnf"
+  ],
+  "key": {
+    "b": {
+      "tag": "minecraft:bamboo"
+    },
+    "g": {
+      "item": "minecraft:gunpowder"
+    },
+    "f": {
+      "item": "csp:bamboo_fin"
+    },
+    "n": {
+      "item": "csp:iron_nozzle"
+    }
+  },
+  "result": {
+    "item": "csp:rocket/bamboo/exhaust",
+    "count": 1
+  }
+}

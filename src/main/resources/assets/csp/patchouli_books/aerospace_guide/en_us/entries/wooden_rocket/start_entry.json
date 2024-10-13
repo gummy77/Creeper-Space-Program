@@ -28,9 +28,9 @@
       "name": "Basic Wooden Rocket",
       "multiblock": {
         "mapping" : {
-          "C": "csp:wooden_rocket/nose_cone",
-          "B": "csp:wooden_rocket/body_segment",
-          "E": "csp:wooden_rocket/exhaust"
+          "C": "csp:rocket/wooden/nose_cone",
+          "B": "csp:rocket/wooden/body_segment",
+          "E": "csp:rocket/wooden/exhaust"
         },
         "pattern": [
           [" C "],

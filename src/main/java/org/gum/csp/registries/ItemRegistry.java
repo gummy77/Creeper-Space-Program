@@ -9,6 +9,7 @@ import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
 import org.gum.csp.item.*;
+import org.gum.csp.item.stardust.*;
 
 public class ItemRegistry {
 
@@ -33,6 +34,13 @@ public class ItemRegistry {
     public static Item WOODEN_NOSE_CONE, WOODEN_BODY_SEGMENT, WOODEN_EXHAUST;
     public static Item BAMBOO_NOSE_CONE, BAMBOO_BODY_SEGMENT, BAMBOO_EXHAUST;
     public static Item COPPER_NOSE_CONE, COPPER_BODY_SEGMENT, COPPER_EXHAUST;
+
+    public static StarDustBasic STARDUST_BASIC;
+    public static StarDustPurple STARDUST_LEVEL_2;
+    public static StarDustRed STARDUST_LEVEL_3;
+    public static StarDustCombo STARDUST_LEVEL_4;
+    public static StarDustRainbow STARDUST_LEVEL_5;
+
 
     public static final ItemGroup MODGROUP = FabricItemGroupBuilder.create(
                     new Identifier(CspMain.MODID, "cspmodgroup"))
@@ -85,5 +93,10 @@ public class ItemRegistry {
 
         ADRIAN = register("adrian", new Item(getSettings().food(new FoodComponent.Builder().hunger(10).build())));
         DEV_WAND = register("dev_wand", new Item(getSettings()));
+        STARDUST_BASIC = (StarDustBasic) register("stardust_basic", new StarDustBasic(getSettings()));
+        STARDUST_LEVEL_2 = (StarDustPurple) register("stardust_purple", new StarDustPurple(getSettings()));
+        STARDUST_LEVEL_3 = (StarDustRed) register("stardust_red", new StarDustRed(getSettings()));
+        STARDUST_LEVEL_4 = (StarDustCombo) register("stardust_green_pink", new StarDustCombo(getSettings()));
+        STARDUST_LEVEL_5 = (StarDustRainbow) register("stardust_rainbow", new StarDustRainbow(getSettings()));
     }
 }

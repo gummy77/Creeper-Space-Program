@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " b ",
+    "b b",
+    "b b"
+  ],
+  "key": {
+    "b": {
+      "tag": "minecraft:bamboo"
+    }
+  },
+  "result": {
+    "item": "csp:rocket/bamboo/nose_cone",
+    "count": 1
+  }
+}
