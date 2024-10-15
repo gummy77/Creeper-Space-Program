@@ -31,6 +31,8 @@
   "_comment": "--- Crafting Items ---",
   "item.csp.wooden_fin": "Wooden Fin",
   "item.csp.iron_nozzle": "Iron Nozzle",
+  "item.csp.bamboo_fin": "Bamboo Fin",
+  "item.csp.copper_fin": "Copper Fin",
 
   "_comment": "--- Rocket Parts ---",
   "block.csp.rocket.base.nose_cone": "Basic Nose Cone",
@@ -61,5 +63,16 @@
   "advancements.csp.create_first_rocket.title": "To infinity, and beyond!",
   "advancements.csp.create_first_rocket.description": "Craft your first rocket part.",
   "advancements.csp.launch_firework_rocket.title": "A spectacular boom!",
-  "advancements.csp.launch_firework_rocket.description": "Fire off a firework rocket."
+  "advancements.csp.launch_firework_rocket.description": "Fire off a firework rocket.",
+  "advancements.csp.add_payload.title": "Loading it up!",
+  "advancements.csp.add_payload.description": "Add a payload to an assembled rocket.",
+  "advancements.csp.rocket_failure_launch.title": "Houston, we have a problem!",
+  "advancements.csp.rocket_failure_launch.description": "Have a failure occur on a rocket at launch.",
+
+  "_comment": "--- Stardust ---",
+  "item.csp.stardust_basic": "Yellow Stardust",
+  "item.csp.stardust_purple": "Purple Stardust",
+  "item.csp.stardust_red": "Red Stardust",
+  "item.csp.stardust_green_pink": "Striped Stardust",
+  "item.csp.stardust_rainbow": "Rainbow Stardust"
 }

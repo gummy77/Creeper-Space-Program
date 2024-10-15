@@ -48,6 +48,7 @@ public class LaunchKit extends Item {
                 if (player instanceof ServerPlayerEntity) {
                     AdvancementRegistry.BAMBOO_ROCKET_LAUNCHED.trigger((ServerPlayerEntity) player, rocketEntity.getRocketSettings());
                     AdvancementRegistry.WOOD_ROCKET_LAUNCHED.trigger((ServerPlayerEntity) player, rocketEntity.getRocketSettings());
+                    AdvancementRegistry.ROCKET_FAILURE.setPlayerLaunching((ServerPlayerEntity) player);
                 }
             }
         }

@@ -108,6 +108,7 @@ public class RocketEntity extends Entity {
         this.getRocketSettings().isFailing = true;
         if(type == 0) {
             this.isAboutToExplode = true;
+            AdvancementRegistry.ROCKET_FAILURE.trigger(true);
         }
     }
 

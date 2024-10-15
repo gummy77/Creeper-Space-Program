@@ -2,12 +2,14 @@ package org.gum.csp.registries;
 
 import net.minecraft.advancement.criterion.Criteria;
 import org.gum.csp.advancements.RocketAdvancementCriterion;
+import org.gum.csp.advancements.RocketFailureCriterion;
 import org.gum.csp.datastructs.PartMaterial;
 
 public class AdvancementRegistry {
 
     public static RocketAdvancementCriterion BAMBOO_ROCKET_LAUNCHED;
     public static RocketAdvancementCriterion WOOD_ROCKET_LAUNCHED;
+    public static RocketFailureCriterion ROCKET_FAILURE;
 //    public static RocketAdvancementCriterion ANY_ROCKET_LAUNCHED;
 
     /**
@@ -18,6 +20,7 @@ public class AdvancementRegistry {
     static {
         BAMBOO_ROCKET_LAUNCHED = Criteria.register(new RocketAdvancementCriterion(PartMaterial.BAMBOO, "bamboo_rocket_advancement"));
         WOOD_ROCKET_LAUNCHED = Criteria.register(new RocketAdvancementCriterion(PartMaterial.WOOD, "wood_rocket_advancement"));
+        ROCKET_FAILURE = Criteria.register(new RocketFailureCriterion("rocket_failure"));
 //        ANY_ROCKET_LAUNCHED = Criteria.register(new RocketAdvancementCriterion(PartMaterial.NONE, "any_rocket_advancement"));
     }
 }
