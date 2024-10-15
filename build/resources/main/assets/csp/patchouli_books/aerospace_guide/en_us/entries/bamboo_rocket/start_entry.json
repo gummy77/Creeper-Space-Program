@@ -1,36 +1,36 @@
 {
   "name": "Getting Started",
-  "icon": "minecraft:oak_wood",
+  "icon": "minecraft:bamboo",
   "advancement": "csp:launch_firework_rocket",
   "category": "csp:basic_rocketry",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Lets get started creating our very first rocket. In order to begin, we first need to collect some items: $(li) Wooden Planks (any variant)$(li) Gunpowder $(li) Iron Ingot $(br2)Once you have collected all these items, we can get started creating our first rocket. The recipes are on the right hand side."
+      "text": "Lets get started creating our very first rocket. In order to begin, we first need to collect some items: $(li) Bamboo (any variant)$(li) Gunpowder $(li) Iron Ingot $(br2)Once you have collected all these items, we can get started creating our first rocket. The recipes are on the right hand side."
     },
     {
       "type": "patchouli:crafting",
-      "recipe": "csp:wooden_rocket/nose_cone",
-      "recipe2": "csp:wooden_rocket/body_segment"
+      "recipe": "csp:rocket/bamboo/nose_cone",
+      "recipe2": "csp:rocket/bamboo/body_segment"
     },
     {
       "type": "patchouli:crafting",
-      "recipe": "csp:wooden_rocket/exhaust",
+      "recipe": "csp:rocket/bamboo/exhaust",
       "recipe2": "csp:iron_nozzle"
     },
     {
       "type": "patchouli:crafting",
-      "recipe": "csp:wooden_fin",
+      "recipe": "csp:bamboo_fin",
       "text": "$(br2)Once you have crafted all of these items, arrange them as shown on the next page, to create a very basic rocket!"
     },
     {
       "type": "patchouli:multiblock",
-      "name": "Basic Wooden Rocket",
+      "name": "Basic Bamboo Rocket",
       "multiblock": {
         "mapping" : {
-          "C": "csp:rocket/wooden/nose_cone",
-          "B": "csp:rocket/wooden/body_segment",
-          "E": "csp:rocket/wooden/exhaust"
+          "C": "csp:rocket/bamboo/nose_cone",
+          "B": "csp:rocket/bamboo/body_segment",
+          "E": "csp:rocket/bamboo/exhaust"
         },
         "pattern": [
           [" C "],

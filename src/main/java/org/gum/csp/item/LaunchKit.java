@@ -46,6 +46,7 @@ public class LaunchKit extends Item {
                 }
                 actionResult = TypedActionResult.success(player.getStackInHand(hand));
                 if (player instanceof ServerPlayerEntity) {
+                    AdvancementRegistry.BAMBOO_ROCKET_LAUNCHED.trigger((ServerPlayerEntity) player, rocketEntity.getRocketSettings());
                     AdvancementRegistry.WOOD_ROCKET_LAUNCHED.trigger((ServerPlayerEntity) player, rocketEntity.getRocketSettings());
                 }
             }

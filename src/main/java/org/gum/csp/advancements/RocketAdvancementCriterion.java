@@ -13,9 +13,9 @@ import org.gum.csp.datastructs.PartMaterial;
 import org.gum.csp.datastructs.RocketSettings;
 
 public class RocketAdvancementCriterion extends AbstractCriterion<RocketAdvancementCriterion.Conditions> {
-    private static Identifier ID;
+    private final Identifier ID;
 
-    private static PartMaterial material;
+    private final PartMaterial material;
 
     public RocketAdvancementCriterion(PartMaterial materialTrigger, String name) {
         material = materialTrigger;
@@ -24,12 +24,14 @@ public class RocketAdvancementCriterion extends AbstractCriterion<RocketAdvancem
 
     @Override
     protected Conditions conditionsFromJson(JsonObject obj, EntityPredicate.Extended playerPredicate, AdvancementEntityPredicateDeserializer predicateDeserializer) {
-        return new Conditions(playerPredicate);
+        return new Conditions(playerPredicate, this);
     }
 
     public static class Conditions extends AbstractCriterionConditions {
-        public Conditions(EntityPredicate.Extended playerPredicate) {
-            super(ID, playerPredicate);
+        private final PartMaterial material;
+        public Conditions(EntityPredicate.Extended playerPredicate, RocketAdvancementCriterion criterionInstance) {
+            super(criterionInstance.ID, playerPredicate);
+            material = criterionInstance.material;
         }
 
         boolean test(RocketSettings rocketSettings) {
