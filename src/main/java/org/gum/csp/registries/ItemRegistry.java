@@ -8,6 +8,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
+import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.item.*;
 import org.gum.csp.item.stardust.*;
 
@@ -75,21 +76,22 @@ public class ItemRegistry {
         DEFAULT_PAYLOAD_ITEM = (PayloadItem) register("payloads/default_payload", new PayloadItem(getSettings(), PayloadRegistry.PAYLOADS.DEFAULT));
         RAIN_STARTER_ITEM = (PayloadItem) register("payloads/rain_starter_payload", new PayloadItem(getSettings(), PayloadRegistry.PAYLOADS.RAIN_STARTER)) ;
 
-        BASE_NOSE_CONE = register("rocket/base/nose_cone", new BlockItem(BlockRegistry.BASE_NOSE_CONE, getSettings()));
-        BASE_BODY_SEGMENT = register("rocket/base/body_segment", new BlockItem(BlockRegistry.BASE_BODY_SEGMENT, getSettings()));
-        BASE_EXHAUST = register("rocket/base/exhaust", new BlockItem(BlockRegistry.BASE_EXHAUST, getSettings()));
+        BASE_NOSE_CONE = register("rocket/base/nose_cone", new RocketPartItem(BlockRegistry.BASE_NOSE_CONE, getSettings()));
+        BASE_BODY_SEGMENT = register("rocket/base/body_segment", new RocketPartItem(BlockRegistry.BASE_BODY_SEGMENT, getSettings()));
+        BASE_EXHAUST = register("rocket/base/exhaust", new RocketPartItem(BlockRegistry.BASE_EXHAUST, getSettings()));
 
-        WOODEN_NOSE_CONE = register("rocket/wooden/nose_cone", new BlockItem(BlockRegistry.WOODEN_NOSE_CONE, getSettings()));
-        WOODEN_BODY_SEGMENT = register("rocket/wooden/body_segment", new BlockItem(BlockRegistry.WOODEN_BODY_SEGMENT, getSettings()));
-        WOODEN_EXHAUST = register("rocket/wooden/exhaust", new BlockItem(BlockRegistry.WOODEN_EXHAUST, getSettings()));
 
-        BAMBOO_NOSE_CONE = register("rocket/bamboo/nose_cone", new BlockItem(BlockRegistry.BAMBOO_NOSE_CONE, getSettings()));
-        BAMBOO_BODY_SEGMENT = register("rocket/bamboo/body_segment", new BlockItem(BlockRegistry.BAMBOO_BODY_SEGMENT, getSettings()));
-        BAMBOO_EXHAUST = register("rocket/bamboo/exhaust", new BlockItem(BlockRegistry.BAMBOO_EXHAUST, getSettings()));
+        WOODEN_NOSE_CONE = register("rocket/wooden/nose_cone", new RocketPartItem(BlockRegistry.WOODEN_NOSE_CONE, getSettings()));
+        WOODEN_BODY_SEGMENT = register("rocket/wooden/body_segment", new RocketPartItem(BlockRegistry.WOODEN_BODY_SEGMENT, getSettings()));
+        WOODEN_EXHAUST = register("rocket/wooden/exhaust", new RocketPartItem(BlockRegistry.WOODEN_EXHAUST, getSettings()));
 
-        COPPER_NOSE_CONE = register("rocket/copper/nose_cone", new BlockItem(BlockRegistry.COPPER_NOSE_CONE, getSettings()));
-        COPPER_BODY_SEGMENT = register("rocket/copper/body_segment", new BlockItem(BlockRegistry.COPPER_BODY_SEGMENT, getSettings()));
-        COPPER_EXHAUST = register("rocket/copper/exhaust", new BlockItem(BlockRegistry.COPPER_EXHAUST, getSettings()));
+        BAMBOO_NOSE_CONE = register("rocket/bamboo/nose_cone", new RocketPartItem(BlockRegistry.BAMBOO_NOSE_CONE, getSettings()));
+        BAMBOO_BODY_SEGMENT = register("rocket/bamboo/body_segment", new RocketPartItem(BlockRegistry.BAMBOO_BODY_SEGMENT, getSettings()));
+        BAMBOO_EXHAUST = register("rocket/bamboo/exhaust", new RocketPartItem(BlockRegistry.BAMBOO_EXHAUST, getSettings()));
+
+        COPPER_NOSE_CONE = register("rocket/copper/nose_cone", new RocketPartItem(BlockRegistry.COPPER_NOSE_CONE, getSettings()));
+        COPPER_BODY_SEGMENT = register("rocket/copper/body_segment", new RocketPartItem(BlockRegistry.COPPER_BODY_SEGMENT, getSettings()));
+        COPPER_EXHAUST = register("rocket/copper/exhaust", new RocketPartItem(BlockRegistry.COPPER_EXHAUST, getSettings()));
 
         ADRIAN = register("adrian", new Item(getSettings().food(new FoodComponent.Builder().hunger(10).build())));
         DEV_WAND = register("dev_wand", new Item(getSettings()));

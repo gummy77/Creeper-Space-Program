@@ -52,7 +52,6 @@ public class FuelComponent {
     public enum FuelType {
         SOLID,
         KEROLOX
-
     }
 }
 

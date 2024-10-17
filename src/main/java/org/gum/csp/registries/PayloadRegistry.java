@@ -7,7 +7,7 @@ import org.gum.csp.payloads.*;
 
 public class PayloadRegistry {
     public static Payload STARDUST_CATCHER = new StardustCatcher();
-    public static Payload DEFAULT_PAYLOAD = new DefaultPayload();
+    public static Payload DEFAULT_PAYLOAD = new DefaultPayload(); //TODO move these to ENUM
     public static Payload RAIN_STARTER = new RainStarter();
 
     public static Payload getPayload(PAYLOADS i) {
@@ -47,13 +47,14 @@ public class PayloadRegistry {
     }
 
     public enum PAYLOADS {
-        DEFAULT(true, 0),
-        STARDUST(true, 10000),
-        RAIN_STARTER(false, 750),
-        MAPPER(true, 1000);
+        DEFAULT(true, 1, 0),
+        STARDUST(true, 1, 10000),
+        RAIN_STARTER(false, 2, 750),
+        MAPPER(true, 1, 1000);
 
         private final boolean canBeTracked;
         private final float minHeight;
+        private final float mass;
 
         public boolean canBeTracked() {
             return canBeTracked;
@@ -61,10 +62,14 @@ public class PayloadRegistry {
         public float minHeight() {
             return minHeight;
         }
+        public float getMass() {
+            return mass;
+        }
 
-        PAYLOADS(boolean canBeTracked, float minHeight) {
+        PAYLOADS(boolean canBeTracked, float mass, float minHeight) {
             this.minHeight = minHeight;
             this.canBeTracked = canBeTracked;
+            this.mass = mass;
         }
     }
 }

@@ -14,7 +14,7 @@ import org.gum.csp.registries.EntityRegistry;
 public class RainStarter extends Payload {
 
     public RainStarter(){
-        this.Mass = 1;
+        this.Mass = 2;
     }
 
     @Override

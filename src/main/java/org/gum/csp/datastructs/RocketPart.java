@@ -112,7 +112,7 @@ public class RocketPart {
         if(Offset != null && state != null) {
             return new RocketPart(Type, Material, Radius, Mass, Volatility, Power, fuelComponent, state, Offset);
         } else {
-            return new RocketPart(Type, Radius, Mass, Volatility, Power, fuelComponent);
+            return new RocketPart(Type, Material, Radius, Mass, Volatility, Power, fuelComponent);
         }
     }
 

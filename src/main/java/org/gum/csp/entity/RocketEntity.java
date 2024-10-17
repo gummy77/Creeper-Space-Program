@@ -365,9 +365,10 @@ public class RocketEntity extends Entity {
                 return ActionResult.success(this.world.isClient);
             }
         } else if (itemStack.isOf(ItemRegistry.DEV_WAND)) {
-            if(!this.world.isClient) {
-                this.networkFailure(0);
-            }
+//            if(!this.world.isClient) {
+//                this.networkFailure(0);
+//            }
+            System.out.println(this.getRocketSettings().blocks[0].getMaterial().getFormattedName());
 //            if (this.getRocketSettings().payload != null) {
 //                Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
 //                payload.Deploy(world, this, this.getBlockPos(), this.calculateMaxHeight());

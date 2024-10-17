@@ -8,7 +8,9 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.random.Random;
+import net.minecraft.util.shape.VoxelShapes;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.registries.BlockRegistry;
@@ -41,7 +43,7 @@ public class RocketPartBlockEntity extends BlockEntity {
 
         RocketSettings settings = new RocketSettings(parts.toArray(new RocketPart[0]), false);
 
-        boolean canFly = (settings.Power / settings.Mass) >= 1;
+        boolean canFly = (settings.Power / settings.Mass) > 1f;
 
         if(!validConfig || !canFly){
             //yell at players
@@ -54,8 +56,6 @@ public class RocketPartBlockEntity extends BlockEntity {
         for(RocketPart part : parts) {
             world.breakBlock(baseBlock.pos.add(part.offset.getX(), part.offset.getY(), part.offset.getZ()), false);
         }
-
-
 
         NbtCompound nbtCompound = new NbtCompound();
         nbtCompound.put("RocketSettings", settings.toNbt());

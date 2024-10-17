@@ -21,7 +21,8 @@ public class PayloadItem extends Item {
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
-        tooltip.add(Text.of("Min Height: " + (payloadsType.minHeight() == 0 ? "none" : payloadsType.minHeight()+"m")));
-        tooltip.add(Text.of(payloadsType.canBeTracked() ? "Trackable" : "Untrackable"));
+        tooltip.add(Text.of("§7Mass: " + payloadsType.getMass() + "kg"));
+        tooltip.add(Text.of("§7Min Height: " + (payloadsType.minHeight() == 0 ? "none" : payloadsType.minHeight()+"m")));
+        tooltip.add(Text.of(payloadsType.canBeTracked() ? "§7Trackable" : "§7Untrackable"));
     }
 }
