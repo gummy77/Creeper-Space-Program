@@ -5,24 +5,25 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.util.math.BlockPos;
+import org.gum.csp.entity.RocketEntity;
 import org.gum.csp.registries.PayloadRegistry;
 
 import java.util.*;
 
 public class PayloadSettings {
     public RocketPart[] blocks;
-    public PayloadRegistry.PAYLOADS payload;
-    public ArrayList<ItemStack> returnItems;
+    public PayloadRegistry.Payloads payload;
+    public float heightReached;
 
-    public PayloadSettings() { //setting these manually for now, will be based off of fuel later.
+    public PayloadSettings() {
         this.blocks = new RocketPart[0];
-        this.returnItems = new ArrayList<>();
     }
 
     public PayloadSettings(RocketSettings rocketSettings) {
         this();
 
         this.payload = rocketSettings.payload;
+        this.heightReached = RocketEntity.calculateMaxHeight(rocketSettings);
 
         RocketPart[] parts = new RocketPart[rocketSettings.blocks.length];
         for(int i = 0; i < rocketSettings.blocks.length; i++) {
@@ -39,14 +40,9 @@ public class PayloadSettings {
         this.blocks = rocketParts.toArray(new RocketPart[0]);
     }
 
-    public PayloadSettings(RocketPart[] parts, ArrayList<ItemStack> items, PayloadRegistry.PAYLOADS payload){
-        this(parts, items);
-        this.payload = payload;
-    }
-
-    public PayloadSettings(RocketPart[] parts, ArrayList<ItemStack> items) { //setting these manually for now, will be based off of fuel later.
+    public PayloadSettings(RocketPart[] parts, float heightReached) {
         this.blocks = parts;
-        this.returnItems = items;
+        this.heightReached = heightReached;
     }
 
     public float getMaxWidth(){
@@ -62,17 +58,8 @@ public class PayloadSettings {
     public NbtCompound toNbt() {
         NbtCompound nbt = new NbtCompound();
 
-        if(payload != null) {
-            nbt.putString("Payload", payload.toString());
-        }
-
-        nbt.putInt("ReturnItemCount", returnItems.size());
-        NbtCompound items = new NbtCompound();
-        for(int i = 0; i < returnItems.size(); i++) {
-            items.putInt("item"+i, Item.getRawId(returnItems.get(i).getItem()));
-            items.putInt("itemcount"+i, returnItems.get(i).getCount());
-        }
-        nbt.put("ReturnItems", items);
+        if(payload != null) nbt.putString("Payload", payload.toString());
+        nbt.putFloat("HeightReached", heightReached);
 
         nbt.putInt("BlockCount", blocks.length);
         for (int i = 0; i < blocks.length; i++) {
@@ -86,33 +73,22 @@ public class PayloadSettings {
         int blockCount = nbt.getInt("BlockCount");
         RocketPart[] blocks = new RocketPart[blockCount];
 
-        PayloadRegistry.PAYLOADS payload = null;
+        PayloadRegistry.Payloads payload = null;
         try {
-            payload = PayloadRegistry.PAYLOADS.valueOf(nbt.getString("Payload"));
+            payload = PayloadRegistry.Payloads.valueOf(nbt.getString("Payload"));
         } catch (IllegalArgumentException ignored) {}
 
-        ArrayList<ItemStack> returnItems = new ArrayList<>();
-        int returnCount = nbt.getInt("ReturnItemCount");
-
-        NbtCompound items = nbt.getCompound("ReturnItems");
-        for(int i = 0; i < returnCount; i++) {
-            int itemID = items.getInt("item"+i);
-            int itemCount = items.getInt("itemcount"+i);
-            ItemStack itemStack = Item.byRawId(itemID).getDefaultStack();
-            itemStack.setCount(itemCount);
-            returnItems.add(itemStack);
-        }
+        float heightReached = nbt.getFloat("HeightReached");
 
         for (int i = 0; i < blockCount; i++) {
             NbtCompound blockNbt = nbt.getCompound("Block"+i);
-
             blocks[i] = RocketPart.fromNbt(blockNbt);;
         }
 
-        if(payload != null) {
-            return new PayloadSettings(blocks, returnItems, payload);
-        }
-        return new PayloadSettings(blocks, returnItems);
+        PayloadSettings settings = new PayloadSettings(blocks, heightReached);
+        if(payload != null) settings.payload = payload;
+
+        return settings;
     }
 }
 

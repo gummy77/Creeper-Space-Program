@@ -1,7 +1,6 @@
 package org.gum.csp.item;
 
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.item.TooltipData;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -10,11 +9,10 @@ import org.gum.csp.registries.PayloadRegistry;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Optional;
 
 public class PayloadItem extends Item {
-    PayloadRegistry.PAYLOADS payloadsType;
-    public PayloadItem(Settings settings, PayloadRegistry.PAYLOADS type) {
+    PayloadRegistry.Payloads payloadsType;
+    public PayloadItem(Settings settings, PayloadRegistry.Payloads type) {
         super(settings);
         this.payloadsType = type;
     }

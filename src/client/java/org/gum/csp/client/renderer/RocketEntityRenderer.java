@@ -9,7 +9,6 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
-import net.minecraft.state.property.Property;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.LightType;
@@ -17,8 +16,6 @@ import org.gum.csp.client.CspMainClient;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.entity.RocketEntity;
-
-import java.util.Properties;
 
 public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
@@ -78,7 +75,7 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
             for (RocketPart block : blocks) {
                 matrices.push();
                 matrices.translate(block.offset.getX(), block.offset.getY(), block.offset.getZ());
-                BlockState state = block.Block;
+                BlockState state = block.block;
                 blockRenderManager.renderBlockAsEntity(state, matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV);
                 matrices.pop();
             }

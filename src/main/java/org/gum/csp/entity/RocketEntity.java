@@ -17,7 +17,6 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
@@ -26,7 +25,6 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
-import org.gum.csp.datastructs.Payload;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.item.PayloadItem;
@@ -159,8 +157,7 @@ public class RocketEntity extends Entity {
             }
 
             if (this.getRocketSettings().payload != null) {
-                Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
-                payload.Deploy(world, this, this.getPayloadPosition(), this.calculateMaxHeight());
+                this.getRocketSettings().payload.onDeploy(world, this, this.getPayloadPosition());
             }
         }
     }
@@ -248,7 +245,7 @@ public class RocketEntity extends Entity {
     }
 
     private void explode() {
-        System.out.println("explodes with: " + this.getRocketSettings().blocks.length + " blocks");
+        //System.out.println("explodes with: " + this.getRocketSettings().blocks.length + " blocks");
         world.playSound(this.getX(), this.getY(), this.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, SoundCategory.MASTER, 1, 1, true);
 
         for(RocketPart part : this.getRocketSettings().blocks) {
@@ -278,7 +275,6 @@ public class RocketEntity extends Entity {
             playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 3f, 1f);
         }
 
-        //TODO foreach engine present
         Vec3d particlePosition = getPos();
         world.addParticle(ParticleTypes.FLAME, true, particlePosition.x, particlePosition.y, particlePosition.z, 0, 0, 0);
         for (int i = 0; i < 3; i++) {
@@ -307,27 +303,26 @@ public class RocketEntity extends Entity {
         if(attacker instanceof PlayerEntity) {
             for (RocketPart part : getRocketSettings().blocks) {
                 Vec3d partPos = this.getPos().add(part.offset.getX() - (part.radius * 0.0625f * 0.5f), part.offset.getY(), part.offset.getZ() - (part.radius * 0.0625f * 0.5f));
-                BlockState blockState = part.Block;
+                BlockState blockState = part.block;
                 for (int i = 0; i < 5; i++) {
                     Vec3d randomPos = partPos.add(random.nextFloat() * part.radius * 0.0625f, random.nextFloat(), random.nextFloat() * part.radius * 0.0625f);
                     world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), randomPos.x, randomPos.y, randomPos.z, 0, 0, 0);
                 }
-
                 playSound(blockState.getSoundGroup().getBreakSound(), 1, 1);
             }
             if (this.health <= 0) {
-                if(this.getRocketSettings().payload != null) {
-                    dropStack(PayloadRegistry.getPayloadStack(this.getRocketSettings().payload), getRocketSettings().blocks.length);
-                }
+//                if(this.getRocketSettings().payload != null) { //TODO fix payload dropping when breaking rocket
+//                    dropStack(this.getRocketSettings().payload.getStack(), getRocketSettings().blocks.length);
+//                }
                 if (attacker instanceof ServerPlayerEntity) {
                     if (!((PlayerEntity) attacker).isCreative()) {
                         for (RocketPart part : getRocketSettings().blocks) {
-                            dropStack(part.Block.getBlock().asItem().getDefaultStack(), part.offset.getY());
+                            dropStack(part.block.getBlock().asItem().getDefaultStack(), part.offset.getY());
                         }
                     }
                 } else {
                     for (RocketPart part : getRocketSettings().blocks) {
-                        dropStack(part.Block.getBlock().asItem().getDefaultStack(), part.offset.getY());
+                        dropStack(part.block.getBlock().asItem().getDefaultStack(), part.offset.getY());
                     }
                 }
                 kill();
@@ -359,27 +354,14 @@ public class RocketEntity extends Entity {
             if(player.getInventory().contains(ItemRegistry.FUSE.getDefaultStack()) || player.isCreative()){
                 if(!player.isCreative())
                     player.getInventory().removeStack(player.getInventory().getSlotWithStack(ItemRegistry.FUSE.getDefaultStack()), 1);
-
                 this.attachFuse(player, true);
-
                 return ActionResult.success(this.world.isClient);
             }
-        } else if (itemStack.isOf(ItemRegistry.DEV_WAND)) {
-//            if(!this.world.isClient) {
-//                this.networkFailure(0);
-//            }
-            System.out.println(this.getRocketSettings().blocks[0].getMaterial().getFormattedName());
-//            if (this.getRocketSettings().payload != null) {
-//                Payload payload = PayloadRegistry.getPayload(this.getRocketSettings().payload);
-//                payload.Deploy(world, this, this.getBlockPos(), this.calculateMaxHeight());
-//                kill();
-//            }
-        } else if(itemStack.getItem().getClass() == PayloadItem.class) {
-            return addPayload(itemStack, player, hand);
-        } else if(itemStack.isOf(ItemRegistry.PAYLOAD_COMPASS)) {
-            return addPayloadTracker(this, itemStack, player, hand);
-        } else if(itemStack.isOf(ItemRegistry.ROCKET_INSPECTOR)) {
-            return displayStats(player);
+        } else if(itemStack.getItem().getClass() == PayloadItem.class) return addPayload(itemStack, player, hand);
+        else if(itemStack.isOf(ItemRegistry.PAYLOAD_COMPASS)) return addPayloadTracker(this, itemStack, player, hand);
+        else if(itemStack.isOf(ItemRegistry.ROCKET_INSPECTOR)) return displayStats(player);
+        else if (itemStack.isOf(ItemRegistry.DEV_WAND)) {
+            //waow debug code goes here :o
         }
         return ActionResult.PASS;
     }
@@ -422,9 +404,8 @@ public class RocketEntity extends Entity {
     public ActionResult addPayload(ItemStack payloadItem, PlayerEntity player, Hand hand) {
         if(this.getRocketSettings().payload == null) {
 
-            PayloadRegistry.PAYLOADS payload = PayloadRegistry.payloadFromStack(payloadItem);
+            PayloadRegistry.Payloads payload = PayloadRegistry.payloadFromStack(payloadItem);
             if(payload == null) return ActionResult.FAIL;
-
             this.getRocketSettings().payload = payload;
 
             for (int i = 0; i < 10; i++) {
@@ -432,7 +413,6 @@ public class RocketEntity extends Entity {
             }
 
             player.sendMessage(Text.of("Attached payload"), true);
-
             player.getStackInHand(hand).decrement(1);
             return ActionResult.SUCCESS;
         } else {

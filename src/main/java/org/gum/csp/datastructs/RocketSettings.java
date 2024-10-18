@@ -4,12 +4,11 @@ package org.gum.csp.datastructs;
 import net.minecraft.nbt.NbtCompound;
 import org.gum.csp.registries.PayloadRegistry;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class RocketSettings {
     public RocketPart[] blocks;
-    public PayloadRegistry.PAYLOADS payload;
+    public PayloadRegistry.Payloads payload;
     public boolean isFailing = false;
     public int failurePart = 0;
 
@@ -32,10 +31,10 @@ public class RocketSettings {
         blocks = new RocketPart[0];
     }
 
-    public RocketSettings (RocketPart[] parts, PayloadRegistry.PAYLOADS payload, boolean isFailing){
+    public RocketSettings (RocketPart[] parts, PayloadRegistry.Payloads payload, boolean isFailing){
         this(parts, isFailing);
         this.payload = payload;
-        this.Mass += PayloadRegistry.getPayload(payload).Mass;
+        this.Mass += payload.getMass();
         this.Acceleration = this.Power/this.Mass;
     }
 
@@ -51,9 +50,9 @@ public class RocketSettings {
         float fuelBurnSpeed = 1;
 
         for (RocketPart block : this.blocks) {
-            this.Mass += block.Mass;
-            this.Volatility += block.Volatility;
-            this.Power += block.Power;
+            this.Mass += block.mass;
+            this.Volatility += block.volatility;
+            this.Power += block.power;
 
             if(block.fuelComponent != null) {
                 type = block.fuelComponent.fuelType;
@@ -104,9 +103,9 @@ public class RocketSettings {
 
         boolean isFailing = nbt.getBoolean("Failing");
 
-        PayloadRegistry.PAYLOADS payload = null;
+        PayloadRegistry.Payloads payload = null;
         try {
-            payload = PayloadRegistry.PAYLOADS.valueOf(nbt.getString("Payload"));
+            payload = PayloadRegistry.Payloads.valueOf(nbt.getString("Payload"));
         } catch (IllegalArgumentException ignored) {}
 
         for (int i = 0; i < blockCount; i++) {

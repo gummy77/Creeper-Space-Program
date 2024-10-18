@@ -8,9 +8,8 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShapes;
+import org.gum.csp.datastructs.PartMaterial;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.registries.BlockRegistry;
@@ -24,13 +23,13 @@ public class RocketPartBlockEntity extends BlockEntity {
 
     public RocketPartBlockEntity(BlockPos pos, BlockState state) {
         super(BlockRegistry.ROCKET_PART_BLOCK_ENTITY, pos, state);
-        this.rocketPart = new RocketPart(RocketPart.PartType.BODY, 0.5f, 1, 1,0 ,null);
+        this.rocketPart = new RocketPart.RocketPartBuilder(RocketPart.PartType.BODY, PartMaterial.BASE, 0.5f, 1, 1).build();
     }
     public RocketPartBlockEntity(BlockPos pos, BlockState state, RocketPart rocketPart) {
         super(BlockRegistry.ROCKET_PART_BLOCK_ENTITY, pos, state);
         this.rocketPart = rocketPart.copy();
 
-        this.rocketPart.Block = state;
+        this.rocketPart.block = state;
     }
 
     public void AssembleRocket(PlayerEntity player) {

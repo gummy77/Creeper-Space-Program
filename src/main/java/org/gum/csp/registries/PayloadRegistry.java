@@ -1,72 +1,90 @@
 package org.gum.csp.registries;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import org.gum.csp.datastructs.Payload;
-import org.gum.csp.payloads.*;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import org.gum.csp.datastructs.PayloadSettings;
+import org.gum.csp.entity.PayloadEntity;
+import org.gum.csp.entity.RocketEntity;
 
 public class PayloadRegistry {
-    public static Payload STARDUST_CATCHER = new StardustCatcher();
-    public static Payload DEFAULT_PAYLOAD = new DefaultPayload(); //TODO move these to ENUM
-    public static Payload RAIN_STARTER = new RainStarter();
-
-    public static Payload getPayload(PAYLOADS i) {
-
-        return switch (i) {
-            case DEFAULT -> DEFAULT_PAYLOAD;
-            case STARDUST -> STARDUST_CATCHER;
-            case RAIN_STARTER -> RAIN_STARTER;
-            case MAPPER -> null;
-        };
-
-    }
-
-    public static ItemStack getPayloadStack(PAYLOADS payload) {
-        return switch (payload) {
-            case DEFAULT -> ItemRegistry.DEFAULT_PAYLOAD_ITEM.getDefaultStack();
-            case STARDUST -> null;
-            case RAIN_STARTER -> ItemRegistry.RAIN_STARTER_ITEM.getDefaultStack();
-            case MAPPER -> null;
-        };
-
-    }
-
-    public static PAYLOADS payloadFromStack(ItemStack stack) {
-        if(stack.getItem() == ItemRegistry.DEFAULT_PAYLOAD_ITEM) {
-            return PAYLOADS.DEFAULT;
-        } else if(stack.getItem() == ItemRegistry.RAIN_STARTER_ITEM) {
-            return PAYLOADS.RAIN_STARTER;
-        }
-        /*
-        else if(stack.getItem() == ItemRegistry.STARDUST_CATCHER_PAYLOAD) {
-            return STARDUST_CATCHER;
-        }
-        */
+    public static Payloads payloadFromStack(ItemStack stack) {
+        if(     stack.getItem() == ItemRegistry.DEFAULT_PAYLOAD_ITEM)   return Payloads.DEFAULT;
+        else if(stack.getItem() == ItemRegistry.RAIN_STARTER_ITEM)      return Payloads.RAIN_STARTER;
 
         return null;
     }
 
-    public enum PAYLOADS {
-        DEFAULT(true, 1, 0),
-        STARDUST(true, 1, 10000),
-        RAIN_STARTER(false, 2, 750),
-        MAPPER(true, 1, 1000);
+    public static void registerPayloads(){
+    }
+
+    public interface PayloadFunctions {
+        default void onDeploy(World world, RocketEntity entity, BlockPos pos) {};
+        default void onInteract(World world, PayloadEntity entity, BlockPos pos, Entity interactor) {};
+    }
+
+    public enum Payloads implements PayloadFunctions {
+        DEFAULT (true, 1, 0) {
+            @Override
+            public void onDeploy(World world, RocketEntity entity, BlockPos pos) {
+                this.spawnPayload(world, entity, pos);
+            };
+        },
+        RAIN_STARTER(false, 2.5f, 1000) {
+            @Override
+            public void onDeploy(World world, RocketEntity entity, BlockPos pos) {
+                if(!world.isRaining()){
+                    if(world instanceof ServerWorld){
+                        ((ServerWorld) world).setWeather(120, 0, false, false);
+                    }
+                }
+            };
+        },
+        STARDUST(true, 5f, 25000f) {
+            @Override
+            public void onDeploy(World world, RocketEntity entity, BlockPos pos) {
+                this.spawnPayload(world, entity, pos);
+            };
+            @Override
+            public void onInteract(World world, PayloadEntity entity, BlockPos pos, Entity interactor) {
+                if(entity.getPayloadSettings().heightReached < 50000f) {
+                    entity.dropStack(ItemRegistry.STARDUST_BASIC.getDefaultStack());
+                } else if(entity.getPayloadSettings().heightReached < 75000f) {
+                    entity.dropStack(ItemRegistry.STARDUST_BASIC.getDefaultStack());
+                } else if(entity.getPayloadSettings().heightReached < 100000f) {
+                    entity.dropStack(ItemRegistry.STARDUST_BASIC.getDefaultStack());
+                }
+            };
+        };
 
         private final boolean canBeTracked;
         private final float minHeight;
         private final float mass;
 
-        public boolean canBeTracked() {
-            return canBeTracked;
-        }
-        public float minHeight() {
-            return minHeight;
-        }
-        public float getMass() {
-            return mass;
+        public boolean canBeTracked() { return canBeTracked; }
+        public float minHeight() { return minHeight; }
+        public float getMass() { return mass; }
+
+        void spawnPayload(World world, RocketEntity entity, BlockPos pos) {
+            PayloadEntity payloadEntity = EntityRegistry.PAYLOAD_ENTITY.create(world);
+            if(payloadEntity == null) return;
+            payloadEntity.setPosition(pos.getX(), 350f, pos.getZ());
+
+            PayloadSettings payloadSettings = new PayloadSettings(entity.getRocketSettings());
+
+            NbtCompound nbtCompound = new NbtCompound();
+            nbtCompound.put("PayloadSettings", payloadSettings.toNbt());
+            payloadEntity.readCustomDataFromNbt(nbtCompound);
+
+            world.spawnEntity(payloadEntity);
         }
 
-        PAYLOADS(boolean canBeTracked, float mass, float minHeight) {
+
+        Payloads(boolean canBeTracked, float mass, float minHeight) {
             this.minHeight = minHeight;
             this.canBeTracked = canBeTracked;
             this.mass = mass;

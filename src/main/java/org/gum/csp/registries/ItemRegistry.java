@@ -2,15 +2,12 @@ package org.gum.csp.registries;
 
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.data.client.ModelProvider;
 import net.minecraft.item.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
-import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.item.*;
-import org.gum.csp.item.stardust.*;
 
 public class ItemRegistry {
 
@@ -25,10 +22,12 @@ public class ItemRegistry {
 
     public static SpawnEggItem GNEEP_SPAWN_EGG;
 
+    public static final Item STARDUST_STEEL;
+    public static final Item ELECTRONIC_CIRCUIT;
     public static final Item WOODEN_FIN, BAMBOO_FIN, COPPER_FIN;
     public static final Item IRON_NOZZLE;
 
-    public static final PayloadItem DEFAULT_PAYLOAD_ITEM, RAIN_STARTER_ITEM;
+    public static final PayloadItem DEFAULT_PAYLOAD_ITEM, RAIN_STARTER_ITEM, STARDUST_COLLECTOR_ITEM;
 
     public static Item BASE_NOSE_CONE, BASE_BODY_SEGMENT, BASE_EXHAUST;
 
@@ -36,12 +35,7 @@ public class ItemRegistry {
     public static Item BAMBOO_NOSE_CONE, BAMBOO_BODY_SEGMENT, BAMBOO_EXHAUST;
     public static Item COPPER_NOSE_CONE, COPPER_BODY_SEGMENT, COPPER_EXHAUST;
 
-    public static StarDustBasic STARDUST_BASIC;
-    public static StarDustPurple STARDUST_LEVEL_2;
-    public static StarDustRed STARDUST_LEVEL_3;
-    public static StarDustCombo STARDUST_LEVEL_4;
-    public static StarDustRainbow STARDUST_LEVEL_5;
-
+    public static Item STARDUST_BASIC, STARDUST_LEVEL_2, STARDUST_LEVEL_3, STARDUST_LEVEL_4, STARDUST_LEVEL_5;
 
     public static final ItemGroup MODGROUP = FabricItemGroupBuilder.create(
                     new Identifier(CspMain.MODID, "cspmodgroup"))
@@ -61,11 +55,17 @@ public class ItemRegistry {
     }
 
     static {
+        ADRIAN = register("adrian", new Item(new FabricItemSettings().food(new FoodComponent.Builder().hunger(10).build())));
+        DEV_WAND = register("dev_wand", new Item(new FabricItemSettings()));
+
         LAUNCH_KIT = (LaunchKit) register("launchkit", new LaunchKit(getSettings().maxDamage(10)));
         FUSE = register("fuse", new Item(getSettings()));
         ASSEMBLER = (Assembler) register("basic_assembler", new Assembler(getSettings().maxDamage(10)));
         PAYLOAD_COMPASS = (PayloadTrackingCompass) register("payload_compass", new PayloadTrackingCompass(getSettings()));
         ROCKET_INSPECTOR = register("rocket_inspector", new PayloadTrackingCompass(getSettings()));
+
+        ELECTRONIC_CIRCUIT = register("electronic_circuit", new Item(getSettings()));
+        STARDUST_STEEL = register("stardust_steel", new Item(getSettings()));
 
         WOODEN_FIN = register("wooden_fin", new Item(getSettings()));
         BAMBOO_FIN = register("bamboo_fin", new Item(getSettings()));
@@ -73,13 +73,13 @@ public class ItemRegistry {
 
         IRON_NOZZLE = register("iron_nozzle", new Item(getSettings()));
 
-        DEFAULT_PAYLOAD_ITEM = (PayloadItem) register("payloads/default_payload", new PayloadItem(getSettings(), PayloadRegistry.PAYLOADS.DEFAULT));
-        RAIN_STARTER_ITEM = (PayloadItem) register("payloads/rain_starter_payload", new PayloadItem(getSettings(), PayloadRegistry.PAYLOADS.RAIN_STARTER)) ;
+        DEFAULT_PAYLOAD_ITEM = (PayloadItem) register("payloads/default_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.DEFAULT));
+        RAIN_STARTER_ITEM = (PayloadItem) register("payloads/rain_starter_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.RAIN_STARTER)) ;
+        STARDUST_COLLECTOR_ITEM = (PayloadItem) register("payloads/stardust_collector_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.STARDUST)) ;
 
         BASE_NOSE_CONE = register("rocket/base/nose_cone", new RocketPartItem(BlockRegistry.BASE_NOSE_CONE, getSettings()));
         BASE_BODY_SEGMENT = register("rocket/base/body_segment", new RocketPartItem(BlockRegistry.BASE_BODY_SEGMENT, getSettings()));
         BASE_EXHAUST = register("rocket/base/exhaust", new RocketPartItem(BlockRegistry.BASE_EXHAUST, getSettings()));
-
 
         WOODEN_NOSE_CONE = register("rocket/wooden/nose_cone", new RocketPartItem(BlockRegistry.WOODEN_NOSE_CONE, getSettings()));
         WOODEN_BODY_SEGMENT = register("rocket/wooden/body_segment", new RocketPartItem(BlockRegistry.WOODEN_BODY_SEGMENT, getSettings()));
@@ -93,12 +93,10 @@ public class ItemRegistry {
         COPPER_BODY_SEGMENT = register("rocket/copper/body_segment", new RocketPartItem(BlockRegistry.COPPER_BODY_SEGMENT, getSettings()));
         COPPER_EXHAUST = register("rocket/copper/exhaust", new RocketPartItem(BlockRegistry.COPPER_EXHAUST, getSettings()));
 
-        ADRIAN = register("adrian", new Item(getSettings().food(new FoodComponent.Builder().hunger(10).build())));
-        DEV_WAND = register("dev_wand", new Item(getSettings()));
-        STARDUST_BASIC = (StarDustBasic) register("stardust_basic", new StarDustBasic(getSettings()));
-        STARDUST_LEVEL_2 = (StarDustPurple) register("stardust_purple", new StarDustPurple(getSettings()));
-        STARDUST_LEVEL_3 = (StarDustRed) register("stardust_red", new StarDustRed(getSettings()));
-        STARDUST_LEVEL_4 = (StarDustCombo) register("stardust_green_pink", new StarDustCombo(getSettings()));
-        STARDUST_LEVEL_5 = (StarDustRainbow) register("stardust_rainbow", new StarDustRainbow(getSettings()));
+        STARDUST_BASIC = register("stardust_basic", new Item(getSettings()));
+//        STARDUST_LEVEL_2 = register("stardust_purple", new Item(getSettings()));
+//        STARDUST_LEVEL_3 = register("stardust_red", new Item(getSettings()));
+//        STARDUST_LEVEL_4 = register("stardust_green_pink", new Item(getSettings()));
+//        STARDUST_LEVEL_5 = register("stardust_rainbow", new Item(getSettings()));
     }
 }

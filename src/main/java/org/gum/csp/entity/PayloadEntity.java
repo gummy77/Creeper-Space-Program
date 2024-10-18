@@ -6,14 +6,12 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -23,15 +21,10 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
-import org.gum.csp.datastructs.Payload;
 import org.gum.csp.datastructs.PayloadSettings;
 import org.gum.csp.datastructs.RocketPart;
-import org.gum.csp.item.PayloadItem;
 import org.gum.csp.registries.ItemRegistry;
 import org.gum.csp.registries.NetworkingConstants;
-import org.gum.csp.registries.PayloadRegistry;
-
-import java.util.ArrayList;
 
 public class PayloadEntity extends Entity {
 
@@ -88,30 +81,25 @@ public class PayloadEntity extends Entity {
     @Override
     public boolean handleAttack(Entity attacker) {
         if(attacker instanceof PlayerEntity) {
-
-            for(ItemStack stack : this.getPayloadSettings().returnItems) {
-                dropStack(stack);
-            }
-
             if(this.getPayloadSettings().payload != null) {
-                PayloadRegistry.getPayload(this.getPayloadSettings().payload).onOpen(world, this.getBlockPos(), attacker);
+                this.getPayloadSettings().payload.onInteract(world, this, this.getBlockPos(), attacker);
             }
 
             if(attacker instanceof ServerPlayerEntity) {
                 if(!((PlayerEntity) attacker).isCreative()) {
                     for (RocketPart part : getPayloadSettings().blocks) {
-                        dropStack(part.Block.getBlock().asItem().getDefaultStack());
+                        dropStack(part.block.getBlock().asItem().getDefaultStack());
                     }
                 }
             } else {
                 for (RocketPart part : getPayloadSettings().blocks) {
-                    dropStack(part.Block.getBlock().asItem().getDefaultStack());
+                    dropStack(part.block.getBlock().asItem().getDefaultStack());
                 }
             }
 
             for (RocketPart part : getPayloadSettings().blocks) {
                 Vec3d partPos = this.getPos().add(part.offset.getX() - 0.5f, part.offset.getY(), part.offset.getZ() - 0.5f);
-                BlockState blockState = part.Block;
+                BlockState blockState = part.block;
                 for (int i = 0; i < 10; i++) {
                     Vec3d randomPos = partPos.add(random.nextFloat(), random.nextFloat(), random.nextFloat());
                     world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, blockState), randomPos.x, randomPos.y, randomPos.z, 0, 0, 0);
@@ -120,9 +108,7 @@ public class PayloadEntity extends Entity {
                 playSound(blockState.getSoundGroup().getBreakSound(), 1, 1);
             }
 
-
             kill();
-
         }
         return false;
     }

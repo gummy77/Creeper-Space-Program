@@ -6,15 +6,12 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
-import net.minecraft.world.LightType;
 import org.gum.csp.CspMain;
 import org.gum.csp.client.CspMainClient;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.entity.PayloadEntity;
-import org.gum.csp.entity.RocketEntity;
 
 public class PayloadEntityRenderer extends EntityRenderer<PayloadEntity> {
 
@@ -58,7 +55,7 @@ public class PayloadEntityRenderer extends EntityRenderer<PayloadEntity> {
                 for (RocketPart block : blocks) {
                     matrices.push();
                     matrices.translate(block.offset.getX(), block.offset.getY(), block.offset.getZ());
-                    blockRenderManager.renderBlockAsEntity(block.Block, matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV);
+                    blockRenderManager.renderBlockAsEntity(block.block, matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV);
                     matrices.pop();
                 }
                 matrices.pop();

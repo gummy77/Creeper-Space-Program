@@ -3,13 +3,10 @@ package org.gum.csp.item;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
-import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
-import org.gum.csp.block.RocketPartBlock;
 import org.gum.csp.datastructs.RocketPart;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,11 +28,11 @@ public class RocketPartItem extends BlockItem {
                 part = RocketPart.fromNbt(nbtCompound.getCompound("rocketPart"));
 
                 //tooltip.add(Text.of("§7Type: §2" + part.getMaterial().getFormattedName()));
-                tooltip.add(Text.of("§7Mass: §2" + part.Mass + "kg"));
+                tooltip.add(Text.of("§7Mass: §2" + part.mass + "kg"));
 
                 switch (part.partType){
                     case NOSE:
-                        tooltip.add(Text.of("§7Max Payload: §2" + "10kg"));
+                        tooltip.add(Text.of("§7Max Payload: §2" + part.maxPayloadCapacity + "kg"));
                         break;
                     case BODY:
                         tooltip.add(Text.of("§7Burn Time: §2" + (part.fuelComponent.capacity * part.fuelComponent.burnSpeed) + "s"));
@@ -48,7 +45,7 @@ public class RocketPartItem extends BlockItem {
 
                         break;
                     case EXHAUST:
-                        tooltip.add(Text.of("§7Thrust: §2" + (part.Power) + "N"));
+                        tooltip.add(Text.of("§7Thrust: §2" + (part.power) + "N"));
                         break;
                 }
             }
