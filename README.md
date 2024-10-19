@@ -1,2 +1,2 @@
 # Creeper-Space-Program
-A Minecraft Rocketry Mod
+A Minecraft rocketry mod that emulates realistic 

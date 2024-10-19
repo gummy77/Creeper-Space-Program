@@ -135,7 +135,7 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
             textRenderer.draw(matrices, "Power: " + rocketSettings.Power + "N", 0, 10, Color);
             textRenderer.draw(matrices, "Mass: " + rocketSettings.Mass + "kg", 0, 20, Color);
-            textRenderer.draw(matrices, "   -> TWR: " + (float)((int)(rocketSettings.Power / rocketSettings.Mass * 100f)) / 100f, 0, 30, Color);
+            textRenderer.draw(matrices, "Acceleration: " + (float)((int)(rocketSettings.Power / rocketSettings.Mass * 100f)) / 100f + "m/s", 0, 30, Color);
 
             textRenderer.draw(matrices, "Burn Time: " + rocketSettings.burnTime + "s", 0, 45, Color);
             textRenderer.draw(matrices, "Estimated Height: " + (int) (RocketEntity.calculateMaxHeight(rocketSettings)) + "m", 0, 55, Color);

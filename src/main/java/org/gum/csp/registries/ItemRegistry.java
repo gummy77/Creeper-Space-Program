@@ -29,8 +29,6 @@ public class ItemRegistry {
 
     public static final PayloadItem DEFAULT_PAYLOAD_ITEM, RAIN_STARTER_ITEM, STARDUST_COLLECTOR_ITEM;
 
-    public static Item BASE_NOSE_CONE, BASE_BODY_SEGMENT, BASE_EXHAUST;
-
     public static Item WOODEN_NOSE_CONE, WOODEN_BODY_SEGMENT, WOODEN_EXHAUST;
     public static Item BAMBOO_NOSE_CONE, BAMBOO_BODY_SEGMENT, BAMBOO_EXHAUST;
     public static Item COPPER_NOSE_CONE, COPPER_BODY_SEGMENT, COPPER_EXHAUST;
@@ -76,10 +74,6 @@ public class ItemRegistry {
         DEFAULT_PAYLOAD_ITEM = (PayloadItem) register("payloads/default_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.DEFAULT));
         RAIN_STARTER_ITEM = (PayloadItem) register("payloads/rain_starter_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.RAIN_STARTER)) ;
         STARDUST_COLLECTOR_ITEM = (PayloadItem) register("payloads/stardust_collector_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.STARDUST)) ;
-
-        BASE_NOSE_CONE = register("rocket/base/nose_cone", new RocketPartItem(BlockRegistry.BASE_NOSE_CONE, getSettings()));
-        BASE_BODY_SEGMENT = register("rocket/base/body_segment", new RocketPartItem(BlockRegistry.BASE_BODY_SEGMENT, getSettings()));
-        BASE_EXHAUST = register("rocket/base/exhaust", new RocketPartItem(BlockRegistry.BASE_EXHAUST, getSettings()));
 
         WOODEN_NOSE_CONE = register("rocket/wooden/nose_cone", new RocketPartItem(BlockRegistry.WOODEN_NOSE_CONE, getSettings()));
         WOODEN_BODY_SEGMENT = register("rocket/wooden/body_segment", new RocketPartItem(BlockRegistry.WOODEN_BODY_SEGMENT, getSettings()));

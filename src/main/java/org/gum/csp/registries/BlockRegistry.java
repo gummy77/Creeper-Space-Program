@@ -21,11 +21,6 @@ public class BlockRegistry {
 
     public static final Block BLAST_RESISTANT_STONE, HEAVY_BLAST_RESISTANT_STONE;
 
-
-    public static RocketPartBlock BASE_NOSE_CONE;
-    public static RocketPartBlock BASE_BODY_SEGMENT;
-    public static RocketPartBlock BASE_EXHAUST;
-
     public static RocketPartBlock WOODEN_NOSE_CONE, WOODEN_BODY_SEGMENT, WOODEN_EXHAUST;
 
     public static RocketPartBlock BAMBOO_NOSE_CONE, BAMBOO_BODY_SEGMENT, BAMBOO_EXHAUST;
@@ -46,11 +41,6 @@ public class BlockRegistry {
     static {
         BLAST_RESISTANT_STONE = register("blast_resistant_stone", new Block(FabricBlockSettings.of(Material.STONE).resistance(9).hardness(5)));
         HEAVY_BLAST_RESISTANT_STONE = register("heavy_blast_resistant_stone", new Block(FabricBlockSettings.of(Material.STONE).resistance(15).hardness(5)));
-
-        //Basic
-        BASE_NOSE_CONE = (RocketPartBlock) register("rocket/base/nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(5)));
-        BASE_BODY_SEGMENT = (RocketPartBlock) register("rocket/base/body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(5)));
-        BASE_EXHAUST = (RocketPartBlock) register("rocket/base/exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(5)));
 
         //Wooden
         WOODEN_NOSE_CONE = (RocketPartBlock) register("rocket/wooden/nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.WOOD).hardness(2)));
