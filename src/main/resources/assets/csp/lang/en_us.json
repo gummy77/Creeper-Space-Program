@@ -74,5 +74,7 @@
   "advancements.csp.add_payload.title": "Loading it up!",
   "advancements.csp.add_payload.description": "Add a payload to an assembled rocket.",
   "advancements.csp.rocket_failure_launch.title": "Houston, we have a problem!",
-  "advancements.csp.rocket_failure_launch.description": "Have a failure occur on a rocket at launch."
+  "advancements.csp.rocket_failure_launch.description": "Have a failure occur on a rocket at launch.",
+  "advancements.csp.payload_comp_adv.title": "To help you find your pay",
+  "advancements.csp.payload_comp_adv.description": "Craft a Payload Compass"
 }

@@ -1,12 +1,12 @@
 {
   "name": "Getting Started",
   "icon": "minecraft:bamboo",
-  "advancement": "csp:launch_firework_rocket",
+  "advancement": "csp:wood_rocket_adv",
   "category": "csp:basic_rocketry",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Lets get started creating our very first rocket. In order to begin, we first need to collect some items: $(li) Bamboo (any variant)$(li) Gunpowder $(li) Iron Ingot $(br2)Once you have collected all these items, we can get started creating our first rocket. The recipes are on the right hand side."
+      "text": "Lets create a rocket made out of bamboo! In order to begin, we first need to collect some items: $(li) Bamboo (any variant)$(li) Gunpowder $(li) Iron Ingot $(br2)Once you have collected all these items, we can get started creating our first rocket. The recipes are on the right hand side."
     },
     {
       "type": "patchouli:crafting",

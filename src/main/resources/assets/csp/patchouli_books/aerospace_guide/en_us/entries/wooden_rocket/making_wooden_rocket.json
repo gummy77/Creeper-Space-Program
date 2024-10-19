@@ -1,12 +1,12 @@
 {
   "name": "Getting an Upgrade!",
   "icon": "minecraft:oak_wood",
-  "advancement": "csp:bamboo_rocket_adv",
+  "advancement": "csp:launch_firework_rocket",
   "category": "csp:basic_rocketry",
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Now that we have made a bamboo rocket, lets make a better one. A rocket made of wood! We will need some items: $(li) Wood (any variant)$(li) Gunpowder $(li) Iron Ingot $(br2)Once you have collected all these items, we can create a wooden rocket, similar to our bamboo rocket. The recipes are on the right hand side."
+      "text": "Lets get started creating our very first rocket. A rocket made of wood! We will need some items: $(li) Wood (any variant)$(li) Gunpowder $(li) Iron Ingot $(br2)Once you have collected all these items, we can create a wooden rocket, similar to our bamboo rocket. The recipes are on the right hand side."
     },
     {
       "type": "patchouli:crafting",
