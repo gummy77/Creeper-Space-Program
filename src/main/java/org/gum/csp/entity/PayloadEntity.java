@@ -37,6 +37,7 @@ public class PayloadEntity extends Entity {
 
     private PayloadSettings payloadSettings;
     private boolean hasParachuteDeployed = false;
+    private float parachuteAngle = 0;
 
     public PayloadEntity(EntityType<?> type, World world) {
         super(type, world);
@@ -71,6 +72,9 @@ public class PayloadEntity extends Entity {
     public boolean hasParachuteDeployed() {
         return hasParachuteDeployed;
     }
+
+    public float getParachuteAngle() { return parachuteAngle; }
+    public void setParachuteAngle(float parachuteAngle) { this.parachuteAngle = parachuteAngle; }
 
     public PayloadSettings getPayloadSettings(){
         return this.payloadSettings;
@@ -124,13 +128,7 @@ public class PayloadEntity extends Entity {
     private ActionResult interactWithItem(PlayerEntity player, Hand hand) {
         ItemStack itemStack = player.getStackInHand(hand);
         if (itemStack.isOf(ItemRegistry.DEV_WAND)) {
-            String out = this.world.isClient ? "Client: " : "Server: ";
-
-            if(this.payloadSettings != null) {
-                System.out.println(out + this.payloadSettings.payload.toString());
-            } else {
-                System.out.println(out + "NULL");
-            }
+            this.setParachuteAngle(0);
 
         }
         return ActionResult.PASS;

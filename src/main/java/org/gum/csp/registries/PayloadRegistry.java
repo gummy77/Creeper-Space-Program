@@ -108,7 +108,7 @@ public class PayloadRegistry {
             PayloadEntity payloadEntity = EntityRegistry.PAYLOAD_ENTITY.create(world);
             if(payloadEntity == null) return;
             //payloadEntity.setPosition(pos.getX(), 350f, pos.getZ());
-            payloadEntity.setPosition(pos.getX(), 150f, pos.getZ()); //DEBUG ONLY
+            payloadEntity.setPosition(pos.getX(), 0f, pos.getZ()); //DEBUG ONLY
 
             PayloadSettings payloadSettings = new PayloadSettings(entity.getRocketSettings());
 

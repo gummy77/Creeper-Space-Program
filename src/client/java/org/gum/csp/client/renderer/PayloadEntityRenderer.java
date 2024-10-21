@@ -39,12 +39,14 @@ public class PayloadEntityRenderer extends EntityRenderer<PayloadEntity> {
 
         if(entity.getPayloadSettings() != null){
             matrices.push();
-            matrices.translate(0, 1, 0);
-            float scale = entity.getPayloadSettings().getMaxWidth() / 16 * 2;
-            matrices.scale(scale, scale, scale);
-            matrices.translate(0, 2, 0);
+
+            float scale = entity.getPayloadSettings().getMaxWidth() / 16 ;
 
             if(!entity.isOnGround()){
+                matrices.translate(0, 1, 0);
+                matrices.scale(scale * 2, scale * 2, scale * 2);
+                matrices.translate(0, 2, 0);
+
                 matrices.multiply(Quaternion.fromEulerXyz((float) Math.PI, 0, 0));
                 if(entity.hasParachuteDeployed()) {
                     modelLoader.getModelPart(ModelRegistry.DEPLOYED_PARACHUTE_MODEL_LAYER).render(matrices,
@@ -58,7 +60,30 @@ public class PayloadEntityRenderer extends EntityRenderer<PayloadEntity> {
                             )), light, OverlayTexture.DEFAULT_UV);
                 }
             } else {
+                if(entity.getParachuteAngle() < 90) {
+                    entity.setParachuteAngle(entity.getParachuteAngle() + 2f);
 
+                    matrices.translate(0, 0.25, 0);
+                    matrices.scale(scale * 2, scale * 2, scale * 2);
+
+                    //matrices.translate(0, 4, 0);
+
+                    matrices.multiply(new Quaternion(Vec3f.POSITIVE_X, 180 + entity.getParachuteAngle(), true));
+
+                    matrices.translate(0, -2.25f, 0);
+
+                    modelLoader.getModelPart(ModelRegistry.DEPLOYED_PARACHUTE_MODEL_LAYER).render(matrices,
+                            vertexConsumers.getBuffer(RenderLayer.getEntitySolid(
+                                    new Identifier(CspMain.MODID, "textures/entity/parachute_texture.png")
+                            )), light, OverlayTexture.DEFAULT_UV);
+                } else {
+                    matrices.scale(scale * 3, scale * 3, scale * 3);
+                    matrices.translate(0, -1.375f, 1.75);
+                    modelLoader.getModelPart(ModelRegistry.FALLEN_PARACHUTE_MODEL_LAYER).render(matrices,
+                            vertexConsumers.getBuffer(RenderLayer.getEntitySolid(
+                                    new Identifier(CspMain.MODID, "textures/entity/fallen_parachute.png")
+                            )), light, OverlayTexture.DEFAULT_UV);
+                }
             }
             matrices.pop();
 
