@@ -56,6 +56,7 @@ public class RocketEntity extends Entity {
     private boolean shouldRenderInfo = false;
     private PlayerEntity infoLinkedPlayer;
     private int infoRenderTime = 0;
+    private double infoRenderAngle;
 
     private int health = 4;
 
@@ -76,6 +77,7 @@ public class RocketEntity extends Entity {
         if(!isLaunching) {
             this.isLaunching = true;
             this.launchTime = 0;
+            this.infoRenderTime = 20;
 
             this.launchParticles();
         }
@@ -190,7 +192,8 @@ public class RocketEntity extends Entity {
             this.networkUpdateSettings();
         } else {
             if(this.shouldRenderInfo) {
-                //this.infoRenderTime -= 1;
+
+                this.infoRenderTime -= 1;
                 if(this.infoRenderTime <= 0) {
                     this.shouldRenderInfo = false;
                 }
@@ -376,12 +379,20 @@ public class RocketEntity extends Entity {
 
     public ActionResult displayStats(PlayerEntity player) {
         if(world.isClient) {
-            this.infoRenderTime = 90; // Time delay for text
+            this.infoRenderTime = 120; // Time delay for text
             this.shouldRenderInfo = true;
             this.infoLinkedPlayer = player;
+
+
+            double x = player.getPos().x - this.getPos().x;
+            double y = player.getPos().z - this.getPos().z;
+            this.infoRenderAngle = Math.atan2(x, y);
         }
         return ActionResult.SUCCESS;
     }
+
+    public double getInfoRenderAngle() { return infoRenderAngle; }
+    public void setInfoRenderAngle(double infoRenderAngle) { this.infoRenderAngle = infoRenderAngle; }
 
     public ActionResult addPayloadTracker(RocketEntity entity, ItemStack itemStack, PlayerEntity player, Hand hand) {
         BlockPos blockPos = this.getPayloadPosition();

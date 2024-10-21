@@ -97,8 +97,6 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
         }
     }
 
-    private double lastrotation = 0; //TODO make this not jitter
-
     private void renderRocketStats(RocketEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int infoTime) {
         RocketSettings rocketSettings = entity.getRocketSettings();
         if(rocketSettings != null) {
@@ -111,9 +109,10 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
             double lerpSpeed = tickDelta * 0.1;
 
-//            double newRotation = Math.atan2(x, y);
-//            double rotation = (lastrotation * (1 - lerpSpeed)) + (newRotation * lerpSpeed);
-//            lastrotation = rotation;
+            double currentRotation = entity.getInfoRenderAngle();
+            double newRotation = Math.atan2(x, y);
+            double rotation =  newRotation;//(currentRotation * (1 - lerpSpeed)) + (newRotation * lerpSpeed);
+            entity.setInfoRenderAngle(rotation);
 
             int alpha = 0;
             if(infoTime > 20) {
@@ -124,7 +123,7 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
             int Color = ColorHelper.Argb.getArgb(alpha, 255, 255,255);
 
             matrices.push();
-            matrices.multiply(Quaternion.fromEulerXyz(0, (float) /*rotation  - 0.4f */ Math.PI/2, 0));
+            matrices.multiply(Quaternion.fromEulerXyz(0, (float) (rotation - 0.35f), 0));
             matrices.translate(0.5f, 3 , 0);
             matrices.scale(0.025f, -0.025f, 0.025f);
 
