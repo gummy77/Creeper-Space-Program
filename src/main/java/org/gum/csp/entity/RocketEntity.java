@@ -155,10 +155,6 @@ public class RocketEntity extends Entity {
             for (ServerPlayerEntity player : PlayerLookup.tracking((ServerWorld) world, this.getBlockPos())) {
                 ServerPlayNetworking.send(player, NetworkingConstants.LAUNCH_ROCKET_PACKET_ID, buf);
             }
-
-            if (this.getRocketSettings().payload != null) {
-                this.getRocketSettings().payload.onDeploy(world, this, this.getPayloadPosition());
-            }
         }
     }
 
@@ -311,9 +307,9 @@ public class RocketEntity extends Entity {
                 playSound(blockState.getSoundGroup().getBreakSound(), 1, 1);
             }
             if (this.health <= 0) {
-//                if(this.getRocketSettings().payload != null) { //TODO fix payload dropping when breaking rocket
-//                    dropStack(this.getRocketSettings().payload.getStack(), getRocketSettings().blocks.length);
-//                }
+                if(this.getRocketSettings().payload != null) {
+                    dropStack(PayloadRegistry.stackFromPayload(this.getRocketSettings().payload), getRocketSettings().blocks.length);
+                }
                 if (attacker instanceof ServerPlayerEntity) {
                     if (!((PlayerEntity) attacker).isCreative()) {
                         for (RocketPart part : getRocketSettings().blocks) {
@@ -362,6 +358,10 @@ public class RocketEntity extends Entity {
         else if(itemStack.isOf(ItemRegistry.ROCKET_INSPECTOR)) return displayStats(player);
         else if (itemStack.isOf(ItemRegistry.DEV_WAND)) {
             //waow debug code goes here :o
+            if (this.getRocketSettings().payload != null) {
+                this.getRocketSettings().payload.onDeploy(world, this, getBlockPos());
+                this.kill();
+            }
         }
         return ActionResult.PASS;
     }
@@ -406,6 +406,13 @@ public class RocketEntity extends Entity {
 
             PayloadRegistry.Payloads payload = PayloadRegistry.payloadFromStack(payloadItem);
             if(payload == null) return ActionResult.FAIL;
+
+            RocketSettings withPayload = new RocketSettings(getRocketSettings().blocks, payload, false);
+            if(payload.minHeight() > calculateMaxHeight(withPayload)) {
+                player.sendMessage(Text.of("This rocket doesn't go high enough"), true);
+                return ActionResult.FAIL;
+            }
+
             this.getRocketSettings().payload = payload;
 
             for (int i = 0; i < 10; i++) {

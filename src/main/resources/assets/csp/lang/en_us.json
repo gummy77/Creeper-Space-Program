@@ -24,10 +24,13 @@
 
   "item.csp.gneep_spawn_egg": "Gneep Spawn Egg",
 
+  "item.csp.amoeba" : "Amoeba",
+
   "_comment": "- Payloads -",
   "item.csp.payloads.default_payload": "Dummy Payload",
   "item.csp.payloads.rain_starter_payload": "Rain Starter Payload",
   "item.csp.payloads.stardust_collector_payload": "Stardust Collector Payload",
+  "item.csp.payloads.specimen_return_capsule_payload": "Specimen Return Payload",
 
   "_comment": "--- Crafting Items ---",
   "item.csp.stardust_steel": "Stardust Steel",
@@ -76,5 +79,7 @@
   "advancements.csp.rocket_failure_launch.title": "Houston, we have a problem!",
   "advancements.csp.rocket_failure_launch.description": "Have a failure occur on a rocket at launch.",
   "advancements.csp.payload_comp_adv.title": "To help you find your pay",
-  "advancements.csp.payload_comp_adv.description": "Craft a Payload Compass"
+  "advancements.csp.payload_comp_adv.description": "Craft a Payload Compass",
+  "advancements.csp.amoeba_eater.title": "YOU MONSTER",
+  "advancements.csp.amoeba_eater.description": "How could you EAT him???"
 }

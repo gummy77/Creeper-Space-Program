@@ -21,13 +21,14 @@ public class ItemRegistry {
     public static final Item ROCKET_INSPECTOR;
 
     public static SpawnEggItem GNEEP_SPAWN_EGG;
+    public static Item AMOEBA;
 
     public static final Item STARDUST_STEEL;
     public static final Item ELECTRONIC_CIRCUIT;
     public static final Item WOODEN_FIN, BAMBOO_FIN, COPPER_FIN;
     public static final Item IRON_NOZZLE;
 
-    public static final PayloadItem DEFAULT_PAYLOAD_ITEM, RAIN_STARTER_ITEM, STARDUST_COLLECTOR_ITEM;
+    public static final PayloadItem DEFAULT_PAYLOAD_ITEM, RAIN_STARTER_ITEM, STARDUST_COLLECTOR_ITEM, SPECIMEN_RETURN_CAPSULE;
 
     public static Item WOODEN_NOSE_CONE, WOODEN_BODY_SEGMENT, WOODEN_EXHAUST;
     public static Item BAMBOO_NOSE_CONE, BAMBOO_BODY_SEGMENT, BAMBOO_EXHAUST;
@@ -62,6 +63,8 @@ public class ItemRegistry {
         PAYLOAD_COMPASS = (PayloadTrackingCompass) register("payload_compass", new PayloadTrackingCompass(getSettings()));
         ROCKET_INSPECTOR = register("rocket_inspector", new PayloadTrackingCompass(getSettings()));
 
+        AMOEBA = register("amoeba", new Item(getSettings().food(new FoodComponent.Builder().hunger(0).build())));
+
         ELECTRONIC_CIRCUIT = register("electronic_circuit", new Item(getSettings()));
         STARDUST_STEEL = register("stardust_steel", new Item(getSettings()));
 
@@ -72,8 +75,9 @@ public class ItemRegistry {
         IRON_NOZZLE = register("iron_nozzle", new Item(getSettings()));
 
         DEFAULT_PAYLOAD_ITEM = (PayloadItem) register("payloads/default_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.DEFAULT));
-        RAIN_STARTER_ITEM = (PayloadItem) register("payloads/rain_starter_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.RAIN_STARTER)) ;
-        STARDUST_COLLECTOR_ITEM = (PayloadItem) register("payloads/stardust_collector_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.STARDUST)) ;
+        RAIN_STARTER_ITEM = (PayloadItem) register("payloads/rain_starter_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.RAIN_STARTER));
+        STARDUST_COLLECTOR_ITEM = (PayloadItem) register("payloads/stardust_collector_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.STARDUST));
+        SPECIMEN_RETURN_CAPSULE = (PayloadItem) register("payloads/specimen_return_capsule_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.SPECIMEN_RETURN_CAPSULE));
 
         WOODEN_NOSE_CONE = register("rocket/wooden/nose_cone", new RocketPartItem(BlockRegistry.WOODEN_NOSE_CONE, getSettings()));
         WOODEN_BODY_SEGMENT = register("rocket/wooden/body_segment", new RocketPartItem(BlockRegistry.WOODEN_BODY_SEGMENT, getSettings()));

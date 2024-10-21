@@ -4,13 +4,12 @@ import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.Entity;
 import org.gum.csp.entity.PayloadEntity;
 
-public class ParachuteModel extends EntityModel<PayloadEntity> {
+public class DeployedParachuteModel extends EntityModel<PayloadEntity> {
 	private final ModelPart Parachute;
 
-	public ParachuteModel(ModelPart root) {
+	public DeployedParachuteModel(ModelPart root) {
 		this.Parachute = root.getChild("Parachute");
 	}
 
@@ -34,13 +33,10 @@ public class ParachuteModel extends EntityModel<PayloadEntity> {
 		.uv(1, 234).cuboid(-23.0F, -23.0F, 23.0F, 46.0F, 15.0F, 1.0F, new Dilation(0.0F))
 		.uv(147, 232).cuboid(-23.0F, -23.0F, -24.0F, 46.0F, 15.0F, 1.0F, new Dilation(0.0F)), ModelTransform.pivot(0.0F, 16.0F, 0.0F));
 
-		ModelPartData cube_r1 = Parachute.addChild("cube_r1", ModelPartBuilder.create().uv(106, 100).cuboid(0.0F, -1.0F, -1.0F, 1.0F, 44.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(22.7F, -9.0F, 23.4F, -0.7854F, 0.7854F, 0.0F));
-
-		ModelPartData cube_r2 = Parachute.addChild("cube_r2", ModelPartBuilder.create().uv(102, 100).cuboid(0.0F, -1.0F, -1.0F, 1.0F, 44.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(-22.7F, -9.0F, 23.4F, -0.6155F, 0.5236F, -0.9553F));
-
-		ModelPartData cube_r3 = Parachute.addChild("cube_r3", ModelPartBuilder.create().uv(4, 130).cuboid(0.0F, -1.0F, -1.0F, 1.0F, 43.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(-22.7F, -9.0F, -22.0F, 0.7854F, 0.7854F, 0.0F));
-
-		ModelPartData cube_r4 = Parachute.addChild("cube_r4", ModelPartBuilder.create().uv(0, 130).cuboid(0.0F, -1.0F, -1.0F, 1.0F, 43.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(22.7F, -9.0F, -22.0F, 0.6155F, 0.5236F, 0.9553F));
+        Parachute.addChild("cube_r1", ModelPartBuilder.create().uv(106, 100).cuboid(0.0F, -1.0F, -1.0F, 1.0F, 44.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(22.7F, -9.0F, 23.4F, -0.7854F, 0.7854F, 0.0F));
+        Parachute.addChild("cube_r2", ModelPartBuilder.create().uv(102, 100).cuboid(0.0F, -1.0F, -1.0F, 1.0F, 44.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(-22.7F, -9.0F, 23.4F, -0.6155F, 0.5236F, -0.9553F));
+		Parachute.addChild("cube_r3", ModelPartBuilder.create().uv(4, 130).cuboid(0.0F, -1.0F, -1.0F, 1.0F, 43.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(-22.7F, -9.0F, -22.0F, 0.7854F, 0.7854F, 0.0F));
+		Parachute.addChild("cube_r4", ModelPartBuilder.create().uv(0, 130).cuboid(0.0F, -1.0F, -1.0F, 1.0F, 43.0F, 1.0F, new Dilation(0.0F)), ModelTransform.of(22.7F, -9.0F, -22.0F, 0.6155F, 0.5236F, 0.9553F));
 		return TexturedModelData.of(modelData, 256, 256);
 	}
 	@Override

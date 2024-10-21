@@ -23,7 +23,7 @@ public class RocketPartBlockEntity extends BlockEntity {
 
     public RocketPartBlockEntity(BlockPos pos, BlockState state) {
         super(BlockRegistry.ROCKET_PART_BLOCK_ENTITY, pos, state);
-        this.rocketPart = new RocketPart.RocketPartBuilder(RocketPart.PartType.BODY, PartMaterial.BASE, 0.5f, 1, 1).build();
+        this.rocketPart = new RocketPart.RocketPartBuilder(RocketPart.PartType.BODY, PartMaterial.NONE, 0.5f, 1, 1).build();
     }
     public RocketPartBlockEntity(BlockPos pos, BlockState state, RocketPart rocketPart) {
         super(BlockRegistry.ROCKET_PART_BLOCK_ENTITY, pos, state);
@@ -43,6 +43,8 @@ public class RocketPartBlockEntity extends BlockEntity {
         RocketSettings settings = new RocketSettings(parts.toArray(new RocketPart[0]), false);
 
         boolean canFly = (settings.Power / settings.Mass) > 1f;
+
+        canFly = RocketEntity.calculateMaxHeight(settings) > 500 && canFly;
 
         if(!validConfig || !canFly){
             //yell at players
@@ -132,16 +134,13 @@ public class RocketPartBlockEntity extends BlockEntity {
     }
 
     private boolean isValidConfig(ArrayList<RocketPart> parts) {
-        if (parts.size() < 3) {
-            return false;
-        }
+        if (parts.size() < 3) return false;
 
-        if (parts.get(0).partType != RocketPart.PartType.NOSE) {
-            return false;
-        }
-        if (parts.get(parts.size() - 1).partType != RocketPart.PartType.EXHAUST) {
-            return false;
-        }
+        if (parts.get(0).partType != RocketPart.PartType.NOSE) return false;
+        if (parts.get(parts.size() - 1).partType != RocketPart.PartType.EXHAUST) return false;
+
+        if(parts.size()-2 < parts.get(parts.size() - 1).getMaterial().getMinParts()) return false;
+        if(parts.size()-2 > parts.get(parts.size() - 1).getMaterial().getMaxParts()) return false;
 
         for (int rocketPartIndex = 1; rocketPartIndex < parts.size() - 1; rocketPartIndex++) {
             if (parts.get(rocketPartIndex).partType == RocketPart.PartType.NOSE
@@ -149,8 +148,6 @@ public class RocketPartBlockEntity extends BlockEntity {
                 return false;
             }
         }
-
         return true;
     }
-
 }

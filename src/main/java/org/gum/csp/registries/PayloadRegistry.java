@@ -8,15 +8,29 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.gum.csp.datastructs.PayloadSettings;
+import org.gum.csp.entity.GneepEntity;
 import org.gum.csp.entity.PayloadEntity;
 import org.gum.csp.entity.RocketEntity;
 
+import java.util.Random;
+
 public class PayloadRegistry {
     public static Payloads payloadFromStack(ItemStack stack) {
-        if(     stack.getItem() == ItemRegistry.DEFAULT_PAYLOAD_ITEM)   return Payloads.DEFAULT;
-        else if(stack.getItem() == ItemRegistry.RAIN_STARTER_ITEM)      return Payloads.RAIN_STARTER;
+        if(stack.getItem() == ItemRegistry.DEFAULT_PAYLOAD_ITEM)            return Payloads.DEFAULT;
+        else if(stack.getItem() == ItemRegistry.RAIN_STARTER_ITEM)          return Payloads.RAIN_STARTER;
+        else if(stack.getItem() == ItemRegistry.SPECIMEN_RETURN_CAPSULE)    return Payloads.SPECIMEN_RETURN_CAPSULE;
 
         return null;
+    }
+
+    public static ItemStack stackFromPayload(Payloads payloads) {
+        switch (payloads){
+            case DEFAULT:                   return ItemRegistry.DEFAULT_PAYLOAD_ITEM.getDefaultStack();
+            case RAIN_STARTER:              return ItemRegistry.RAIN_STARTER_ITEM.getDefaultStack();
+            case STARDUST:                  return ItemRegistry.STARDUST_COLLECTOR_ITEM.getDefaultStack();
+            case SPECIMEN_RETURN_CAPSULE:   return ItemRegistry.SPECIMEN_RETURN_CAPSULE.getDefaultStack();
+        }
+        return ItemStack.EMPTY;
     }
 
     public static void registerPayloads(){
@@ -37,9 +51,11 @@ public class PayloadRegistry {
         RAIN_STARTER(false, 2.5f, 1000) {
             @Override
             public void onDeploy(World world, RocketEntity entity, BlockPos pos) {
-                if(!world.isRaining()){
-                    if(world instanceof ServerWorld){
+                if(world instanceof ServerWorld){
+                    if(!world.isRaining()){
                         ((ServerWorld) world).setWeather(120, 0, false, false);
+                    } else {
+                        ((ServerWorld) world).setWeather(0, 120, true, true);
                     }
                 }
             };
@@ -59,6 +75,25 @@ public class PayloadRegistry {
                     entity.dropStack(ItemRegistry.STARDUST_BASIC.getDefaultStack());
                 }
             };
+        },
+        SPECIMEN_RETURN_CAPSULE(true, 45f, 100000f) {
+            @Override
+            public void onDeploy(World world, RocketEntity entity, BlockPos pos) {
+                this.spawnPayload(world, entity, pos);
+            };
+            @Override
+            public void onInteract(World world, PayloadEntity entity, BlockPos pos, Entity interactor) {
+                Random rand = new Random();
+                float probability = rand.nextFloat();
+                if(probability < 0.5f) {
+                    entity.dropStack(ItemRegistry.AMOEBA.getDefaultStack());
+                } else if (probability < 0.6) {
+                    GneepEntity gneepEntity = EntityRegistry.GNEEP_ENTITY.create(world);
+                    if(gneepEntity == null) return;
+                    gneepEntity.setPosition(entity.getPos());
+                    world.spawnEntity(gneepEntity);
+                }
+            };
         };
 
         private final boolean canBeTracked;
@@ -72,7 +107,8 @@ public class PayloadRegistry {
         void spawnPayload(World world, RocketEntity entity, BlockPos pos) {
             PayloadEntity payloadEntity = EntityRegistry.PAYLOAD_ENTITY.create(world);
             if(payloadEntity == null) return;
-            payloadEntity.setPosition(pos.getX(), 350f, pos.getZ());
+            //payloadEntity.setPosition(pos.getX(), 350f, pos.getZ());
+            payloadEntity.setPosition(pos.getX(), 150f, pos.getZ()); //DEBUG ONLY
 
             PayloadSettings payloadSettings = new PayloadSettings(entity.getRocketSettings());
 

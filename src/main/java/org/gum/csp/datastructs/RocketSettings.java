@@ -23,7 +23,7 @@ public class RocketSettings {
     public float Acceleration;
     public float burnTime;
 
-    public RocketSettings (float Mass, float Volatility, float Power) { //setting these manually for now, will be based off of fuel later.
+    public RocketSettings (float Mass, float Volatility, float Power) {
         this.Mass = Mass;
         this.Volatility = Volatility;
         this.Power = Power;
@@ -38,7 +38,7 @@ public class RocketSettings {
         this.Acceleration = this.Power/this.Mass;
     }
 
-    public RocketSettings (RocketPart[] parts, boolean isFailing) { //setting these manually for now, will be based off of fuel later.
+    public RocketSettings (RocketPart[] parts, boolean isFailing) {
         blocks = parts;
 
         this.isFailing = isFailing;

@@ -36,6 +36,7 @@ public class PayloadEntity extends Entity {
     );
 
     private PayloadSettings payloadSettings;
+    private boolean hasParachuteDeployed = false;
 
     public PayloadEntity(EntityType<?> type, World world) {
         super(type, world);
@@ -56,12 +57,19 @@ public class PayloadEntity extends Entity {
             }
         }
 
-        this.addVelocity(0, -0.02, 0);
-        this.setVelocity(this.getVelocity().multiply(0.99f));
-        if(getBlockPos().getY() - world.getTopPosition(Heightmap.Type.MOTION_BLOCKING, getBlockPos()).getY() < 80) {
-            this.setVelocity(this.getVelocity().multiply(0.925f));
+        if(!onGround) {
+            this.addVelocity(0, -0.02, 0);
+            this.setVelocity(this.getVelocity().multiply(0.98f));
+            if (getBlockPos().getY() - world.getTopPosition(Heightmap.Type.MOTION_BLOCKING, getBlockPos()).getY() < 40) {
+                this.setVelocity(this.getVelocity().multiply(0.925f));
+                hasParachuteDeployed = true;
+            }
+            this.move(MovementType.SELF, this.getVelocity());
         }
-        this.move(MovementType.SELF, this.getVelocity());
+    }
+
+    public boolean hasParachuteDeployed() {
+        return hasParachuteDeployed;
     }
 
     public PayloadSettings getPayloadSettings(){

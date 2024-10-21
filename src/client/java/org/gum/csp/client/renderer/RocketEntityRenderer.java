@@ -13,6 +13,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import net.minecraft.world.LightType;
 import org.gum.csp.client.CspMainClient;
+import org.gum.csp.client.registries.ModelRegistry;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.datastructs.RocketSettings;
 import org.gum.csp.entity.RocketEntity;
@@ -80,7 +81,7 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
                 matrices.pop();
             }
         } else {
-            modelLoader.getModelPart(CspMainClient.ROCKET_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(getTexture(entity))), light, OverlayTexture.DEFAULT_UV);
+            modelLoader.getModelPart(ModelRegistry.ROCKET_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(getTexture(entity))), light, OverlayTexture.DEFAULT_UV);
         }
 
         matrices.pop();

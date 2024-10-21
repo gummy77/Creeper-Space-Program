@@ -10,6 +10,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import org.gum.csp.CspMain;
 import org.gum.csp.client.CspMainClient;
+import org.gum.csp.client.registries.ModelRegistry;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.entity.PayloadEntity;
 
@@ -37,14 +38,29 @@ public class PayloadEntityRenderer extends EntityRenderer<PayloadEntity> {
         matrices.push();
 
         if(entity.getPayloadSettings() != null){
-            if(!entity.isOnGround()){
-                matrices.push();
-                matrices.translate(0, 3, 0);
+            matrices.push();
+            matrices.translate(0, 1, 0);
+            float scale = entity.getPayloadSettings().getMaxWidth() / 16 * 2;
+            matrices.scale(scale, scale, scale);
+            matrices.translate(0, 2, 0);
 
+            if(!entity.isOnGround()){
                 matrices.multiply(Quaternion.fromEulerXyz((float) Math.PI, 0, 0));
-                modelLoader.getModelPart(CspMainClient.PARACHUTE_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(new Identifier(CspMain.MODID, "textures/entity/parachute_texture.png"))), light,  OverlayTexture.DEFAULT_UV);
-                matrices.pop();
+                if(entity.hasParachuteDeployed()) {
+                    modelLoader.getModelPart(ModelRegistry.DEPLOYED_PARACHUTE_MODEL_LAYER).render(matrices,
+                            vertexConsumers.getBuffer(RenderLayer.getEntitySolid(
+                                    new Identifier(CspMain.MODID, "textures/entity/parachute_texture.png")
+                            )), light, OverlayTexture.DEFAULT_UV);
+                } else {
+                    modelLoader.getModelPart(ModelRegistry.UNDEPLOYED_PARACHUTE_MODEL_LAYER).render(matrices,
+                            vertexConsumers.getBuffer(RenderLayer.getEntitySolid(
+                                    new Identifier(CspMain.MODID, "textures/entity/parachute_texture.png")
+                            )), light, OverlayTexture.DEFAULT_UV);
+                }
+            } else {
+
             }
+            matrices.pop();
 
             this.shadowRadius = entity.getPayloadSettings().getMaxWidth() * 0.0625f * 1.5f;
             if(entity.getPayloadSettings().blocks != null && entity.getPayloadSettings().blocks.length > 0) {
@@ -62,7 +78,7 @@ public class PayloadEntityRenderer extends EntityRenderer<PayloadEntity> {
                 return;
             }
         }
-        modelLoader.getModelPart(CspMainClient.PAYLOAD_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(getTexture(entity))), light, OverlayTexture.DEFAULT_UV);
+        modelLoader.getModelPart(ModelRegistry.PAYLOAD_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(getTexture(entity))), light, OverlayTexture.DEFAULT_UV);
         matrices.pop();
     }
 
