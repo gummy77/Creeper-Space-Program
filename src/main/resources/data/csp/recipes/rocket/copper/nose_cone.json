@@ -7,11 +7,11 @@
   ],
   "key": {
     "c": {
-      "tag": "minecraft:copper_ingot"
+      "item": "minecraft:copper_ingot"
     }
   },
   "result": {
-    "item": "csp:rocket/wooden/nose_cone",
+    "item": "csp:rocket/copper/nose_cone",
     "count": 1
   }
 }

@@ -1,13 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " b ",
-    "b b",
-    "b b"
+    " I ",
+    "I I",
+    "I I"
   ],
   "key": {
-    "b": {
-      "tag": "minecraft:bamboo"
+    "I": {
+      "item": "minecraft:bamboo"
     }
   },
   "result": {

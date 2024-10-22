@@ -42,7 +42,7 @@
   "item.csp.copper_fin": "Copper Fin",
 
   "_comment": "--- Stardust ---",
-  "item.csp.stardust_basic": "Stardust",
+  "item.csp.stardust": "Stardust",
 
   "_comment": "--- Rocket Parts ---",
   "block.csp.rocket.base.nose_cone": "Basic Nose Cone",

@@ -111,7 +111,16 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
 
             double currentRotation = entity.getInfoRenderAngle();
             double newRotation = Math.atan2(x, y);
-            double rotation =  newRotation;//(currentRotation * (1 - lerpSpeed)) + (newRotation * lerpSpeed);
+
+
+            double delta = newRotation - currentRotation;
+            delta = MathHelper.clamp(delta - (Math.floor(delta / Math.PI) * Math.PI), 0f, Math.PI);
+
+            if(delta > Math.PI/2) delta -= Math.PI;
+
+            double rotation = currentRotation + (delta * lerpSpeed);
+
+
             entity.setInfoRenderAngle(rotation);
 
             int alpha = 0;

@@ -2,16 +2,19 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     " c ",
-    "c c",
-    "c c"
+    "crc",
+    " c "
   ],
   "key": {
     "c": {
       "item": "minecraft:copper_ingot"
+    },
+    "r": {
+      "item": "minecraft:redstone"
     }
   },
   "result": {
-    "item": "csp:rocket/copper/nose_cone",
+    "item": "csp:payload_compass",
     "count": 1
   }
 }

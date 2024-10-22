@@ -1,13 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "   ",
-    " c ",
-    "   "
+    "www",
+    "s s",
+    " i "
   ],
   "key": {
-    "c": {
-      "item": "minecraft:copper_ingot"
+    "w": {
+      "tag": "minecraft:wool"
+    },
+    "s": {
+      "item": "minecraft:string"
+    },
+    "i": {
+      "item": "minecraft:iron_ingot"
     }
   },
   "result": {

@@ -1,13 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "bgb",
-    "bgb",
-    "bgb"
+    "IgI",
+    "IgI",
+    "IgI"
   ],
   "key": {
-    "b": {
-      "tag": "minecraft:bamboo"
+    "I": {
+      "item": "minecraft:bamboo"
     },
     "g": {
       "item": "minecraft:gunpowder"

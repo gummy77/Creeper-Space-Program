@@ -27,7 +27,6 @@ public class RocketPartItem extends BlockItem {
             if(nbtCompound != null) {
                 part = RocketPart.fromNbt(nbtCompound.getCompound("rocketPart"));
 
-                //tooltip.add(Text.of("§7Type: §2" + part.getMaterial().getFormattedName()));
                 tooltip.add(Text.of("§7Mass: §2" + part.mass + "kg"));
 
                 switch (part.partType){

@@ -91,7 +91,7 @@ public class ItemRegistry {
         COPPER_BODY_SEGMENT = register("rocket/copper/body_segment", new RocketPartItem(BlockRegistry.COPPER_BODY_SEGMENT, getSettings()));
         COPPER_EXHAUST = register("rocket/copper/exhaust", new RocketPartItem(BlockRegistry.COPPER_EXHAUST, getSettings()));
 
-        STARDUST_BASIC = register("stardust_basic", new Item(getSettings()));
+        STARDUST_BASIC = register("stardust", new Item(getSettings()));
 //        STARDUST_LEVEL_2 = register("stardust_purple", new Item(getSettings()));
 //        STARDUST_LEVEL_3 = register("stardust_red", new Item(getSettings()));
 //        STARDUST_LEVEL_4 = register("stardust_green_pink", new Item(getSettings()));
