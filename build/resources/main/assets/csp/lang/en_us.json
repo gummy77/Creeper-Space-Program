@@ -31,6 +31,7 @@
   "item.csp.payloads.rain_starter_payload": "Rain Starter Payload",
   "item.csp.payloads.stardust_collector_payload": "Stardust Collector Payload",
   "item.csp.payloads.specimen_return_capsule_payload": "Specimen Return Payload",
+  "item.csp.payloads.cartography_payload" : "Cartography Payload",
 
   "_comment": "--- Crafting Items ---",
   "item.csp.stardust_steel": "Stardust Steel",

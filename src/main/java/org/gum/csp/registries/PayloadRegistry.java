@@ -1,10 +1,12 @@
 package org.gum.csp.registries;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.gum.csp.datastructs.PayloadSettings;
 import org.gum.csp.entity.GneepEntity;
@@ -15,9 +17,10 @@ import java.util.Random;
 
 public class PayloadRegistry {
     public static Payloads payloadFromStack(ItemStack stack) {
-        if(stack.getItem() == ItemRegistry.DEFAULT_PAYLOAD_ITEM)            return Payloads.DEFAULT;
-        else if(stack.getItem() == ItemRegistry.RAIN_STARTER_ITEM)          return Payloads.RAIN_STARTER;
-        else if(stack.getItem() == ItemRegistry.SPECIMEN_RETURN_CAPSULE)    return Payloads.SPECIMEN_RETURN_CAPSULE;
+        if(stack.getItem() == ItemRegistry.DEFAULT_PAYLOAD_ITEM)                return Payloads.DEFAULT;
+        else if(stack.getItem() == ItemRegistry.RAIN_STARTER_ITEM)              return Payloads.RAIN_STARTER;
+        else if(stack.getItem() == ItemRegistry.SPECIMEN_RETURN_CAPSULE_ITEM)   return Payloads.SPECIMEN_RETURN_CAPSULE;
+        else if(stack.getItem() == ItemRegistry.CARTOGRAPHY_PAYLOAD_ITEM)       return Payloads.CARTOGRAPHY_PAYLOAD;
 
         return null;
     }
@@ -27,7 +30,8 @@ public class PayloadRegistry {
             case DEFAULT:                   return ItemRegistry.DEFAULT_PAYLOAD_ITEM.getDefaultStack();
             case RAIN_STARTER:              return ItemRegistry.RAIN_STARTER_ITEM.getDefaultStack();
             case STARDUST:                  return ItemRegistry.STARDUST_COLLECTOR_ITEM.getDefaultStack();
-            case SPECIMEN_RETURN_CAPSULE:   return ItemRegistry.SPECIMEN_RETURN_CAPSULE.getDefaultStack();
+            case SPECIMEN_RETURN_CAPSULE:   return ItemRegistry.SPECIMEN_RETURN_CAPSULE_ITEM.getDefaultStack();
+            case CARTOGRAPHY_PAYLOAD:       return ItemRegistry.CARTOGRAPHY_PAYLOAD_ITEM.getDefaultStack();
         }
         return ItemStack.EMPTY;
     }
@@ -93,6 +97,27 @@ public class PayloadRegistry {
                     world.spawnEntity(gneepEntity);
                 }
             };
+        },
+        CARTOGRAPHY_PAYLOAD(true, 5f, 2500){
+            @Override
+            public void onDeploy(World world, RocketEntity entity, BlockPos pos) {
+                this.spawnPayload(world, entity, pos);
+            };
+            @Override
+            public void onInteract(World world, PayloadEntity entity, BlockPos pos, Entity interactor) {
+                if(!world.isClient && world instanceof ServerWorld){
+
+                    float scale = (float) Math.tan(Math.toRadians(5)) * entity.getPayloadSettings().heightReached;
+                    int mapScale = MathHelper.floorLog2((int) scale);
+
+                    System.out.println(mapScale + " - " + scale);
+
+                    ItemStack map = FilledMapItem.createMap(world, pos.getX(), pos.getZ(), (byte) (mapScale - 7), true, false);
+                    FilledMapItem.getOrCreateMapState(map, world);
+                    FilledMapItem.fillExplorationMap((ServerWorld) world, map);
+                    entity.dropStack(map);
+                }
+            }
         };
 
         private final boolean canBeTracked;
@@ -107,7 +132,7 @@ public class PayloadRegistry {
             PayloadEntity payloadEntity = EntityRegistry.PAYLOAD_ENTITY.create(world);
             if(payloadEntity == null) return;
             //payloadEntity.setPosition(pos.getX(), 350f, pos.getZ());
-            payloadEntity.setPosition(pos.getX(), 0f, pos.getZ()); //DEBUG ONLY
+            payloadEntity.setPosition(pos.getX(), 100f, pos.getZ()); //DEBUG ONLY
 
             PayloadSettings payloadSettings = new PayloadSettings(entity.getRocketSettings());
 

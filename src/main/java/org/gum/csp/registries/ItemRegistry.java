@@ -28,7 +28,8 @@ public class ItemRegistry {
     public static final Item WOODEN_FIN, BAMBOO_FIN, COPPER_FIN;
     public static final Item IRON_NOZZLE;
 
-    public static final PayloadItem DEFAULT_PAYLOAD_ITEM, RAIN_STARTER_ITEM, STARDUST_COLLECTOR_ITEM, SPECIMEN_RETURN_CAPSULE;
+    public static final PayloadItem DEFAULT_PAYLOAD_ITEM, RAIN_STARTER_ITEM, STARDUST_COLLECTOR_ITEM,
+            SPECIMEN_RETURN_CAPSULE_ITEM, CARTOGRAPHY_PAYLOAD_ITEM;
 
     public static Item WOODEN_NOSE_CONE, WOODEN_BODY_SEGMENT, WOODEN_EXHAUST;
     public static Item BAMBOO_NOSE_CONE, BAMBOO_BODY_SEGMENT, BAMBOO_EXHAUST;
@@ -77,7 +78,8 @@ public class ItemRegistry {
         DEFAULT_PAYLOAD_ITEM = (PayloadItem) register("payloads/default_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.DEFAULT));
         RAIN_STARTER_ITEM = (PayloadItem) register("payloads/rain_starter_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.RAIN_STARTER));
         STARDUST_COLLECTOR_ITEM = (PayloadItem) register("payloads/stardust_collector_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.STARDUST));
-        SPECIMEN_RETURN_CAPSULE = (PayloadItem) register("payloads/specimen_return_capsule_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.SPECIMEN_RETURN_CAPSULE));
+        SPECIMEN_RETURN_CAPSULE_ITEM = (PayloadItem) register("payloads/specimen_return_capsule_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.SPECIMEN_RETURN_CAPSULE));
+        CARTOGRAPHY_PAYLOAD_ITEM = (PayloadItem) register("payloads/cartography_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.CARTOGRAPHY_PAYLOAD));
 
         WOODEN_NOSE_CONE = register("rocket/wooden/nose_cone", new RocketPartItem(BlockRegistry.WOODEN_NOSE_CONE, getSettings()));
         WOODEN_BODY_SEGMENT = register("rocket/wooden/body_segment", new RocketPartItem(BlockRegistry.WOODEN_BODY_SEGMENT, getSettings()));
