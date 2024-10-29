@@ -16,7 +16,7 @@ public class FluidRenderRegistry {
                 new SimpleFluidRenderHandler(
                         new Identifier("minecraft:block/water_still"),
                         new Identifier("minecraft:block/water_flow"),
-                        0x4c4c4c
+                        0x181818
                 ));
 
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getSolid(), FluidRegistry.STILL_OIL, FluidRegistry.FLOWING_OIL);
