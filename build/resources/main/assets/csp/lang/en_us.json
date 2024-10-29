@@ -5,6 +5,12 @@
   "_comment": "--- Sounds ---",
   "sound.csp.wooden_rocket_launch": "Rocket Launches",
   "sound.csp.basic_assemble": "Rocket is Assembled",
+  "subtitles.entity.player.hurt_drown_in_oil": "Player Drowning in Oil",
+
+
+  "_comment": "--- Death Texts",
+  "death.attack.drown_in_oil": "%1$s drowned in oil",
+  "death.attack.drown_in_oil.player": "%1$s drowned in oil whilst trying to escape %2$s",
 
   "_comment": "--- Debug Stuff ---",
   "item.csp.adrian": "Unobtaidrian",
@@ -25,6 +31,8 @@
   "item.csp.gneep_spawn_egg": "Gneep Spawn Egg",
 
   "item.csp.amoeba" : "Amoeba",
+
+  "item.csp.oil_bucket" : "Oil Bucket",
 
   "_comment": "- Payloads -",
   "item.csp.payloads.default_payload": "Dummy Payload",

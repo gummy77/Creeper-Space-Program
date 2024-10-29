@@ -148,6 +148,7 @@ public class RocketEntity extends Entity {
             getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, Explosion.DestructionType.BREAK);
 
             Launch();
+            this.getRocketSettings().payload.onDeploy(world, this, this.getPayloadPosition());
 
             PacketByteBuf buf = PacketByteBufs.create();
             buf.writeIntList(IntList.of(
@@ -161,7 +162,7 @@ public class RocketEntity extends Entity {
     }
 
     protected BlockPos getPayloadPosition(){
-        float payloadDistance = this.calculateMaxHeight() * 0.6f;
+        float payloadDistance = this.calculateMaxHeight() * 0.15f;
 
         System.out.println(payloadDistance+"m");
 
@@ -169,6 +170,8 @@ public class RocketEntity extends Entity {
         payloadPosition = payloadPosition.multiply(payloadDistance);
 
         payloadPosition = payloadPosition.add(this.getPos());
+
+        System.out.println(payloadPosition);
 
         return new BlockPos(payloadPosition.x, payloadPosition.y, payloadPosition.z);
     }

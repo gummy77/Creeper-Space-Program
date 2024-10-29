@@ -19,6 +19,8 @@ public class BlockRegistry {
 
     public static BlockEntityType<RocketPartBlockEntity> ROCKET_PART_BLOCK_ENTITY;
 
+    public static final Block SHALE_OIL_ORE;
+
     public static final Block BLAST_RESISTANT_STONE, HEAVY_BLAST_RESISTANT_STONE;
 
     public static RocketPartBlock WOODEN_NOSE_CONE, WOODEN_BODY_SEGMENT, WOODEN_EXHAUST;
@@ -41,6 +43,8 @@ public class BlockRegistry {
     static {
         BLAST_RESISTANT_STONE = register("blast_resistant_stone", new Block(FabricBlockSettings.of(Material.STONE).resistance(9).hardness(5)));
         HEAVY_BLAST_RESISTANT_STONE = register("heavy_blast_resistant_stone", new Block(FabricBlockSettings.of(Material.STONE).resistance(15).hardness(5)));
+
+        SHALE_OIL_ORE = register("shale_oil_ore", new Block(FabricBlockSettings.of(Material.STONE).hardness(5)));
 
         //Wooden
         WOODEN_NOSE_CONE = (RocketPartBlock) register("rocket/wooden/nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.WOOD).hardness(2)));

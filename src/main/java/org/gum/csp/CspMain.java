@@ -8,6 +8,7 @@ public class CspMain implements ModInitializer {
 
     @Override
     public void onInitialize() {
+        FluidRegistry.registerFluids();
         BlockRegistry.registerBlocks();
         EntityRegistry.registerEntities();
         EntityRegistry.registerEntityAttributes();

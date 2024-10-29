@@ -7,6 +7,7 @@ import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.util.Identifier;
 import org.gum.csp.client.item.PayloadCompassAnglePredicateProvider;
+import org.gum.csp.client.registries.FluidRenderRegistry;
 import org.gum.csp.client.registries.ModelRegistry;
 import org.gum.csp.client.particle.PlumeParticle;
 import org.gum.csp.item.PayloadTrackingCompass;
@@ -22,6 +23,7 @@ public class CspMainClient implements ClientModInitializer {
 
         registerParticle(ParticleRegistry.EXHAUST, PlumeParticle.Factory::new);
 
+        FluidRenderRegistry.registerFluids();
         registerModelPredicateProviders();
     }
 

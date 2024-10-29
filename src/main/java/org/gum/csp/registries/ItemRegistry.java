@@ -28,6 +28,9 @@ public class ItemRegistry {
     public static final Item WOODEN_FIN, BAMBOO_FIN, COPPER_FIN;
     public static final Item IRON_NOZZLE;
 
+    public static final Item OIL_BUCKET;
+
+    public static final PayloadItem DEFAULT_PAYLOAD_ITEM, RAIN_STARTER_ITEM, STARDUST_COLLECTOR_ITEM, SPECIMEN_RETURN_CAPSULE;
     public static final PayloadItem DEFAULT_PAYLOAD_ITEM, RAIN_STARTER_ITEM, STARDUST_COLLECTOR_ITEM,
             SPECIMEN_RETURN_CAPSULE_ITEM, CARTOGRAPHY_PAYLOAD_ITEM;
 
@@ -74,6 +77,8 @@ public class ItemRegistry {
         COPPER_FIN = register("copper_fin", new Item(getSettings()));
 
         IRON_NOZZLE = register("iron_nozzle", new Item(getSettings()));
+
+        OIL_BUCKET = register("oil_bucket", new BucketItem(FluidRegistry.STILL_OIL, getSettings().recipeRemainder(Items.BUCKET).maxCount(1)));
 
         DEFAULT_PAYLOAD_ITEM = (PayloadItem) register("payloads/default_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.DEFAULT));
         RAIN_STARTER_ITEM = (PayloadItem) register("payloads/rain_starter_payload", new PayloadItem(getSettings(), PayloadRegistry.Payloads.RAIN_STARTER));
