@@ -31,7 +31,7 @@ public class OilPoolFeature extends Feature<OilPoolFeature.OilPoolFeatureConfig>
         Random random = context.getRandom();
         OilPoolFeature.OilPoolFeatureConfig config = context.getConfig();
 
-        if(random.nextFloat() < 0.9) return false;
+        if(random.nextFloat() < 0.99) return false;
 
         int radius = random.nextBetween(config.radius()/4, config.radius());
         Identifier blockId = config.fluid();
@@ -43,7 +43,7 @@ public class OilPoolFeature extends Feature<OilPoolFeature.OilPoolFeatureConfig>
 
         while (true) {
             BlockState checkState = world.getBlockState(topPos);
-            if(checkState.isAir()) {
+            if(checkState.isAir() || checkState.isOf(Blocks.WATER)) {
                 topPos = topPos.down();
             } else {
                 break;
