@@ -1,12 +1,13 @@
 package org.gum.csp.registries;
 
+
 import net.minecraft.entity.Entity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.gum.csp.datastructs.PayloadSettings;
 import org.gum.csp.entity.GneepEntity;
@@ -42,16 +43,17 @@ public class PayloadRegistry {
     public interface PayloadFunctions {
         default void onDeploy(World world, RocketEntity entity, BlockPos pos) {};
         default void onInteract(World world, PayloadEntity entity, BlockPos pos, Entity interactor) {};
+        default Identifier getModel() { return null; };
     }
 
     public enum Payloads implements PayloadFunctions {
-        DEFAULT (true, 1, 0) {
+        DEFAULT (true, 1, 0, "Dummy Payload") {
             @Override
             public void onDeploy(World world, RocketEntity entity, BlockPos pos) {
                 this.spawnPayload(world, entity, pos);
             };
         },
-        RAIN_STARTER(false, 2.5f, 1000) {
+        RAIN_STARTER(false, 2.5f, 1000, "Weather Controller") {
             @Override
             public void onDeploy(World world, RocketEntity entity, BlockPos pos) {
                 if(world instanceof ServerWorld){
@@ -63,7 +65,7 @@ public class PayloadRegistry {
                 }
             };
         },
-        STARDUST(true, 5f, 25000f) {
+        STARDUST(true, 5f, 25000f, "Stardust Catcher") {
             @Override
             public void onDeploy(World world, RocketEntity entity, BlockPos pos) {
                 this.spawnPayload(world, entity, pos);
@@ -79,7 +81,7 @@ public class PayloadRegistry {
                 }
             };
         },
-        SPECIMEN_RETURN_CAPSULE(true, 45f, 100000f) {
+        SPECIMEN_RETURN_CAPSULE(true, 45f, 100000f, "Specimen Return Capsule") {
             @Override
             public void onDeploy(World world, RocketEntity entity, BlockPos pos) {
                 this.spawnPayload(world, entity, pos);
@@ -98,7 +100,7 @@ public class PayloadRegistry {
                 }
             };
         },
-        CARTOGRAPHY_PAYLOAD(true, 5f, 2500){
+        CARTOGRAPHY_PAYLOAD(true, 5f, 2500, "Mapper"){
             @Override
             public void onDeploy(World world, RocketEntity entity, BlockPos pos) {
                 this.spawnPayload(world, entity, pos);
@@ -123,10 +125,12 @@ public class PayloadRegistry {
         private final boolean canBeTracked;
         private final float minHeight;
         private final float mass;
+        private final String displayName;
 
         public boolean canBeTracked() { return canBeTracked; }
         public float minHeight() { return minHeight; }
         public float getMass() { return mass; }
+        public String getDisplayName() { return displayName; }
 
         void spawnPayload(World world, RocketEntity entity, BlockPos pos) {
             PayloadEntity payloadEntity = EntityRegistry.PAYLOAD_ENTITY.create(world);
@@ -144,10 +148,11 @@ public class PayloadRegistry {
         }
 
 
-        Payloads(boolean canBeTracked, float mass, float minHeight) {
+        Payloads(boolean canBeTracked, float mass, float minHeight, String displayName) {
             this.minHeight = minHeight;
             this.canBeTracked = canBeTracked;
             this.mass = mass;
+            this.displayName = displayName;
         }
     }
 }

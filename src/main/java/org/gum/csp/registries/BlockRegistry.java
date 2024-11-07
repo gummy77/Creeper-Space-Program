@@ -8,18 +8,16 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.gum.csp.CspMain;
-import org.gum.csp.block.RocketPartBlock;
-import org.gum.csp.datastructs.FuelComponent;
-import org.gum.csp.datastructs.PartMaterial;
-import org.gum.csp.datastructs.RocketPart;
+import org.gum.csp.block.*;
 import org.gum.csp.entity.RocketPartBlockEntity;
-import org.spongepowered.asm.mixin.Mutable;
 
 public class BlockRegistry {
 
     public static BlockEntityType<RocketPartBlockEntity> ROCKET_PART_BLOCK_ENTITY;
 
     public static final Block SHALE_OIL_ORE;
+
+    public static final Block SOLID_FUEL_PRESS;
 
     public static final Block BLAST_RESISTANT_STONE, HEAVY_BLAST_RESISTANT_STONE;
 
@@ -44,6 +42,8 @@ public class BlockRegistry {
     static {
         BLAST_RESISTANT_STONE = register("blast_resistant_stone", new Block(FabricBlockSettings.of(Material.STONE).resistance(9).hardness(5)));
         HEAVY_BLAST_RESISTANT_STONE = register("heavy_blast_resistant_stone", new Block(FabricBlockSettings.of(Material.STONE).resistance(15).hardness(5)));
+
+        SOLID_FUEL_PRESS = register("solid_fuel_press", new FuelPressBlock(FabricBlockSettings.of(Material.METAL).hardness(2)));
 
         SHALE_OIL_ORE = register("shale_oil_ore", new Block(FabricBlockSettings.of(Material.STONE).hardness(5)));
 

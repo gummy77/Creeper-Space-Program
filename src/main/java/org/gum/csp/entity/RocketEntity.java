@@ -270,10 +270,11 @@ public class RocketEntity extends Entity {
     }
 
     private void enginesActive(){
-        float force = 0.075f;
+        float force = 0.005f * this.getRocketSettings().Acceleration;
+        float rotationAngle = 0.00025f * this.getRocketSettings().Acceleration;
         this.addVelocity(rocketRotation.x * force, rocketRotation.y * force, rocketRotation.z * force);
-        rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * 0.005f);
-        rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * 0.005f);
+        rocketRotation = rocketRotation.rotateX((float) Math.sin(this.launchDirection) * rotationAngle);
+        rocketRotation = rocketRotation.rotateZ((float) Math.cos(this.launchDirection) * rotationAngle);
 
         if(launchTime % 10 == 0) {
             playSound(SoundRegistry.WOODEN_ROCKET_LAUNCH, 3f, 1f);

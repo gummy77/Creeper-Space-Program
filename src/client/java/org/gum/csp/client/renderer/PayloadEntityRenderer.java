@@ -1,15 +1,21 @@
 package org.gum.csp.client.renderer;
 
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
+import net.minecraft.client.render.entity.EntityRenderers;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.model.EntityModelLoader;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.data.client.ModelProvider;
+import net.minecraft.data.client.Models;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.*;
 import org.gum.csp.CspMain;
-import org.gum.csp.client.CspMainClient;
 import org.gum.csp.client.registries.ModelRegistry;
 import org.gum.csp.datastructs.RocketPart;
 import org.gum.csp.entity.PayloadEntity;
@@ -88,19 +94,23 @@ public class PayloadEntityRenderer extends EntityRenderer<PayloadEntity> {
             matrices.pop();
 
             this.shadowRadius = entity.getPayloadSettings().getMaxWidth() * 0.0625f * 1.5f;
-            if(entity.getPayloadSettings().blocks != null && entity.getPayloadSettings().blocks.length > 0) {
-                matrices.translate(-0.5f, 0, -0.5f);
+            if(entity.getPayloadSettings().payload.getModel() == null) {
+                if (entity.getPayloadSettings().blocks != null && entity.getPayloadSettings().blocks.length > 0) {
+                    matrices.translate(-0.5f, 0, -0.5f);
 
-                RocketPart[] blocks = entity.getPayloadSettings().blocks;
+                    RocketPart[] blocks = entity.getPayloadSettings().blocks;
 
-                for (RocketPart block : blocks) {
-                    matrices.push();
-                    matrices.translate(block.offset.getX(), block.offset.getY(), block.offset.getZ());
-                    blockRenderManager.renderBlockAsEntity(block.block, matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV);
+                    for (RocketPart block : blocks) {
+                        matrices.push();
+                        matrices.translate(block.offset.getX(), block.offset.getY(), block.offset.getZ());
+                        blockRenderManager.renderBlockAsEntity(block.block, matrices, vertexConsumers, light, OverlayTexture.DEFAULT_UV);
+                        matrices.pop();
+                    }
                     matrices.pop();
+                    return;
                 }
-                matrices.pop();
-                return;
+            } else {
+
             }
         }
         modelLoader.getModelPart(ModelRegistry.PAYLOAD_MODEL_LAYER).render(matrices, vertexConsumers.getBuffer(RenderLayer.getEntitySolid(getTexture(entity))), light, OverlayTexture.DEFAULT_UV);

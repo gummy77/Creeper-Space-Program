@@ -44,7 +44,7 @@ public class RocketPartBlockEntity extends BlockEntity {
 
         boolean canFly = (settings.Power / settings.Mass) > 1f;
 
-        canFly = RocketEntity.calculateMaxHeight(settings) > 500 && canFly;
+        canFly = RocketEntity.calculateMaxHeight(settings) > 1000 && canFly;
 
         if(!validConfig || !canFly){
             //yell at players

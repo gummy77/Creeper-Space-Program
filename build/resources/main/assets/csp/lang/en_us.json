@@ -38,6 +38,7 @@
   "item.csp.oil_bucket" : "Oil Bucket",
 
   "_comment" : "--- Blocks ---",
+  "block.csp.solid_fuel_press" : "Solid Fuel Press",
   "block.csp.shale_oil_ore": "Shale Oil Ore",
 
   "_comment": "--- Payloads ---",
@@ -75,6 +76,10 @@
   "block.csp.rocket.copper.nose_cone": "Copper Nose Cone",
   "block.csp.rocket.copper.body_segment": "Copper Body Segment",
   "block.csp.rocket.copper.exhaust": "Copper Exhaust",
+
+  "block.csp.rocket.iron.nose_cone": "Iron Nose Cone",
+  "block.csp.rocket.iron.body_segment": "Iron Body Segment",
+  "block.csp.rocket.iron.exhaust": "Iron Exhaust",
 
   "_comment": "--- Advancement Stuff ---",
   "advancements.csp.root.title": "This stuff explodes!?",

@@ -136,6 +136,9 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
             matrices.translate(0.5f, 3 , 0);
             matrices.scale(0.025f, -0.025f, 0.025f);
 
+            if(rocketSettings.payload != null) {
+                matrices.translate(0, -20 , 0);
+            }
 
             matrices.push();
             matrices.scale(1.5f, 1.5f , 1.5f);
@@ -143,12 +146,22 @@ public class RocketEntityRenderer extends EntityRenderer<RocketEntity> {
             matrices.pop();
 
             textRenderer.draw(matrices, "Power: " + rocketSettings.Power + "N", 0, 10, Color);
-            textRenderer.draw(matrices, "Mass: " + rocketSettings.Mass + "kg", 0, 20, Color);
+            textRenderer.draw(matrices, "Total Mass: " + rocketSettings.Mass + "kg", 0, 20, Color);
             textRenderer.draw(matrices, "Acceleration: " + (float)((int)(rocketSettings.Power / rocketSettings.Mass * 100f)) / 100f + "m/s", 0, 30, Color);
 
             textRenderer.draw(matrices, "Burn Time: " + rocketSettings.burnTime + "s", 0, 45, Color);
             textRenderer.draw(matrices, "Estimated Height: " + (int) (RocketEntity.calculateMaxHeight(rocketSettings)) + "m", 0, 55, Color);
             textRenderer.draw(matrices, "Chance of Failure: " + rocketSettings.Volatility + "%", 0, 65, Color);
+
+            if(rocketSettings.payload != null) {
+                matrices.push();
+                matrices.scale(1.25f, 1.25f , 1.25f);
+                textRenderer.draw(matrices, "Payload: " + rocketSettings.payload.getDisplayName(), 0, 65, Color);
+                matrices.pop();
+                textRenderer.draw(matrices, "Payload Mass: " + rocketSettings.payload.getMass() + "kg", 0, 95, Color);
+                if(rocketSettings.payload.canBeTracked())
+                    textRenderer.draw(matrices, "Estimated Travel Distance: " + (int) (RocketEntity.calculateMaxHeight(rocketSettings) * 0.15f) + "m", 0, 105, Color);
+            }
 
             matrices.pop();
         }

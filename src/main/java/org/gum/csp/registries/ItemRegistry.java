@@ -20,6 +20,8 @@ public class ItemRegistry {
     public static final PayloadTrackingCompass PAYLOAD_COMPASS;
     public static final Item ROCKET_INSPECTOR;
 
+    public static final Item SOLID_FUEL_PRESS;
+
     public static SpawnEggItem GNEEP_SPAWN_EGG;
     public static Item AMOEBA;
 
@@ -68,6 +70,8 @@ public class ItemRegistry {
         ASSEMBLER = (Assembler) register("basic_assembler", new Assembler(getSettings().maxDamage(10)));
         PAYLOAD_COMPASS = (PayloadTrackingCompass) register("payload_compass", new PayloadTrackingCompass(getSettings()));
         ROCKET_INSPECTOR = register("rocket_inspector", new PayloadTrackingCompass(getSettings()));
+
+        SOLID_FUEL_PRESS = register("solid_fuel_press", new BlockItem(BlockRegistry.SOLID_FUEL_PRESS, getSettings()));
 
         AMOEBA = register("amoeba", new Item(getSettings().food(new FoodComponent.Builder().hunger(0).build())));
 
