@@ -148,7 +148,9 @@ public class RocketEntity extends Entity {
             getEntityWorld().createExplosion(this, this.getX(), this.getY(), this.getZ(), 1, Explosion.DestructionType.BREAK);
 
             Launch();
-            this.getRocketSettings().payload.onDeploy(world, this, this.getPayloadPosition());
+            if(this.getRocketSettings().payload != null) {
+                this.getRocketSettings().payload.onDeploy(world, this, this.getPayloadPosition());
+            }
 
             PacketByteBuf buf = PacketByteBufs.create();
             buf.writeIntList(IntList.of(

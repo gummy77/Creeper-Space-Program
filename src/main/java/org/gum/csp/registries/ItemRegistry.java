@@ -38,6 +38,7 @@ public class ItemRegistry {
     public static Item WOODEN_NOSE_CONE, WOODEN_BODY_SEGMENT, WOODEN_EXHAUST;
     public static Item BAMBOO_NOSE_CONE, BAMBOO_BODY_SEGMENT, BAMBOO_EXHAUST;
     public static Item COPPER_NOSE_CONE, COPPER_BODY_SEGMENT, COPPER_EXHAUST;
+    public static Item IRON_NOSE_CONE, IRON_BODY_SEGMENT, IRON_EXHAUST;
 
     public static Item STARDUST_BASIC, STARDUST_LEVEL_2, STARDUST_LEVEL_3, STARDUST_LEVEL_4, STARDUST_LEVEL_5;
 
@@ -100,6 +101,11 @@ public class ItemRegistry {
         COPPER_NOSE_CONE = register("rocket/copper/nose_cone", new RocketPartItem(BlockRegistry.COPPER_NOSE_CONE, getSettings()));
         COPPER_BODY_SEGMENT = register("rocket/copper/body_segment", new RocketPartItem(BlockRegistry.COPPER_BODY_SEGMENT, getSettings()));
         COPPER_EXHAUST = register("rocket/copper/exhaust", new RocketPartItem(BlockRegistry.COPPER_EXHAUST, getSettings()));
+
+        IRON_NOSE_CONE = register("rocket/iron/nose_cone", new RocketPartItem(BlockRegistry.IRON_NOSE_CONE, getSettings()));
+        IRON_BODY_SEGMENT = register("rocket/iron/body_segment", new RocketPartItem(BlockRegistry.IRON_BODY_SEGMENT, getSettings()));
+        IRON_EXHAUST = register("rocket/iron/exhaust", new RocketPartItem(BlockRegistry.IRON_EXHAUST, getSettings()));
+
 
         STARDUST_BASIC = register("stardust", new Item(getSettings()));
 //        STARDUST_LEVEL_2 = register("stardust_purple", new Item(getSettings()));

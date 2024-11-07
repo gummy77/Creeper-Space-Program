@@ -48,7 +48,7 @@ public class RocketPartRegistry {
             //----- COPPER -----
             if(stack.isOf(ItemRegistry.COPPER_NOSE_CONE)) registerPart(stack,
                     new RocketPart.RocketPartBuilder(RocketPart.PartType.NOSE, PartMaterial.COPPER, 8f,50f, 0f)
-                            .setPayloadCapacity(50f)
+                            .setPayloadCapacity(25f)
                             .build());
             if(stack.isOf(ItemRegistry.COPPER_BODY_SEGMENT)) registerPart(stack,
                     new RocketPart.RocketPartBuilder(RocketPart.PartType.BODY, PartMaterial.COPPER, 8f,50f, 2f)
@@ -57,6 +57,20 @@ public class RocketPartRegistry {
             if(stack.isOf(ItemRegistry.COPPER_EXHAUST)) registerPart(stack,
                     new RocketPart.RocketPartBuilder(RocketPart.PartType.EXHAUST, PartMaterial.COPPER, 8f, 100f, 7.5f)
                             .setPower(5000f)
+                            .build());
+
+            //----- IRON -----
+            if(stack.isOf(ItemRegistry.IRON_NOSE_CONE)) registerPart(stack,
+                    new RocketPart.RocketPartBuilder(RocketPart.PartType.NOSE, PartMaterial.IRON, 8f,50f, 0f)
+                            .setPayloadCapacity(25f)
+                            .build());
+            if(stack.isOf(ItemRegistry.IRON_BODY_SEGMENT)) registerPart(stack,
+                    new RocketPart.RocketPartBuilder(RocketPart.PartType.BODY, PartMaterial.IRON, 8f,50f, 2f)
+                            .addFuelComponent(new FuelComponent(FuelComponent.FuelType.SOLID, 25f, 1f, 1f))
+                            .build());
+            if(stack.isOf(ItemRegistry.IRON_EXHAUST)) registerPart(stack,
+                    new RocketPart.RocketPartBuilder(RocketPart.PartType.EXHAUST, PartMaterial.IRON, 8f, 125f, 7.5f)
+                            .setPower(6000f)
                             .build());
         });
     }

@@ -28,6 +28,7 @@ public class BlockRegistry {
     public static RocketPartBlock BAMBOO_NOSE_CONE, BAMBOO_BODY_SEGMENT, BAMBOO_EXHAUST;
 
     public static RocketPartBlock COPPER_NOSE_CONE, COPPER_BODY_SEGMENT, COPPER_EXHAUST;
+    public static RocketPartBlock IRON_NOSE_CONE, IRON_BODY_SEGMENT, IRON_EXHAUST;
 
     public static void registerBlocks () {
 
@@ -60,6 +61,12 @@ public class BlockRegistry {
         COPPER_NOSE_CONE = (RocketPartBlock) register("rocket/copper/nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(3)));
         COPPER_BODY_SEGMENT = (RocketPartBlock) register("rocket/copper/body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(3)));
         COPPER_EXHAUST = (RocketPartBlock) register("rocket/copper/exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(3)));
+
+        //Iron
+        IRON_NOSE_CONE = (RocketPartBlock) register("rocket/iron/nose_cone",new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(3)));
+        IRON_BODY_SEGMENT = (RocketPartBlock) register("rocket/iron/body_segment", new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(3)));
+        IRON_EXHAUST = (RocketPartBlock) register("rocket/iron/exhaust", new RocketPartBlock(FabricBlockSettings.of(Material.METAL).hardness(3)));
+
 
         ROCKET_PART_BLOCK_ENTITY = registerEntity("rocket_part_block_entity", FabricBlockEntityTypeBuilder
                 .create(RocketPartBlockEntity::new,

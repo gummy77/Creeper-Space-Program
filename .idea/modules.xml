@@ -35,6 +35,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/sda1.MinecraftMods.Creeper-Space-Program.client.iml" filepath="$PROJECT_DIR$/.idea/modules/sda1.MinecraftMods.Creeper-Space-Program.client.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/sda1.MinecraftMods.Creeper-Space-Program.main.iml" filepath="$PROJECT_DIR$/.idea/modules/sda1.MinecraftMods.Creeper-Space-Program.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/sda1.MinecraftMods.Creeper-Space-Program.test.iml" filepath="$PROJECT_DIR$/.idea/modules/sda1.MinecraftMods.Creeper-Space-Program.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tempdisk.MinecraftMods.Creeper-Space-Program.client.iml" filepath="$PROJECT_DIR$/.idea/modules/tempdisk.MinecraftMods.Creeper-Space-Program.client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tempdisk.MinecraftMods.Creeper-Space-Program.main.iml" filepath="$PROJECT_DIR$/.idea/modules/tempdisk.MinecraftMods.Creeper-Space-Program.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/tempdisk.MinecraftMods.Creeper-Space-Program.test.iml" filepath="$PROJECT_DIR$/.idea/modules/tempdisk.MinecraftMods.Creeper-Space-Program.test.iml" />
     </modules>
   </component>
 </project>
