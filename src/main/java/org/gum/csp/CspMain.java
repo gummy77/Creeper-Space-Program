@@ -19,5 +19,6 @@ public class CspMain implements ModInitializer {
         SoundRegistry.registerSounds();
         FeatureRegistry.registerFeatures();
         RocketPartRegistry.registerParts();
+        RecipeRegistry.registerRecipes();
     }
 }

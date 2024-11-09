@@ -1,0 +1,11 @@
+{
+  "type": "csp:solid_fuel_press_recipe",
+  "rocketPart" : {
+    "tag" : "csp:solid_fuel_part"
+  },
+  "modifier" : {
+    "item" : "minecraft:gunpowder"
+  },
+  "powerModifier" : 1.5,
+  "burnTimeModifier" : 0.75
+}

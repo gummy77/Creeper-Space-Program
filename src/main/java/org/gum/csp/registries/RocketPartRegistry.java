@@ -1,14 +1,21 @@
 package org.gum.csp.registries;
 
+import net.fabricmc.fabric.api.item.v1.FabricItem;
 import net.fabricmc.fabric.api.item.v1.ModifyItemAttributeModifiersCallback;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import org.gum.csp.datastructs.FuelComponent;
 import org.gum.csp.datastructs.PartMaterial;
 import org.gum.csp.datastructs.RocketPart;
 
+import java.awt.event.ItemEvent;
+
 public class RocketPartRegistry {
     public static void registerParts(){
+
+        
+
         ModifyItemAttributeModifiersCallback.EVENT.register((stack, slot, attributeModifiers) -> {
 
             //----- WOODEN -----
@@ -47,11 +54,11 @@ public class RocketPartRegistry {
 
             //----- COPPER -----
             if(stack.isOf(ItemRegistry.COPPER_NOSE_CONE)) registerPart(stack,
-                    new RocketPart.RocketPartBuilder(RocketPart.PartType.NOSE, PartMaterial.COPPER, 8f,50f, 0f)
+                    new RocketPart.RocketPartBuilder(RocketPart.PartType.NOSE, PartMaterial.COPPER, 6f,50f, 0f)
                             .setPayloadCapacity(25f)
                             .build());
             if(stack.isOf(ItemRegistry.COPPER_BODY_SEGMENT)) registerPart(stack,
-                    new RocketPart.RocketPartBuilder(RocketPart.PartType.BODY, PartMaterial.COPPER, 8f,50f, 2f)
+                    new RocketPart.RocketPartBuilder(RocketPart.PartType.BODY, PartMaterial.COPPER, 6f,50f, 2f)
                             .addFuelComponent(new FuelComponent(FuelComponent.FuelType.SOLID, 25f, 1f, 1f))
                             .build());
             if(stack.isOf(ItemRegistry.COPPER_EXHAUST)) registerPart(stack,

@@ -1,0 +1,9 @@
+{
+  "replace" : false,
+  "values" : [
+    "csp:rocket/wooden/body_segment",
+    "csp:rocket/bamboo/body_segment",
+    "csp:rocket/copper/body_segment",
+    "csp:rocket/iron/body_segment"
+  ]
+}

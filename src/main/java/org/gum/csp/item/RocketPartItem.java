@@ -1,22 +1,43 @@
 package org.gum.csp.item;
 
+import com.google.common.collect.Multimap;
+import com.sun.jna.platform.unix.X11;
 import net.minecraft.block.Block;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipData;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 import org.gum.csp.datastructs.RocketPart;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class RocketPartItem extends BlockItem {
 
     public RocketPartItem(Block block, Settings settings) {
         super(block, settings);
+
+
     }
+
+    @Override
+    public Optional<TooltipData> getTooltipData(ItemStack stack) {
+        return super.getTooltipData(stack);
+    }
+
 
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
